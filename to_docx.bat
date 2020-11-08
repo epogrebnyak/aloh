@@ -1,0 +1,1 @@
+pandoc -f markdown -t docx README.md -o README.docx
