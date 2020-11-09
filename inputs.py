@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 
 
-
 product_names = ["A (H)", "B (H10)", "C (TA-HSA-10)", "D (TA-240)"]
 max_capacity = [4.32, 3.6, 2.16, 3.3]
 max_days_storage = [14, 14, 7, 7]
