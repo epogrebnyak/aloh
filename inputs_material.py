@@ -36,6 +36,7 @@ d
 """
 
 import pandas as pd
+import numpy as np
 
 names = "r a b c d".split()
 mc = pd.DataFrame(0, columns=names, index=names)
@@ -45,3 +46,12 @@ mc.loc["a", "b"] = 1
 mc.loc["b", "c"] = 1.49
 
 # Рассчитать сколько нужно тонн всех продуктов для 1 тонны продукта С "(TA-HSA-10)"
+# https://bigenc.ru/economics/text/2105219
+# mc еще пока не А (не нормирована, в натуральном выражении т/т)
+"""
+AX+Y=X
+(I-A)X=Y
+X = (I-A)-1 * Y
+"""
+b = np.linalg.inv(np.identity(5)-mc) # требуется корректиировка
+req = b * np.array([0,0,0,1,0])      # требуется корректиировка
