@@ -53,5 +53,5 @@ AX+Y=X
 (I-A)X=Y
 X = (I-A)-1 * Y
 """
-b = np.linalg.inv(np.identity(5)-mc) # требуется корректиировка
-req = b * np.array([0,0,0,1,0])      # требуется корректиировка
+b = np.linalg.inv(np.identity(5) - mc)  # требуется корректиировка
+req = b * np.array([0, 0, 0, 1, 0])  # требуется корректиировка
