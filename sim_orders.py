@@ -60,11 +60,11 @@ class Price:
 
 def volumes(total: float, size: Size) -> List[float]:
     xs = []
-    rem = total
-    while rem >= 0:
+    remaining = total
+    while remaining >= 0:
         x = size.generate()
-        rem = rem - x
-        if rem >= 0:
+        remaining = remaining - x
+        if remaining >= 0:
             xs.append(x)
         else:
             xs.append(total - sum(xs))
@@ -83,6 +83,7 @@ def to_dataframe(orders):
     df = pd.DataFrame(0, columns=[p.name for p in Product], index=range(n_days))
     for order in orders:
         df.loc[order.day, order.product.name] += order.volume
+    df.index.name = "Day"        
     return df
 
 
