@@ -43,27 +43,28 @@ def rounds(x, f=1):
 
 
 @dataclass
-class Size:
+class Volume:
     min_order: float
     max_order: float
     rounding_factor: float = 1.0
 
-    def generate(self):
+    def generate_one(self) -> float:
         x = generate_between(self.min_order, self.max_order)
         return rounds(x, self.rounding_factor)
+    
+    def generate_many(self, total_volume: float)-> List[float]:
+        xs = []
+        remaining = total_volume
+        while remaining >= 0:
+            x = self.generate_one()
+            remaining = remaining - x
+            if remaining >= 0:
+                xs.append(x)
+            else:
+                xs.append(total_volume - sum(xs))
+        return xs    
 
 
-def volumes(total: float, size: Size) -> List[float]:
-    xs = []
-    remaining = total
-    while remaining >= 0:
-        x = size.generate()
-        remaining = remaining - x
-        if remaining >= 0:
-            xs.append(x)
-        else:
-            xs.append(total - sum(xs))
-    return xs
 
 
 @dataclass
@@ -76,8 +77,8 @@ class Price:
         return round(p, 1)
 
 
-def yield_orders(n_days, product, total_volume, sizer:Size, pricer:Price):
-    for volume in volumes(total_volume, sizer):
+def yield_orders(n_days, product, total_volume, sizer:Volume, pricer:Price):
+    for volume in sizer.generate_many(total_volume):
         day = generate_day(n_days)
         price = pricer.generate()
         yield Order(product.name, day, volume, price)
@@ -86,7 +87,7 @@ def yield_orders(n_days, product, total_volume, sizer:Size, pricer:Price):
 @dataclass
 class OrderGenerator:
     product: Product
-    sizer: Size
+    sizer: Volume
     pricer: Price
     
     def generate_orders(self, n_days, total_volume):
@@ -220,7 +221,7 @@ class Model:
 
 TOTAL_DEMAND = 3500
 gen = OrderGenerator(product=Product.A,
-             sizer=Size(min_order=300, max_order=700, rounding_factor=10),
+             sizer=Volume(min_order=300, max_order=700, rounding_factor=10),
              pricer=Price(mean=150, delta=75))
 orders = gen.generate_orders(n_days=7, total_volume=TOTAL_DEMAND)
 m = Model("Single product", n_days=7, max_capacity=500)
