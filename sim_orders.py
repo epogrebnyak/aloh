@@ -7,12 +7,13 @@
 
 2. Мы выбираем временной период планирования в днях, например, 7, 10, 30 или 60 дней.
 
-3. Мы генерируем портфель заказов по продуктам на этот период. Каждый заказ содержит:
-  - день поставки продукта
-  - объем поставки в тоннах
-  - цену приобретения  
+3. Мы генерируем условный портфель заказов по продуктам на этот период. 
+   Каждый заказ содержит:
+     - день поставки продукта
+     - объем поставки в тоннах
+     - цену приобретения  
 
-4. Объемы производства каждого продукта ограничены максимальным выпуском в день.
+4. Объемы производства каждого продукта ограничены максимальным выпуском в день (мощностью).
 
 Текущая задача
 --------------
@@ -38,7 +39,7 @@ import warnings
 from dataclasses import dataclass
 from enum import Enum
 from random import choice, uniform
-from typing import Dict, List
+from typing import Dict, List, Generator
 
 import pandas as pd  # type: ignore
 import pulp  # type: ignore
@@ -104,9 +105,7 @@ def generate_volumes(total_volume: float, sizer: Volume) -> List[float]:
     while remaining >= 0:
         x = sizer.generate()
         remaining = remaining - x
-        if remaining == 0:
-            break
-        if remaining > 0:
+        if remaining >= 0:
             xs.append(x)
         else:
             xs.append(total_volume - sum(xs))
@@ -202,7 +201,7 @@ class MultiProductModel:
                     f"Non-negative inventory of {p.name} at day {d}",
                 )
 
-    def sales_items(self) -> List[LpExpression]:
+    def sales_items(self) -> Generator[LpExpression, None, None]:
         """Элементы расчета величины продаж в деньгах."""
         for p, orders in self.order_dict.items():
             accept = self.accept_dict[p]
@@ -360,8 +359,9 @@ if __name__ == "__main__":
     assert_series_equal(df(pur).sum(), df(prod).sum())
 
     # TODO:
+
     # - [ ] срок хранения
     # - [ ] связанное производство
     # - [ ] затарты на производство
-    # - [ ] варианты целевых функций
+    # - [ ] разные варианты целевых функций (стоимость хранения)
     # - [ ] приблизить к ценам на фактические товары
