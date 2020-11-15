@@ -103,17 +103,19 @@ class MultiProductModel:
         self.model = pulp.LpProblem(name, self.obj)
         self.days = list(range(n_days))
         self.all_products = all_products
-        # создаем выражения
-        self.purchases = self._create_dict(fill=pulp.lpSum(0))
-        self.inventory = self._create_dict(fill=pulp.lpSum(0))
-        # при иницилизации - нулевые производственные мощности
+        # создаем нулевые выражения
+        self.purchases = self._create_dict()
+        self.inventory = self._create_dict()
+        # при иницилизации указываем нулевые производственные мощности
         self.production = {}
         self.set_daily_capacity({p: 0 for p in all_products})
+        # не создам выражения для заказов, потому что не знаем их количесвто
 
-    def _create_dict(self, fill):
-        return {p: [fill for d in self.days] for p in self.all_products}
+    def _create_dict(self):
+        return {p: [pulp.lpSum(0) for d in self.days] for p in self.all_products}
 
     def set_daily_capacity(self, daily_capacity: CapacityDict):
+        """Создать переменные объема производства, ограничить сверху."""
         for p, cap in daily_capacity.items():
             self.production[p] = pulp.LpVariable.dict(
                 f"Production_{p.name}", self.days, lowBound=0, upBound=cap
@@ -142,20 +144,6 @@ class MultiProductModel:
                 ]
                 self.purchases[p][d] = pulp.lpSum(daily_orders_sum)
 
-    def sales_expression(self) -> List[LpExpression]:
-        """Элементы выражения для величины продаж в деньгах."""
-        expr_list = []
-        for p, orders in self.order_dict.items():
-            accept = self.accept_dict[p]
-            a = [
-                order.volume * order.price * accept[i] for i, order in enumerate(orders)
-            ]
-            expr_list.extend(a)
-        return expr_list
-
-    def set_objective(self):
-        self.model += pulp.lpSum(self.sales_expression())
-
     def set_non_zero_inventory(self):
         """Установить неотрицательную величину запасов. 
             Без этого требования запасы переносятся обратно во времени.
@@ -169,6 +157,20 @@ class MultiProductModel:
                     self.inventory[p][d] >= 0,
                     f"Non-negative inventory of {p.name} at day {d}",
                 )
+
+    def sales_expression(self) -> List[LpExpression]:
+        """Элементы выражения для величины продаж в деньгах."""
+        expr_list = []
+        for p, orders in self.order_dict.items():
+            accept = self.accept_dict[p]
+            a = [
+                order.volume * order.price * accept[i] for i, order in enumerate(orders)
+            ]
+            expr_list.extend(a)
+        return expr_list
+
+    def set_objective(self):
+        self.model += pulp.lpSum(self.sales_expression())
 
     def solve(self):
         self.feasibility = self.model.solve()
@@ -305,4 +307,5 @@ assert_series_equal(df(pur).sum(), df(prod).sum())
 # TODO:
 # - [ ] срок хранения
 # - [ ] связанное производство
-# - [ ] ...
+# - [ ] затарты на производство
+# - [ ] варианты целевых функций
