@@ -51,8 +51,8 @@ class Volume:
     def generate_one(self) -> float:
         x = generate_between(self.min_order, self.max_order)
         return rounds(x, self.rounding_factor)
-    
-    def generate_many(self, total_volume: float)-> List[float]:
+
+    def generate_many(self, total_volume: float) -> List[float]:
         xs = []
         remaining = total_volume
         while remaining >= 0:
@@ -62,9 +62,7 @@ class Volume:
                 xs.append(x)
             else:
                 xs.append(total_volume - sum(xs))
-        return xs    
-
-
+        return xs
 
 
 @dataclass
@@ -77,7 +75,7 @@ class Price:
         return round(p, 1)
 
 
-def yield_orders(n_days, product, total_volume, sizer:Volume, pricer:Price):
+def yield_orders(n_days, product, total_volume, sizer: Volume, pricer: Price):
     for volume in sizer.generate_many(total_volume):
         day = generate_day(n_days)
         price = pricer.generate()
@@ -89,12 +87,10 @@ class OrderGenerator:
     product: Product
     sizer: Volume
     pricer: Price
-    
+
     def generate_orders(self, n_days, total_volume):
         gen = yield_orders(n_days, self.product, total_volume, self.sizer, self.pricer)
         return list(gen)
-
-
 
 
 def sorted_list(orders):
@@ -138,7 +134,6 @@ def dataframe_final(n_days, product_name, orders, production, purchases, invento
     final["Production"] = production
     final["Inventory"] = inventory
     return final
-
 
 
 def make_purchases(orders, days, accept):
@@ -219,10 +214,13 @@ class Model:
     def obj_value(self):
         return pulp.value(self.model.objective)
 
+
 TOTAL_DEMAND = 3500
-gen = OrderGenerator(product=Product.A,
-             sizer=Volume(min_order=300, max_order=700, rounding_factor=10),
-             pricer=Price(mean=150, delta=75))
+gen = OrderGenerator(
+    product=Product.A,
+    sizer=Volume(min_order=300, max_order=700, rounding_factor=10),
+    pricer=Price(mean=150, delta=75),
+)
 orders = gen.generate_orders(n_days=7, total_volume=TOTAL_DEMAND)
 m = Model("Single product", n_days=7, max_capacity=500)
 
@@ -249,11 +247,11 @@ print("Sales (objective) = %.1f thousand USD" % (m.obj_value / 10 ** 3))
 
 
 # FIXME:
-#print("ORDERS")
-#print(demand_dataframe(orders, m.accept))
+# print("ORDERS")
+# print(demand_dataframe(orders, m.accept))
 
-#print("DEMAND")
-#print(dataframe_accepted(orders, m.accept))
+# print("DEMAND")
+# print(dataframe_accepted(orders, m.accept))
 
 
 final_df = dataframe_final(
