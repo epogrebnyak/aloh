@@ -103,9 +103,15 @@ class MultiProductModel:
         self.model = pulp.LpProblem(name, self.obj)
         self.days = list(range(n_days))
         self.all_products = all_products
+        # создаем выражения
+        self.purchases = self._create_dict(fill=pulp.lpSum(0))
+        self.inventory = self._create_dict(fill=pulp.lpSum(0))
         # при иницилизации - нулевые производственные мощности
         self.production = {}
         self.set_daily_capacity({p: 0 for p in all_products})
+
+    def _create_dict(self, fill):
+        return {p: [fill for d in self.days] for p in self.all_products}
 
     def set_daily_capacity(self, daily_capacity: CapacityDict):
         for p, cap in daily_capacity.items():
@@ -114,6 +120,7 @@ class MultiProductModel:
             )
 
     def add_orders(self, order_dict: OrderDict):
+        """Добавить заказы и создать бинарные переменные (принят/не принят заказ.)"""
         self.order_dict = order_dict
         self.accept_dict = dict()
         for p, orders in order_dict.items():
@@ -121,18 +128,10 @@ class MultiProductModel:
             self.accept_dict[p] = pulp.LpVariable.dicts(
                 f"{p.name}_AcceptOrder", order_nums, cat="Binary"
             )
-        self.create_purchases()
-        return self.accept_dict
+        self._init_purchases()
 
-    def create_dict(self, fill):
-        return {p: [fill for d in self.days] for p in self.all_products}
-
-    def create_empty_expressions(self):
-        return self.create_dict(fill=pulp.lpSum(0))
-
-    def create_purchases(self):
-        """Purchases are accepted orders."""
-        self.purchases = self.create_empty_expressions()
+    def _init_purchases(self):
+        """Создать выражения для величины покупок каждого товара в каждый день."""
         for p, orders in self.order_dict.items():
             accept = self.accept_dict[p]
             for d in self.days:
@@ -142,9 +141,9 @@ class MultiProductModel:
                     if d == order.day
                 ]
                 self.purchases[p][d] = pulp.lpSum(daily_orders_sum)
-        return self.purchases
 
-    def sales_expression(self):
+    def sales_expression(self) -> List[LpExpression]:
+        """Элементы выражения для величины продаж в деньгах."""
         expr_list = []
         for p, orders in self.order_dict.items():
             accept = self.accept_dict[p]
@@ -154,14 +153,13 @@ class MultiProductModel:
             expr_list.extend(a)
         return expr_list
 
-    def sales_value(self):
-        return pulp.lpSum(mp.sales_expression()).value()
-
     def set_objective(self):
         self.model += pulp.lpSum(self.sales_expression())
 
     def set_non_zero_inventory(self):
-        self.inventory = self.create_empty_expressions()
+        """Установить неотрицательную величину запасов. 
+            Без этого требования запасы переносятся обратно во времени.
+        """
         for p in self.all_products:
             prod = self.production[p]
             pur = self.purchases[p]
@@ -179,26 +177,23 @@ class MultiProductModel:
     def status(self):
         return pulp.LpStatus[self.feasibility]
 
-    @property
-    def obj_value(self):
-        return pulp.value(self.model.objective)
-
     def set_closed_sum(self):
+        """Установить производство равным объему покупок."""
         for p in self.all_products:
             self.model += pulp.lpSum(self.production[p]) == pulp.lpSum(
                 self.purchases[p]
             )
 
-    def demand_dict(self):
-        return {p: collect(orders, self.days) for p, orders in self.order_dict.items()}
 
-    def order_status(self, p: Product):
-        res = []
-        for order, status in zip(mp.order_dict[p], mp.accept_dict[p].values()):
-            x = order.__dict__
-            x["accepted"] = True if status.value() == 1 else False
-            res.append(x)
-        return sorted(res, key=lambda x: x["day"])
+# Просмотр результатов
+
+
+def sales_value(m):
+    return pulp.lpSum(m.sales_expression()).value()
+
+
+def obj_value(m):
+    return pulp.value(m.model.objective)
 
 
 def collect(orders, days):
@@ -206,6 +201,19 @@ def collect(orders, days):
     for order in orders:
         acc[order.day] += order.volume
     return acc
+
+
+def demand_dict(m):
+    return {p: collect(orders, m.days) for p, orders in m.order_dict.items()}
+
+
+def order_status(m, p: Product):
+    res = []
+    for order, status in zip(mp.order_dict[p], mp.accept_dict[p].values()):
+        x = order.__dict__
+        x["accepted"] = True if status.value() == 1 else False
+        res.append(x)
+    return sorted(res, key=lambda x: x["day"])
 
 
 def evaluate(holder):
@@ -251,18 +259,18 @@ prod = evaluate_dict(mp.production)
 pur = evaluate(mp.purchases)
 inv = evaluate(mp.inventory)
 accept = evaluate_dict(mp.accept_dict)
-dem = mp.demand_dict()
+dem = demand_dict(mp)
 
 
-def df(d):
-    return pd.DataFrame(d)
+def df(dict_):
+    return pd.DataFrame(dict_)
 
 
 print("\nЗаказы")
 for p in Product:
     print(p)
     try:
-        print(df(mp.order_status(p)))
+        print(df(order_status(mp, p)))
     except KeyError:
         pass
 print("\nСпрос")
@@ -275,12 +283,9 @@ print(df(prod))
 print(df(prod).sum())
 print("\nЗапасы")
 print(df(inv))
-print("\nВыручка")
-print(mp.sales_value())
-
-from pandas.testing import assert_series_equal
-
-assert_series_equal(df(pur).sum(), df(prod).sum())
+print()
+print("Выручка:        ", sales_value(mp))
+print("Целевая функция:", sales_value(mp))
 
 # Тесты
 
@@ -292,3 +297,12 @@ assert len(accept[Product.A]) == len(orders_a)
 assert len(accept[Product.B]) == len(orders_b)
 assert sum(prod[Product.A]) == sum(pur[Product.A])
 assert sum(prod[Product.B]) == sum(pur[Product.B])
+from pandas.testing import assert_series_equal
+
+assert_series_equal(df(pur).sum(), df(prod).sum())
+
+
+# TODO:
+# - [ ] срок хранения
+# - [ ] связанное производство
+# - [ ] ...
