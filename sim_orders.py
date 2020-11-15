@@ -330,12 +330,12 @@ if __name__ == "__main__":
 
     print("\nОбъемы мощностей, заказов, производства, покупок (тонн)\n")
     prop = df(
-        dict(
-            мощности=df(mp.capacities()).mean() * N_DAYS,
-            спрос=df(demand_dict(mp)).sum(),
-            производство=df(prod).sum(),
-            продажи=df(pur).sum(),
-        ),
+        {
+            "мощности": df(mp.capacities()).mean() * N_DAYS,
+            "спрос": df(demand_dict(mp)).sum(),
+            "производство": df(prod).sum(),
+            "продажи": df(pur).sum(),
+        },
         "",
     )
     print(prop.T)
