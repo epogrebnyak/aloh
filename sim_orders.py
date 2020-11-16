@@ -5,44 +5,50 @@
 
 1. Химическое производство выпускает несколько продуктов, обозначенных A, B, C, D.
 
-2. Мы выбираем временной период планирования в днях, например, 7, 10, 30 или 60 дней.
+2. Объемы производства каждого продукта ограничены максимальным выпуском в день (мощность).
 
-3. Мы генерируем условный портфель заказов по продуктам на этот период. 
-   Каждый заказ содержит:
-     - день поставки продукта
-     - объем поставки в тоннах
-     - цену приобретения  
+3. Мы выбираем временной период планирования в днях, например, 7, 10, 30 или 60 дней.
 
-4. Объемы производства каждого продукта ограничены максимальным выпуском в день (мощностью).
+4. Мы генерируем условный портфель заказов по продуктам на этот период. Заказы 
+   в сумме могут быть больше или меньше суммарной мощности. Индивидуальные заказы
+   могут быть меньше или больше мощности производства по дням.
 
-Текущая задача
---------------
+5. Каждый заказ содержит: 
 
-Определить:
+   - день поставки продукта
+   - объем поставки в тоннах
+   - цену приобретения  
+
+6. Цель расчетов - определить:
     
-  1. какие заказы выбрать
-  2. объем производства каждого продукта по дням
+   - какие заказы выбрать
+   - объем производства каждого продукта по дням
+
+7. Целевая функция - максимизация прибыли. По мере усложнения задачи 
+   может учитывать другие критерии (например, стоимость запасов).
 
 Текущие допущения
 -----------------
     
-  - нет ограничения по срокам хранения продуктов
-  - стоимость хранения нулевая
-  - емкость хранения не ограничена
-  - производство продуктов не связано друг с другом
-  - нулевые остатки продуктов в начале и конце периода 
-  - все заказы известны в начале периода
-  - заказ берется либо отклоняется, не пересматривается
-    https://github.com/epogrebnyak/aloh3/issues/1
+- нет ограничения по срокам хранения продуктов
+- стоимость хранения нулевая
+- емкость хранения не ограничена
+- производство продуктов не связано друг с другом
+- нулевые остатки продуктов в начале и конце периода 
+- все заказы известны в начале периода
+- заказ берется или отклоняется, не пересматривается
+  https://github.com/epogrebnyak/aloh3/issues/1
+- целевая функция - максимизация выручки    
  
 Особенности реализации 
 ----------------------
 
- - класс Product (перечислимый тип с обозначением продуктов) 
-   используется как ключ словарей с данными по продуктам
- - в задаче оптимизации данные организованы как словари
-   по продуктам (можно перейти к матрицам, но в PuLP это сложнее) 
- - там же - разделены методы для получения решения и просмотра результатов
+- элементы класса Product (перечислимый тип с обозначением продуктов) 
+  используются как ключи словарей с данными по продуктам
+- в модели оптимизации данные организованы как словари по продуктам (характерно для PuLP)
+- методы для получения решения задачи - методы класса, просмотр результатов - отдельные функции
+- мы создаем гипотетический портфель заказом и прогнояем модель по нему
+
 """
 import warnings
 from dataclasses import dataclass
@@ -57,8 +63,16 @@ warnings.simplefilter("ignore")
 
 
 class Product(Enum):
-    """Виды продуктов."""
+    """Виды продуктов.
+    
+    Использование:
 
+    >>> [p for in Product] # перечисление
+
+    >>> Product.A          # обозначение продукта
+
+    >>> Product.A.name
+    """
     A = "H"
     B = "H10"
     C = "TA-HSA-10"
@@ -79,12 +93,13 @@ class Order:
 
 OrderDict = Dict[Product, List[Order]]
 CapacityDict = Dict[Product, float]
+# FIXME: дает ошибку в проверке mypy
 LpExpression = pulp.pulp.LpAffineExpression
 
 
-def rounds(x, f=1):
+def rounds(x, step=1):
     """Округление, обычно до 5 или 10. Используется для выравнивания объема заказа."""
-    return round(x / f, 0) * f
+    return round(x / step, 0) * step
 
 
 @dataclass
@@ -148,7 +163,7 @@ class MultiProductModel:
     - <P>_AcceptOrder_<i> - бинарные переменые брать/не брать i-й заказ на продукт на продукт <P>
     - Production_<P>_<d> - объем производства продукта <P> в день d
 
-    Рассчитываются выражения, участвуют в дальнейших расчетах:
+    Рассчитываются выражения:
     - inventories - остатки на складе на дням
     - purchases - покупки в натуральном выражении (объем отбора со склада) по дням
     - sales_items - продажи, в денежном выражении
@@ -161,20 +176,22 @@ class MultiProductModel:
         self.days = list(range(n_days))
         self.all_products = all_products
         # создаем нулевые выражения для покупок и запасов
-        self.purchases = self._create_dict()
-        self.inventory = self._create_dict()
+        self.purchases = self._create_expressions_dict()
+        self.inventory = self._create_expressions_dict()
         self.order_dict = {p: [] for p in all_products}
+        self.accept_dict = {p: dict() for p in self.all_products}
         # при иницилизации указываем нулевые производственные мощности
         self.production = {}
         self.set_daily_capacity({p: 0 for p in all_products})
         # не создам выражения для заказов, потому что не знаем их количесвто
 
-    def _create_dict(self):
+    def _create_expressions_dict(self):
         return {p: [pulp.lpSum(0) for d in self.days] for p in self.all_products}
 
     def set_daily_capacity(self, daily_capacity: CapacityDict):
         """Создать переменные объема производства, ограничить снизу и сверху."""
         for p, cap in daily_capacity.items():
+            # создаем переменные вида Production_<P>_<d>
             self.production[p] = pulp.LpVariable.dict(
                 f"Production_{p.name}", self.days, lowBound=0, upBound=cap
             )
@@ -188,9 +205,9 @@ class MultiProductModel:
     def add_orders(self, order_dict: OrderDict):
         """Добавить заказы и создать бинарные переменные (принят/не принят заказ.)"""
         self.order_dict.update(order_dict)
-        self.accept_dict = {p: dict() for p in self.all_products}
         for p, orders in order_dict.items():
             order_nums = range(len(orders))
+            # создаем переменные вида <P>_AcceptOrder_<i>
             self.accept_dict[p] = pulp.LpVariable.dicts(
                 f"{p.name}_AcceptOrder", order_nums, cat="Binary"
             )
@@ -208,8 +225,8 @@ class MultiProductModel:
                 ]
                 self.purchases[p][d] = pulp.lpSum(daily_orders_sum)
 
-    def set_non_zero_inventory(self):
-        """Установить неотрицательную величину запасов. 
+    def set_non_negative_inventory(self):
+        """Установить неотрицательную величину запасов.
            Без этого требования запасы переносятся обратно во времени.
         """
         for p in self.all_products:
@@ -278,30 +295,34 @@ def order_status(m: MultiProductModel, p: Product):
     return sorted(res, key=lambda x: x["day"])
 
 
-def evaluate(holder):
+def evaluate_expr(holder):
+    """Получить словарь со значениями выражений"""
     return {p: [item.value() for item in holder[p]] for p in holder.keys()}
 
 
-def evaluate_dict(holder):
+def evaluate_vars(holder):
+    """Получить словарь со значениями переменных"""
     return {p: [item.value() for item in holder[p].values()] for p in holder.keys()}
+
+
+def df(dict_, index_name="день"):
+    df = pd.DataFrame(dict_)
+    df.index.name = index_name
+    return df
 
 
 if __name__ == "__main__":
 
-    N_DAYS = 10
-    print("Период планирования, дней:", N_DAYS)
+    # 1. Данные на входе задачи
+         
+    N_DAYS: int = 10
     capacity_dict: CapacityDict = {Product.A: 200, Product.B: 100}
-    print("\nМощности производства, тонн в день:")
-    for k, v in capacity_dict.items():
-        print("  ", k.name, "-", v)
-
     orders_a = generate_orders(
         n_days=N_DAYS,
         total_volume=1.35 * capacity_dict[Product.A] * N_DAYS,
         sizer=Volume(min_order=100, max_order=300, round_to=20),
         pricer=Price(mean=150, delta=30),
     )
-
     orders_b = generate_orders(
         n_days=N_DAYS,
         total_volume=0.52 * capacity_dict[Product.B] * N_DAYS,
@@ -310,60 +331,67 @@ if __name__ == "__main__":
     )
     order_dict: OrderDict = {Product.A: orders_a, Product.B: orders_b}
 
-    # Определение модели
+    # 2. Определение модели
     mp = MultiProductModel("Two products", n_days=N_DAYS, all_products=Product)
+    # передаем параметры задачи
     mp.set_daily_capacity(capacity_dict)
     mp.add_orders(order_dict)
-    mp.set_non_zero_inventory()
+    # задаем ограничения 
+    # без этого запасы они могут стать отрицательными
+    mp.set_non_negative_inventory()
+    # без этого или минимизации запасов или функции затрат устанавливается максимальное производство
     mp.set_closed_sum()
+    # целевая функция (выражение для нее становится известно в конце блока определения)
     mp.set_objective()
 
-    # Решение
+    # 3. Поиск решения для модели
     mp.solve()
-
-    # Демонстрация решения
-    prod = evaluate_dict(mp.production)
-    pur = evaluate(mp.purchases)
-    inv = evaluate(mp.inventory)
-    accepted = evaluate_dict(mp.accept_dict)
-    dem = demand_dict(mp)
-
-    def df(dict_, index_name="день"):
-        df = pd.DataFrame(dict_)
-        df.index.name = index_name
-        return df
-
     print("\nСтатус решения:", mp.status)
-    print("\nЗаказы")
+
+    # 4. Получение данных решения / solution as dictionaries
+    dem = demand_dict(mp)
+    accepted = evaluate_vars(mp.accept_dict)
+    prod = evaluate_vars(mp.production)
+    pur = evaluate_expr(mp.purchases)
+    inv = evaluate_expr(mp.inventory)
+
+    # 5. Печать решения
+    print("\nПериод планирования, дней / Number of days:", N_DAYS)    
+    print("\nМощности производства, тонн в день: / Capacity, ton per day")
+    for k, v in capacity_dict.items():
+        print("  ", k.name, "-", v)
+    
+    print("\nЗаказы / Orders")
     for p in Product:
         cd = df(order_status(mp, p), "N заказа")
         if not cd.empty:
             print("\nЗаказы на продукт", p.name)
             print(cd)
-    print("\nСпрос (тонн)")
+    print("\nСпрос (тонн) / Demand (ton)")
     print(df(dem))
-    print("\nПродажи (тонн)")
+    print("\nПродажи (тонн) / Purchases (ton)")
     print(df(pur))
-    print("\nПроизводство (тонн)")
+    print("\nПроизводство (тонн) / Production (ton)")
     print(df(prod))
-    print("\nЗапасы (тонн)")
+    print("\nЗапасы (тонн) / Inventory (ton)")
     print(df(inv))
 
-    print("\nОбъемы мощностей, заказов, производства, покупок (тонн)\n")
+    print("\nОбъемы мощностей, заказов, производства, покупок (тонн)")
+    print("Capacity, orders, production, purchases (ton)\n")
     prop = df(
         {
-            "мощности": df(mp.capacities()).mean() * N_DAYS,
-            "спрос": df(demand_dict(mp)).sum(),
-            "производство": df(prod).sum(),
-            "продажи": df(pur).sum(),
+            "capacity": df(mp.capacities()).mean() * N_DAYS,
+            "orders": df(demand_dict(mp)).sum(),
+            "production": df(prod).sum(),
+            "purchase": df(pur).sum(),
         },
         "",
     )
     print(prop.T)
 
     print()
-    print("Выручка (долл.США):", sales_value(mp))
-    print("Целевая функция:   ", sales_value(mp))
+    print("Выручка (долл.США) / Sales ('000 USD):", sales_value(mp))
+    print("Целевая функция: / Target function:   ", obj_value(mp))
 
     # Отдельные тесты
 
@@ -380,8 +408,9 @@ if __name__ == "__main__":
     assert_series_equal(df(pur).sum(), df(prod).sum())
 
     # TODO:
+
     # - [ ] срок хранения (shelf life)
     # - [ ] связанное производство (precursors)
-    # - [ ] затарты на производство (costs of production)
+    # - [ ] затарты на производство - умножать на производство (costs of production)
     # - [ ] разные варианты целевых функций (стоимость хранения) - target functions
     # - [ ] приблизить к ценам на фактические товары (more calibration to real data)

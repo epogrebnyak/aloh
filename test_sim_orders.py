@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 15 20:30:14 2020
-
-@author: Евгений
-"""
-from sim_orders import Product, Order, MultiProductModel, evaluate_dict
+from sim_orders import Product, Order, MultiProductModel, evaluate_vars
 from numpy import mean
 
 order_dict_1 = {
@@ -36,13 +30,13 @@ order_dict_1 = {
 
 
 N_DAYS = 10
-capacity_dict = {Product.A: 200, Product.B: 100}
+capacity_dict = {Product.A: 200.0, Product.B: 100.0}
 
 # Определение модели
 mp = MultiProductModel("Two products", n_days=N_DAYS, all_products=Product)
 mp.set_daily_capacity(capacity_dict)
 mp.add_orders(order_dict_1)
-mp.set_non_zero_inventory()
+mp.set_non_negative_inventory()
 mp.set_closed_sum()
 mp.set_objective()
 
@@ -52,7 +46,7 @@ cap = mp.capacities()
 for p in capacity_dict.keys():
     assert mean(cap[p]) == capacity_dict[p]
 
-accepted = evaluate_dict(mp.accept_dict)
+accepted = evaluate_vars(mp.accept_dict)
 assert accepted[Product.A] == [
     1.0,
     0.0,
