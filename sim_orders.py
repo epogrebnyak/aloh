@@ -133,6 +133,18 @@ def accumulate(var, i) -> LpExpression:
 
 
 class MultiProductModel:
+    """Модель с несколькими продуктами.
+    
+    Определяются (decision variables):
+    - <P>_AcceptOrder_<i> - бинарные переменые брать/не брать i-й заказ на продукт на продукт <P>
+    - Production_<P>_<d> - объем производства продукта <P> в день d
+
+    Рассчитываются выражения, участвуют в дальнейших расчетах:
+    - inventories - остатки на складе на дням
+    - purchases - покупки в натуральном выражении (объем отбора со склада) по дням
+    - sales_items - продажи, в денежном выражении
+    """
+
     obj = pulp.LpMaximize
 
     def __init__(self, name: str, n_days: int, all_products=Product):
@@ -229,28 +241,28 @@ class MultiProductModel:
 # Функции для просмотра результатов
 
 
-def sales_value(m):
+def sales_value(m: MultiProductModel):
     return pulp.lpSum(m.sales_items()).value()
 
 
-def obj_value(m):
+def obj_value(m: MultiProductModel):
     return pulp.value(m.model.objective)
 
 
-def collect(orders, days):
+def collect(orders: List[Order], days: List):
     acc = [0 for _ in days]
     for order in orders:
         acc[order.day] += order.volume
     return acc
 
 
-def demand_dict(m):
+def demand_dict(m: MultiProductModel):
     return {p: collect(orders, m.days) for p, orders in m.order_dict.items()}
 
 
-def order_status(m, p: Product):
+def order_status(m: MultiProductModel, p: Product):
     res = []
-    for order, status in zip(mp.order_dict[p], mp.accept_dict[p].values()):
+    for order, status in zip(m.order_dict[p], m.accept_dict[p].values()):
         x = order.__dict__
         x["accepted"] = True if status.value() == 1 else False
         res.append(x)
