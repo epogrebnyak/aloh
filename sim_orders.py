@@ -253,6 +253,24 @@ class MultiProductModel:
             accept = self.accept_dict[p]
             for i, order in enumerate(orders):
                 yield order.volume * order.price * accept[i]
+                
+    def set_max_storage_time(self, storage_time_dict):
+        pass             
+
+    # Constraint 3 - "nothing perished" ("условие непротухания")
+    # We should not have inventory that would perish (exceed storage time and would
+    # not be bought). If we hold inventory greater than expected purshases, at least
+    # some inventory will perish.
+    # This formulation may change if we allow non-zero end of month stocks.
+    # for i in days:
+    #     try:
+    #         model += inventory(i) <= cumbuy(i + max_days_storage - 1) - cumbuy(i)
+    #         # this is mathematically equivalent to:
+    #         # cumprod(i) <= cumbuy(i+max_days_storage-1)
+    #         # (earlier suggested by Dmitry)
+    #     except IndexError:
+    #         pass
+
 
     def set_closed_sum(self):
         """Установить производство равным объему покупок."""
