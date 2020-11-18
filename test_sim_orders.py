@@ -1,4 +1,4 @@
-from sim_orders import Product, Order, MultiProductModel, evaluate_vars
+from sim_orders import Product, Order, MultiProductModel, evaluate_vars, evaluate_expr, df
 from numpy import mean
 
 order_dict_1 = {
@@ -42,7 +42,7 @@ mp.set_objective()
 
 mp.solve()
 
-cap = mp.capacities()
+cap = mp.capacities
 for p in capacity_dict.keys():
     assert mean(cap[p]) == capacity_dict[p]
 
@@ -64,3 +64,17 @@ assert accepted[Product.A] == [
     0.0,
 ]
 assert accepted[Product.B] == [1.0, 1.0, 0.0, 1.0, 1.0, 1.0]
+
+assert mp.production[Product.A][0].name == "Production_A_0"
+assert mp.production[Product.A][0].upBound == 200
+assert mp.production[Product.B][6].upBound == 100
+se = list(mp.sales_items())
+assert len(accepted[Product.A]) == len(order_dict_1[Product.A])
+assert len(accepted[Product.B]) == len(order_dict_1[Product.B])
+prod = evaluate_vars(mp.production)
+pur = evaluate_expr(mp.purchases)
+assert sum(prod[Product.A]) == sum(pur[Product.A])
+assert sum(prod[Product.B]) == sum(pur[Product.B])
+from pandas.testing import assert_series_equal  # type: ignore
+
+assert_series_equal(df(pur).sum(), df(prod).sum())

@@ -1,4 +1,4 @@
-"""Выбор заказов и расчетов объемов производства по продуктам.
+"""Выбор заказов и расчетов объемов производства по нескольким продуктам.
 
 Условия
 -------
@@ -27,6 +27,11 @@
 7. Целевая функция - максимизация прибыли. По мере усложнения задачи 
    может учитывать другие критерии (например, стоимость запасов).
 
+Математическая модель
+---------------------
+
+Описание математической модели на [Сolab](https://colab.research.google.com/drive/1Wf39KC496IZcLDSNRpAEu1w-NfzeMSHu?usp=sharing).
+
 Текущие допущения
 -----------------
     
@@ -43,6 +48,7 @@
 Особенности реализации 
 ----------------------
 
+- в PuLP задача проще формулируется по строкам, чем по матрице.
 - элементы класса Product (перечислимый тип с обозначением продуктов) 
   используются как ключи словарей с данными по продуктам
 - в модели оптимизации данные организованы как словари по продуктам (характерно для PuLP)
@@ -141,6 +147,7 @@ def generate_day(n_days: int) -> int:
 
 
 def generate_orders(n_days: int, total_volume: float, pricer: Price, sizer: Volume):
+    """Создать гипотетический список заказов.""" 
     days = list(range(n_days))
     sim_volumes = generate_volumes(total_volume, sizer)
     n = len(sim_volumes)
@@ -195,7 +202,8 @@ class MultiProductModel:
             self.production[p] = pulp.LpVariable.dict(
                 f"Production_{p.name}", self.days, lowBound=0, upBound=cap
             )
-
+    
+    @property
     def capacities(self):
         return {
             p: [x.upBound for x in self.production[p].values()]
@@ -313,8 +321,7 @@ def df(dict_, index_name="день"):
 
 if __name__ == "__main__":
 
-    # 1. Данные на входе задачи
-         
+    # 1. Данные на входе задачи         
     N_DAYS: int = 10
     capacity_dict: CapacityDict = {Product.A: 200, Product.B: 100}
     orders_a = generate_orders(
@@ -331,16 +338,14 @@ if __name__ == "__main__":
     )
     order_dict: OrderDict = {Product.A: orders_a, Product.B: orders_b}
 
-    # 2. Определение модели
+    # 2. Определение модели    
     mp = MultiProductModel("Two products", n_days=N_DAYS, all_products=Product)
     # передаем параметры задачи
     mp.set_daily_capacity(capacity_dict)
     mp.add_orders(order_dict)
     # задаем ограничения 
-    # без этого запасы они могут стать отрицательными
-    mp.set_non_negative_inventory()
-    # без этого или минимизации запасов или функции затрат устанавливается максимальное производство
-    mp.set_closed_sum()
+    mp.set_non_negative_inventory()     # без этого запасы они могут стать отрицательными
+    mp.set_closed_sum()                 # без этого или минимизации запасов или функции затрат устанавливается максимальное производство
     # целевая функция (выражение для нее становится известно в конце блока определения)
     mp.set_objective()
 
@@ -380,7 +385,7 @@ if __name__ == "__main__":
     print("Capacity, orders, production, purchases (ton)\n")
     prop = df(
         {
-            "capacity": df(mp.capacities()).mean() * N_DAYS,
+            "capacity": df(mp.capacities).mean() * N_DAYS,
             "orders": df(demand_dict(mp)).sum(),
             "production": df(prod).sum(),
             "purchase": df(pur).sum(),
@@ -388,29 +393,13 @@ if __name__ == "__main__":
         "",
     )
     print(prop.T)
-
-    print()
-    print("Выручка (долл.США) / Sales ('000 USD):", sales_value(mp))
+    
+    print("\nВыручка (долл.США) / Sales ('000 USD):", sales_value(mp))
     print("Целевая функция: / Target function:   ", obj_value(mp))
 
-    # Отдельные тесты
-
-    assert mp.production[Product.A][0].name == "Production_A_0"
-    assert mp.production[Product.A][0].upBound == 200
-    assert mp.production[Product.B][6].upBound == 100
-    se = list(mp.sales_items())
-    assert len(accepted[Product.A]) == len(orders_a)
-    assert len(accepted[Product.B]) == len(orders_b)
-    assert sum(prod[Product.A]) == sum(pur[Product.A])
-    assert sum(prod[Product.B]) == sum(pur[Product.B])
-    from pandas.testing import assert_series_equal  # type: ignore
-
-    assert_series_equal(df(pur).sum(), df(prod).sum())
-
     # TODO:
-
     # - [ ] срок хранения (shelf life)
     # - [ ] связанное производство (precursors)
     # - [ ] затарты на производство - умножать на производство (costs of production)
     # - [ ] разные варианты целевых функций (стоимость хранения) - target functions
-    # - [ ] приблизить к ценам на фактические товары (more calibration to real data)
+    # - [ ] приблизить к параметрам на фактических товаров (more calibration to real data)
