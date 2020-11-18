@@ -1,4 +1,11 @@
-from sim_orders import Product, Order, MultiProductModel, evaluate_vars, evaluate_expr, df
+from sim_orders import (
+    Product,
+    Order,
+    MultiProductModel,
+    evaluate_vars,
+    evaluate_expr,
+    df,
+)
 from numpy import mean
 
 order_dict_1 = {
