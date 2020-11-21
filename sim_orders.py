@@ -207,14 +207,18 @@ class MultiProductModel:
         # при иницилизации указываем нулевые производственные мощности
         self.production: DictOfExpressionLists = {}
         self.add_daily_capacity({p: 0 for p in all_products})
-        # создаем нулевые выражения для покупок и запасов
+        # создаем нулевые выражения
         self.purchases: DictOfExpressionLists = self._create_expressions_dict()
         self.requirement: DictOfExpressionLists = self._create_expressions_dict()
         self.inventory: DictOfExpressionLists = self._create_expressions_dict()
-        # пустые покупки и заказы
-        self.order_dict = {p: [] for p in all_products}
-        self.accept_dict = {p: dict() for p in self.all_products}
-        self.unit_costs = {p: 0 for p in all_products}
+
+    def is_defined(self):
+        try:
+            self.unit_costs
+            self.order_dict
+            return True
+        except AttributeError:    
+            return False
 
     def _create_expressions_dict(self) -> DictOfExpressionLists:
         return {p: [pulp.lpSum(0) for d in self.days] for p in self.all_products}
@@ -240,7 +244,9 @@ class MultiProductModel:
 
     def add_orders(self, order_dict: OrderDict):
         """Добавить заказы и создать бинарные переменные (принят/не принят заказ.)"""
+        self.order_dict = {p: [] for p in self.all_products}
         self.order_dict.update(order_dict)
+        self.accept_dict = {p: dict() for p in self.all_products}
         for p, orders in order_dict.items():
             order_nums = range(len(orders))
             # создаем переменные вида <P>_AcceptOrder_<i>
@@ -263,10 +269,28 @@ class MultiProductModel:
                 self.purchases[p][d] = pulp.lpSum(daily_orders_sum)
 
     def _init_requirement(self):
-        self.requirement = self.purchases.copy()
+        """Создать выражения для общего объема покупок каждого товара."""
+        for p in self.all_products:
+            self.requirement[p] = self.purchases[p].copy()
         # TODO: додавить в requirement объемы внутреннего потребления
         #       например, для продукта B нужно 0.7 тонн продукта А
 
+    def add_max_storage_time(self, storage_time_dict: ProductParamDict):
+        """Ввести ограничение на срок складирования продукта."""
+        for p in storage_time_dict.keys():
+            max_days_storage = storage_time_dict[p]
+            for d in self.days:
+                try:
+                    # Смысл: если мы произведем на дату d товаров больше,
+                    #        чем будет приобретено за период d + s
+                    #        дней, то не все произведенные товары
+                    #        смогут купить. Вводим условие от обратного.
+                    self.model += accumulate(self.production[p], d) <= accumulate(
+                        self.requirement[p], d + max_days_storage)
+                except IndexError:
+                    # Мы не распространяем условие на последние дни периода
+                    pass
+                
     def set_non_negative_inventory(self):
         """Установить неотрицательную величину запасов.
            Без этого требования запасы переносятся обратно во времени.
@@ -280,25 +304,6 @@ class MultiProductModel:
                     self.inventory[p][d] >= 0,
                     f"Non-negative inventory of {p.name} at day {d}",
                 )
-
-    def add_max_storage_time(self, storage_time_dict: ProductParamDict):
-        """Ввести ограничение на срок складирования продукта."""
-        for p in storage_time_dict.keys():
-            max_days_storage = storage_time_dict[p]
-            for d in self.days:
-                try:
-                    # Смысл: если мы произведем на дату d товаров больше,
-                    #        чем будет приобретено в за период d + k - 1
-                    #        дней, то не все произведенные товары
-                    #        смогут купить за k дней. Вводим условие от обратного.
-                    # TODO: обосновать включение (-1).
-                    self.model += accumulate(self.production[p], d) <= accumulate(
-                        self.requirement[p], d + max_days_storage - 1
-                    )
-                except IndexError:
-                    # мы не распространяем условие на последние дни периода
-                    # предполагаем в конце периода запасы нулевые
-                    pass
 
     def set_closed_sum(self):
         """Установить производство равным объему покупок."""
@@ -319,7 +324,7 @@ class MultiProductModel:
         return pulp.lpSum(self.sales_items())
 
     def cost_items(self) -> Generator[LpExpression, None, None]:
-        """Элементы расчета величины затрат на произвосдство в деньгах."""
+        """Элементы расчета величины затрат на производство в деньгах."""
         for p, prod in self.production.items():
             for x in prod.values():
                 yield x * self.unit_costs[p]
@@ -481,11 +486,12 @@ if __name__ == "__main__":
     from pulp import LpSolverDefault
     
     print("\nВозможные солверы:", lst(pulp.list_solvers()))
-    print("Доступные:", lst(pulp.list_solvers(onlyAvailable=True)))
+    print("Доступные:  ", lst(pulp.list_solvers(onlyAvailable=True)))
     print("Использован:", LpSolverDefault.name)
     
     # https://github.com/coin-or/Cbc
     # pulp.get_solver('PULP_CBC_CMD').path
+    # https://en.wikipedia.org/wiki/Branch_and_cut
     # https://coin-or.github.io/pulp/guides/how_to_configure_solvers.html
 
     # TODO:
@@ -499,12 +505,12 @@ if __name__ == "__main__":
     # FIXME:
     # - [ ] почище дефолтные значения сделать - когда нет данных по какому-то продукту
     # - [ ] logging
+    # - [x] расссказать про солверы
 
-    # Not todo (сл.этапы):
+    # Not todo (сл.этапы, на выдор):
     # - [ ] стек запасов - проверить даты произвосдва запасов на складе.
-    # - [ ] web-приложение, кнопки - сгенерировать заказы, изменить параметры, пересчитать
-    # - [ ] встроить в Эксель через XlWings
+    # - [ ] web-приложение, кнопки - сгенерировать заказы, изменить параметры, пересчитать https://www.streamlit.io/
+    # - [ ] встроить в Эксель через XlWings (https://www.xlwings.org/)
     # - [ ] вывести расчеты в ноутбук Colab
     # - [ ] сделать пакетом
     # - [ ] взять реальные данные за месяц, прогнат на них оптимизацию, посмотреть результат
-    # - [ ] расссказать про солверы
