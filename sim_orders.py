@@ -296,7 +296,9 @@ class MultiProductModel:
     @property
     def status(self):
         return pulp.LpStatus[self.feasibility]
-
+    
+    def save(self, filename: str):
+        self.model.writeLP(filename)
 
 # Функции для просмотра результатов
 
@@ -424,6 +426,9 @@ if __name__ == "__main__":
 
     print("\nВыручка (долл.США) / Sales ('000 USD):", sales_value(mp))
     print("Целевая функция: / Target function:   ", obj_value(mp))
+
+    filename = "model_two_product.txt"
+    print(f"\nСохранили модель в файл {filename}", mp.save(filename))
 
     # TODO:
     # - [x] срок хранения (shelf life)

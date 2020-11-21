@@ -1,0 +1,445 @@
+\* Two_products *\
+Maximize
+OBJ: 33774 A_AcceptOrder_0 + 25792 A_AcceptOrder_1 + 30316 A_AcceptOrder_10
+ + 31944 A_AcceptOrder_11 + 25158 A_AcceptOrder_12 + 19248 A_AcceptOrder_13
+ + 45396 A_AcceptOrder_14 + 27180 A_AcceptOrder_15 + 19344 A_AcceptOrder_16
+ + 23292 A_AcceptOrder_17 + 33330 A_AcceptOrder_18 + 12576 A_AcceptOrder_19
+ + 44160 A_AcceptOrder_2 + 26800 A_AcceptOrder_3 + 16430 A_AcceptOrder_4
+ + 25956 A_AcceptOrder_5 + 38272 A_AcceptOrder_6 + 45892 A_AcceptOrder_7
+ + 22316 A_AcceptOrder_8 + 19536 A_AcceptOrder_9 + 4932 B_AcceptOrder_0
+ + 4879 B_AcceptOrder_1 + 6721 B_AcceptOrder_2 + 4944 B_AcceptOrder_3
+ + 5775 B_AcceptOrder_4 + 6010 B_AcceptOrder_5 + 4623.1 B_AcceptOrder_6
+Subject To
+Non_negative_inventory_of_A_at_day_0: - 160 A_AcceptOrder_13
+ - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ + Production_A_0 >= 0
+Non_negative_inventory_of_A_at_day_1: - 160 A_AcceptOrder_13
+ - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ + Production_A_0 + Production_A_1 >= 0
+Non_negative_inventory_of_A_at_day_10: - 260 A_AcceptOrder_0
+ - 160 A_AcceptOrder_1 - 240 A_AcceptOrder_11 - 140 A_AcceptOrder_12
+ - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15
+ - 180 A_AcceptOrder_17 - 80 A_AcceptOrder_19 - 100 A_AcceptOrder_4
+ - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8
+ + Production_A_0 + Production_A_1 + Production_A_10 + Production_A_2
+ + Production_A_3 + Production_A_4 + Production_A_5 + Production_A_6
+ + Production_A_7 + Production_A_8 + Production_A_9 >= 0
+Non_negative_inventory_of_A_at_day_11: - 260 A_AcceptOrder_0
+ - 160 A_AcceptOrder_1 - 240 A_AcceptOrder_11 - 140 A_AcceptOrder_12
+ - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15
+ - 180 A_AcceptOrder_17 - 220 A_AcceptOrder_18 - 80 A_AcceptOrder_19
+ - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5 - 260 A_AcceptOrder_6
+ - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1
+ + Production_A_10 + Production_A_11 + Production_A_2 + Production_A_3
+ + Production_A_4 + Production_A_5 + Production_A_6 + Production_A_7
+ + Production_A_8 + Production_A_9 >= 0
+Non_negative_inventory_of_A_at_day_12: - 260 A_AcceptOrder_0
+ - 160 A_AcceptOrder_1 - 220 A_AcceptOrder_10 - 240 A_AcceptOrder_11
+ - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14
+ - 200 A_AcceptOrder_15 - 120 A_AcceptOrder_16 - 180 A_AcceptOrder_17
+ - 220 A_AcceptOrder_18 - 80 A_AcceptOrder_19 - 300 A_AcceptOrder_2
+ - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5 - 260 A_AcceptOrder_6
+ - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8 - 120 A_AcceptOrder_9
+ + Production_A_0 + Production_A_1 + Production_A_10 + Production_A_11
+ + Production_A_12 + Production_A_2 + Production_A_3 + Production_A_4
+ + Production_A_5 + Production_A_6 + Production_A_7 + Production_A_8
+ + Production_A_9 >= 0
+Non_negative_inventory_of_A_at_day_13: - 260 A_AcceptOrder_0
+ - 160 A_AcceptOrder_1 - 220 A_AcceptOrder_10 - 240 A_AcceptOrder_11
+ - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14
+ - 200 A_AcceptOrder_15 - 120 A_AcceptOrder_16 - 180 A_AcceptOrder_17
+ - 220 A_AcceptOrder_18 - 80 A_AcceptOrder_19 - 300 A_AcceptOrder_2
+ - 160 A_AcceptOrder_3 - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5
+ - 260 A_AcceptOrder_6 - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8
+ - 120 A_AcceptOrder_9 + Production_A_0 + Production_A_1 + Production_A_10
+ + Production_A_11 + Production_A_12 + Production_A_13 + Production_A_2
+ + Production_A_3 + Production_A_4 + Production_A_5 + Production_A_6
+ + Production_A_7 + Production_A_8 + Production_A_9 >= 0
+Non_negative_inventory_of_A_at_day_2: - 160 A_AcceptOrder_13
+ - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17 - 180 A_AcceptOrder_5
+ - 280 A_AcceptOrder_7 + Production_A_0 + Production_A_1 + Production_A_2 >= 0
+Non_negative_inventory_of_A_at_day_3: - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17
+ - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7 + Production_A_0 + Production_A_1
+ + Production_A_2 + Production_A_3 >= 0
+Non_negative_inventory_of_A_at_day_4: - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17
+ - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7 + Production_A_0 + Production_A_1
+ + Production_A_2 + Production_A_3 + Production_A_4 >= 0
+Non_negative_inventory_of_A_at_day_5: - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17
+ - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ + Production_A_0 + Production_A_1 + Production_A_2 + Production_A_3
+ + Production_A_4 + Production_A_5 >= 0
+Non_negative_inventory_of_A_at_day_6: - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17
+ - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1 + Production_A_2
+ + Production_A_3 + Production_A_4 + Production_A_5 + Production_A_6 >= 0
+Non_negative_inventory_of_A_at_day_7: - 160 A_AcceptOrder_1
+ - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14
+ - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17 - 80 A_AcceptOrder_19
+ - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1 + Production_A_2
+ + Production_A_3 + Production_A_4 + Production_A_5 + Production_A_6
+ + Production_A_7 >= 0
+Non_negative_inventory_of_A_at_day_8: - 160 A_AcceptOrder_1
+ - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14
+ - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17 - 80 A_AcceptOrder_19
+ - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1 + Production_A_2
+ + Production_A_3 + Production_A_4 + Production_A_5 + Production_A_6
+ + Production_A_7 + Production_A_8 >= 0
+Non_negative_inventory_of_A_at_day_9: - 260 A_AcceptOrder_0
+ - 160 A_AcceptOrder_1 - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17
+ - 80 A_AcceptOrder_19 - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5
+ - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1
+ + Production_A_2 + Production_A_3 + Production_A_4 + Production_A_5
+ + Production_A_6 + Production_A_7 + Production_A_8 + Production_A_9 >= 0
+Non_negative_inventory_of_B_at_day_0: Production_B_0 >= 0
+Non_negative_inventory_of_B_at_day_1: Production_B_0 + Production_B_1 >= 0
+Non_negative_inventory_of_B_at_day_10: - 120 B_AcceptOrder_3
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_10
+ + Production_B_2 + Production_B_3 + Production_B_4 + Production_B_5
+ + Production_B_6 + Production_B_7 + Production_B_8 + Production_B_9 >= 0
+Non_negative_inventory_of_B_at_day_11: - 85 B_AcceptOrder_1
+ - 120 B_AcceptOrder_3 - 100 B_AcceptOrder_5 - 83 B_AcceptOrder_6
+ + Production_B_0 + Production_B_1 + Production_B_10 + Production_B_11
+ + Production_B_2 + Production_B_3 + Production_B_4 + Production_B_5
+ + Production_B_6 + Production_B_7 + Production_B_8 + Production_B_9 >= 0
+Non_negative_inventory_of_B_at_day_12: - 120 B_AcceptOrder_0
+ - 85 B_AcceptOrder_1 - 120 B_AcceptOrder_3 - 100 B_AcceptOrder_5
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_10
+ + Production_B_11 + Production_B_12 + Production_B_2 + Production_B_3
+ + Production_B_4 + Production_B_5 + Production_B_6 + Production_B_7
+ + Production_B_8 + Production_B_9 >= 0
+Non_negative_inventory_of_B_at_day_13: - 120 B_AcceptOrder_0
+ - 85 B_AcceptOrder_1 - 110 B_AcceptOrder_2 - 120 B_AcceptOrder_3
+ - 110 B_AcceptOrder_4 - 100 B_AcceptOrder_5 - 83 B_AcceptOrder_6
+ + Production_B_0 + Production_B_1 + Production_B_10 + Production_B_11
+ + Production_B_12 + Production_B_13 + Production_B_2 + Production_B_3
+ + Production_B_4 + Production_B_5 + Production_B_6 + Production_B_7
+ + Production_B_8 + Production_B_9 >= 0
+Non_negative_inventory_of_B_at_day_2: - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 >= 0
+Non_negative_inventory_of_B_at_day_3: - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 + Production_B_3 >= 0
+Non_negative_inventory_of_B_at_day_4: - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 + Production_B_3 + Production_B_4 >= 0
+Non_negative_inventory_of_B_at_day_5: - 120 B_AcceptOrder_3
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_2
+ + Production_B_3 + Production_B_4 + Production_B_5 >= 0
+Non_negative_inventory_of_B_at_day_6: - 120 B_AcceptOrder_3
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_2
+ + Production_B_3 + Production_B_4 + Production_B_5 + Production_B_6 >= 0
+Non_negative_inventory_of_B_at_day_7: - 120 B_AcceptOrder_3
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_2
+ + Production_B_3 + Production_B_4 + Production_B_5 + Production_B_6
+ + Production_B_7 >= 0
+Non_negative_inventory_of_B_at_day_8: - 120 B_AcceptOrder_3
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_2
+ + Production_B_3 + Production_B_4 + Production_B_5 + Production_B_6
+ + Production_B_7 + Production_B_8 >= 0
+Non_negative_inventory_of_B_at_day_9: - 120 B_AcceptOrder_3
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_2
+ + Production_B_3 + Production_B_4 + Production_B_5 + Production_B_6
+ + Production_B_7 + Production_B_8 + Production_B_9 >= 0
+Non_negative_inventory_of_C_at_day_0: Production_C_0 >= 0
+Non_negative_inventory_of_C_at_day_1: Production_C_0 + Production_C_1 >= 0
+Non_negative_inventory_of_C_at_day_10: Production_C_0 + Production_C_1
+ + Production_C_10 + Production_C_2 + Production_C_3 + Production_C_4
+ + Production_C_5 + Production_C_6 + Production_C_7 + Production_C_8
+ + Production_C_9 >= 0
+Non_negative_inventory_of_C_at_day_11: Production_C_0 + Production_C_1
+ + Production_C_10 + Production_C_11 + Production_C_2 + Production_C_3
+ + Production_C_4 + Production_C_5 + Production_C_6 + Production_C_7
+ + Production_C_8 + Production_C_9 >= 0
+Non_negative_inventory_of_C_at_day_12: Production_C_0 + Production_C_1
+ + Production_C_10 + Production_C_11 + Production_C_12 + Production_C_2
+ + Production_C_3 + Production_C_4 + Production_C_5 + Production_C_6
+ + Production_C_7 + Production_C_8 + Production_C_9 >= 0
+Non_negative_inventory_of_C_at_day_13: Production_C_0 + Production_C_1
+ + Production_C_10 + Production_C_11 + Production_C_12 + Production_C_13
+ + Production_C_2 + Production_C_3 + Production_C_4 + Production_C_5
+ + Production_C_6 + Production_C_7 + Production_C_8 + Production_C_9 >= 0
+Non_negative_inventory_of_C_at_day_2: Production_C_0 + Production_C_1
+ + Production_C_2 >= 0
+Non_negative_inventory_of_C_at_day_3: Production_C_0 + Production_C_1
+ + Production_C_2 + Production_C_3 >= 0
+Non_negative_inventory_of_C_at_day_4: Production_C_0 + Production_C_1
+ + Production_C_2 + Production_C_3 + Production_C_4 >= 0
+Non_negative_inventory_of_C_at_day_5: Production_C_0 + Production_C_1
+ + Production_C_2 + Production_C_3 + Production_C_4 + Production_C_5 >= 0
+Non_negative_inventory_of_C_at_day_6: Production_C_0 + Production_C_1
+ + Production_C_2 + Production_C_3 + Production_C_4 + Production_C_5
+ + Production_C_6 >= 0
+Non_negative_inventory_of_C_at_day_7: Production_C_0 + Production_C_1
+ + Production_C_2 + Production_C_3 + Production_C_4 + Production_C_5
+ + Production_C_6 + Production_C_7 >= 0
+Non_negative_inventory_of_C_at_day_8: Production_C_0 + Production_C_1
+ + Production_C_2 + Production_C_3 + Production_C_4 + Production_C_5
+ + Production_C_6 + Production_C_7 + Production_C_8 >= 0
+Non_negative_inventory_of_C_at_day_9: Production_C_0 + Production_C_1
+ + Production_C_2 + Production_C_3 + Production_C_4 + Production_C_5
+ + Production_C_6 + Production_C_7 + Production_C_8 + Production_C_9 >= 0
+Non_negative_inventory_of_D_at_day_0: Production_D_0 >= 0
+Non_negative_inventory_of_D_at_day_1: Production_D_0 + Production_D_1 >= 0
+Non_negative_inventory_of_D_at_day_10: Production_D_0 + Production_D_1
+ + Production_D_10 + Production_D_2 + Production_D_3 + Production_D_4
+ + Production_D_5 + Production_D_6 + Production_D_7 + Production_D_8
+ + Production_D_9 >= 0
+Non_negative_inventory_of_D_at_day_11: Production_D_0 + Production_D_1
+ + Production_D_10 + Production_D_11 + Production_D_2 + Production_D_3
+ + Production_D_4 + Production_D_5 + Production_D_6 + Production_D_7
+ + Production_D_8 + Production_D_9 >= 0
+Non_negative_inventory_of_D_at_day_12: Production_D_0 + Production_D_1
+ + Production_D_10 + Production_D_11 + Production_D_12 + Production_D_2
+ + Production_D_3 + Production_D_4 + Production_D_5 + Production_D_6
+ + Production_D_7 + Production_D_8 + Production_D_9 >= 0
+Non_negative_inventory_of_D_at_day_13: Production_D_0 + Production_D_1
+ + Production_D_10 + Production_D_11 + Production_D_12 + Production_D_13
+ + Production_D_2 + Production_D_3 + Production_D_4 + Production_D_5
+ + Production_D_6 + Production_D_7 + Production_D_8 + Production_D_9 >= 0
+Non_negative_inventory_of_D_at_day_2: Production_D_0 + Production_D_1
+ + Production_D_2 >= 0
+Non_negative_inventory_of_D_at_day_3: Production_D_0 + Production_D_1
+ + Production_D_2 + Production_D_3 >= 0
+Non_negative_inventory_of_D_at_day_4: Production_D_0 + Production_D_1
+ + Production_D_2 + Production_D_3 + Production_D_4 >= 0
+Non_negative_inventory_of_D_at_day_5: Production_D_0 + Production_D_1
+ + Production_D_2 + Production_D_3 + Production_D_4 + Production_D_5 >= 0
+Non_negative_inventory_of_D_at_day_6: Production_D_0 + Production_D_1
+ + Production_D_2 + Production_D_3 + Production_D_4 + Production_D_5
+ + Production_D_6 >= 0
+Non_negative_inventory_of_D_at_day_7: Production_D_0 + Production_D_1
+ + Production_D_2 + Production_D_3 + Production_D_4 + Production_D_5
+ + Production_D_6 + Production_D_7 >= 0
+Non_negative_inventory_of_D_at_day_8: Production_D_0 + Production_D_1
+ + Production_D_2 + Production_D_3 + Production_D_4 + Production_D_5
+ + Production_D_6 + Production_D_7 + Production_D_8 >= 0
+Non_negative_inventory_of_D_at_day_9: Production_D_0 + Production_D_1
+ + Production_D_2 + Production_D_3 + Production_D_4 + Production_D_5
+ + Production_D_6 + Production_D_7 + Production_D_8 + Production_D_9 >= 0
+_C1: - 260 A_AcceptOrder_0 - 160 A_AcceptOrder_1 - 220 A_AcceptOrder_10
+ - 240 A_AcceptOrder_11 - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 120 A_AcceptOrder_16
+ - 180 A_AcceptOrder_17 - 220 A_AcceptOrder_18 - 80 A_AcceptOrder_19
+ - 300 A_AcceptOrder_2 - 160 A_AcceptOrder_3 - 100 A_AcceptOrder_4
+ - 180 A_AcceptOrder_5 - 260 A_AcceptOrder_6 - 280 A_AcceptOrder_7
+ - 140 A_AcceptOrder_8 - 120 A_AcceptOrder_9 + Production_A_0 + Production_A_1
+ + Production_A_10 + Production_A_11 + Production_A_12 + Production_A_13
+ + Production_A_2 + Production_A_3 + Production_A_4 + Production_A_5
+ + Production_A_6 + Production_A_7 + Production_A_8 + Production_A_9 = 0
+_C10: - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15
+ - 180 A_AcceptOrder_17 - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5
+ - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1
+ + Production_A_2 + Production_A_3 + Production_A_4 + Production_A_5 <= 0
+_C11: - 160 A_AcceptOrder_1 - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17
+ - 80 A_AcceptOrder_19 - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5
+ - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1
+ + Production_A_2 + Production_A_3 + Production_A_4 + Production_A_5
+ + Production_A_6 <= 0
+_C12: - 160 A_AcceptOrder_1 - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17
+ - 80 A_AcceptOrder_19 - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5
+ - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1
+ + Production_A_2 + Production_A_3 + Production_A_4 + Production_A_5
+ + Production_A_6 + Production_A_7 <= 0
+_C13: - 260 A_AcceptOrder_0 - 160 A_AcceptOrder_1 - 140 A_AcceptOrder_12
+ - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15
+ - 180 A_AcceptOrder_17 - 80 A_AcceptOrder_19 - 100 A_AcceptOrder_4
+ - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8
+ + Production_A_0 + Production_A_1 + Production_A_2 + Production_A_3
+ + Production_A_4 + Production_A_5 + Production_A_6 + Production_A_7
+ + Production_A_8 <= 0
+_C14: - 260 A_AcceptOrder_0 - 160 A_AcceptOrder_1 - 240 A_AcceptOrder_11
+ - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14
+ - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17 - 80 A_AcceptOrder_19
+ - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ - 140 A_AcceptOrder_8 + Production_A_0 + Production_A_1 + Production_A_2
+ + Production_A_3 + Production_A_4 + Production_A_5 + Production_A_6
+ + Production_A_7 + Production_A_8 + Production_A_9 <= 0
+_C15: - 260 A_AcceptOrder_0 - 160 A_AcceptOrder_1 - 240 A_AcceptOrder_11
+ - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14
+ - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17 - 220 A_AcceptOrder_18
+ - 80 A_AcceptOrder_19 - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5
+ - 260 A_AcceptOrder_6 - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8
+ + Production_A_0 + Production_A_1 + Production_A_10 + Production_A_2
+ + Production_A_3 + Production_A_4 + Production_A_5 + Production_A_6
+ + Production_A_7 + Production_A_8 + Production_A_9 <= 0
+_C16: - 260 A_AcceptOrder_0 - 160 A_AcceptOrder_1 - 220 A_AcceptOrder_10
+ - 240 A_AcceptOrder_11 - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 120 A_AcceptOrder_16
+ - 180 A_AcceptOrder_17 - 220 A_AcceptOrder_18 - 80 A_AcceptOrder_19
+ - 300 A_AcceptOrder_2 - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5
+ - 260 A_AcceptOrder_6 - 280 A_AcceptOrder_7 - 140 A_AcceptOrder_8
+ - 120 A_AcceptOrder_9 + Production_A_0 + Production_A_1 + Production_A_10
+ + Production_A_11 + Production_A_2 + Production_A_3 + Production_A_4
+ + Production_A_5 + Production_A_6 + Production_A_7 + Production_A_8
+ + Production_A_9 <= 0
+_C17: - 260 A_AcceptOrder_0 - 160 A_AcceptOrder_1 - 220 A_AcceptOrder_10
+ - 240 A_AcceptOrder_11 - 140 A_AcceptOrder_12 - 160 A_AcceptOrder_13
+ - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15 - 120 A_AcceptOrder_16
+ - 180 A_AcceptOrder_17 - 220 A_AcceptOrder_18 - 80 A_AcceptOrder_19
+ - 300 A_AcceptOrder_2 - 160 A_AcceptOrder_3 - 100 A_AcceptOrder_4
+ - 180 A_AcceptOrder_5 - 260 A_AcceptOrder_6 - 280 A_AcceptOrder_7
+ - 140 A_AcceptOrder_8 - 120 A_AcceptOrder_9 + Production_A_0 + Production_A_1
+ + Production_A_10 + Production_A_11 + Production_A_12 + Production_A_2
+ + Production_A_3 + Production_A_4 + Production_A_5 + Production_A_6
+ + Production_A_7 + Production_A_8 + Production_A_9 <= 0
+_C18: Production_B_0 <= 0
+_C19: - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 <= 0
+_C2: - 120 B_AcceptOrder_0 - 85 B_AcceptOrder_1 - 110 B_AcceptOrder_2
+ - 120 B_AcceptOrder_3 - 110 B_AcceptOrder_4 - 100 B_AcceptOrder_5
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_10
+ + Production_B_11 + Production_B_12 + Production_B_13 + Production_B_2
+ + Production_B_3 + Production_B_4 + Production_B_5 + Production_B_6
+ + Production_B_7 + Production_B_8 + Production_B_9 = 0
+_C20: - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_2
+ <= 0
+_C21: - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_2
+ + Production_B_3 <= 0
+_C22: - 120 B_AcceptOrder_3 - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 + Production_B_3 + Production_B_4 <= 0
+_C23: - 120 B_AcceptOrder_3 - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 + Production_B_3 + Production_B_4
+ + Production_B_5 <= 0
+_C24: - 120 B_AcceptOrder_3 - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 + Production_B_3 + Production_B_4
+ + Production_B_5 + Production_B_6 <= 0
+_C25: - 120 B_AcceptOrder_3 - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 + Production_B_3 + Production_B_4
+ + Production_B_5 + Production_B_6 + Production_B_7 <= 0
+_C26: - 120 B_AcceptOrder_3 - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 + Production_B_3 + Production_B_4
+ + Production_B_5 + Production_B_6 + Production_B_7 + Production_B_8 <= 0
+_C27: - 120 B_AcceptOrder_3 - 83 B_AcceptOrder_6 + Production_B_0
+ + Production_B_1 + Production_B_2 + Production_B_3 + Production_B_4
+ + Production_B_5 + Production_B_6 + Production_B_7 + Production_B_8
+ + Production_B_9 <= 0
+_C28: - 85 B_AcceptOrder_1 - 120 B_AcceptOrder_3 - 100 B_AcceptOrder_5
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_10
+ + Production_B_2 + Production_B_3 + Production_B_4 + Production_B_5
+ + Production_B_6 + Production_B_7 + Production_B_8 + Production_B_9 <= 0
+_C29: - 120 B_AcceptOrder_0 - 85 B_AcceptOrder_1 - 120 B_AcceptOrder_3
+ - 100 B_AcceptOrder_5 - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1
+ + Production_B_10 + Production_B_11 + Production_B_2 + Production_B_3
+ + Production_B_4 + Production_B_5 + Production_B_6 + Production_B_7
+ + Production_B_8 + Production_B_9 <= 0
+_C3: Production_C_0 + Production_C_1 + Production_C_10 + Production_C_11
+ + Production_C_12 + Production_C_13 + Production_C_2 + Production_C_3
+ + Production_C_4 + Production_C_5 + Production_C_6 + Production_C_7
+ + Production_C_8 + Production_C_9 = 0
+_C30: - 120 B_AcceptOrder_0 - 85 B_AcceptOrder_1 - 110 B_AcceptOrder_2
+ - 120 B_AcceptOrder_3 - 110 B_AcceptOrder_4 - 100 B_AcceptOrder_5
+ - 83 B_AcceptOrder_6 + Production_B_0 + Production_B_1 + Production_B_10
+ + Production_B_11 + Production_B_12 + Production_B_2 + Production_B_3
+ + Production_B_4 + Production_B_5 + Production_B_6 + Production_B_7
+ + Production_B_8 + Production_B_9 <= 0
+_C4: Production_D_0 + Production_D_1 + Production_D_10 + Production_D_11
+ + Production_D_12 + Production_D_13 + Production_D_2 + Production_D_3
+ + Production_D_4 + Production_D_5 + Production_D_6 + Production_D_7
+ + Production_D_8 + Production_D_9 = 0
+_C5: - 160 A_AcceptOrder_13 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_5
+ - 280 A_AcceptOrder_7 + Production_A_0 <= 0
+_C6: - 160 A_AcceptOrder_13 - 200 A_AcceptOrder_15 - 180 A_AcceptOrder_17
+ - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7 + Production_A_0 + Production_A_1
+ <= 0
+_C7: - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15
+ - 180 A_AcceptOrder_17 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ + Production_A_0 + Production_A_1 + Production_A_2 <= 0
+_C8: - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15
+ - 180 A_AcceptOrder_17 - 180 A_AcceptOrder_5 - 280 A_AcceptOrder_7
+ + Production_A_0 + Production_A_1 + Production_A_2 + Production_A_3 <= 0
+_C9: - 160 A_AcceptOrder_13 - 260 A_AcceptOrder_14 - 200 A_AcceptOrder_15
+ - 180 A_AcceptOrder_17 - 100 A_AcceptOrder_4 - 180 A_AcceptOrder_5
+ - 280 A_AcceptOrder_7 + Production_A_0 + Production_A_1 + Production_A_2
+ + Production_A_3 + Production_A_4 <= 0
+Bounds
+Production_A_0 <= 200
+Production_A_1 <= 200
+Production_A_10 <= 200
+Production_A_11 <= 200
+Production_A_12 <= 200
+Production_A_13 <= 200
+Production_A_2 <= 200
+Production_A_3 <= 200
+Production_A_4 <= 200
+Production_A_5 <= 200
+Production_A_6 <= 200
+Production_A_7 <= 200
+Production_A_8 <= 200
+Production_A_9 <= 200
+Production_B_0 <= 100
+Production_B_1 <= 100
+Production_B_10 <= 100
+Production_B_11 <= 100
+Production_B_12 <= 100
+Production_B_13 <= 100
+Production_B_2 <= 100
+Production_B_3 <= 100
+Production_B_4 <= 100
+Production_B_5 <= 100
+Production_B_6 <= 100
+Production_B_7 <= 100
+Production_B_8 <= 100
+Production_B_9 <= 100
+Production_C_0 = 0
+Production_C_1 = 0
+Production_C_10 = 0
+Production_C_11 = 0
+Production_C_12 = 0
+Production_C_13 = 0
+Production_C_2 = 0
+Production_C_3 = 0
+Production_C_4 = 0
+Production_C_5 = 0
+Production_C_6 = 0
+Production_C_7 = 0
+Production_C_8 = 0
+Production_C_9 = 0
+Production_D_0 = 0
+Production_D_1 = 0
+Production_D_10 = 0
+Production_D_11 = 0
+Production_D_12 = 0
+Production_D_13 = 0
+Production_D_2 = 0
+Production_D_3 = 0
+Production_D_4 = 0
+Production_D_5 = 0
+Production_D_6 = 0
+Production_D_7 = 0
+Production_D_8 = 0
+Production_D_9 = 0
+Binaries
+A_AcceptOrder_0
+A_AcceptOrder_1
+A_AcceptOrder_10
+A_AcceptOrder_11
+A_AcceptOrder_12
+A_AcceptOrder_13
+A_AcceptOrder_14
+A_AcceptOrder_15
+A_AcceptOrder_16
+A_AcceptOrder_17
+A_AcceptOrder_18
+A_AcceptOrder_19
+A_AcceptOrder_2
+A_AcceptOrder_3
+A_AcceptOrder_4
+A_AcceptOrder_5
+A_AcceptOrder_6
+A_AcceptOrder_7
+A_AcceptOrder_8
+A_AcceptOrder_9
+B_AcceptOrder_0
+B_AcceptOrder_1
+B_AcceptOrder_2
+B_AcceptOrder_3
+B_AcceptOrder_4
+B_AcceptOrder_5
+B_AcceptOrder_6
+End
