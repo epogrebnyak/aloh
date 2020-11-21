@@ -204,6 +204,10 @@ class MultiProductModel:
     def _create_expressions_dict(self) -> DictOfExpressionLists:
         return {p: [pulp.lpSum(0) for d in self.days] for p in self.all_products}
 
+    def set_unit_cost(self, unit_cost_dict: ProductParamDict):
+        self.unit_costs = {p: 0 for p in self.all_products}
+        self.unit_costs.update(unit_cost_dict)
+
     def set_daily_capacity(self, daily_capacity: ProductParamDict):
         """Создать переменные объема производства, ограничить снизу и сверху."""
         for p, cap in daily_capacity.items():
@@ -243,10 +247,10 @@ class MultiProductModel:
                 ]
                 self.purchases[p][d] = pulp.lpSum(daily_orders_sum)
 
-                
     def _init_requirement(self):
         self.requirement = self.purchases.copy()
-        
+        # TODO: додавить в requirement объемы внутреннего потребления
+        #       например, для продукта B нужно 0.7 тонн продукта А
 
     def set_non_negative_inventory(self):
         """Установить неотрицательную величину запасов.
@@ -295,8 +299,22 @@ class MultiProductModel:
             for i, order in enumerate(orders):
                 yield order.volume * order.price * accept[i]
 
+    @property
+    def sales(self):
+        return pulp.lpSum(self.sales_items())
+
+    def cost_items(self) -> Generator[LpExpression, None, None]:
+        """Элементы расчета величины затрат на произвосдство в деньгах."""
+        for p, prod in self.production.items():
+            for x in prod.values():
+                yield x * self.unit_costs[p]
+
+    @property
+    def costs(self):
+        return pulp.lpSum(self.cost_items())
+
     def set_objective(self):
-        self.model += pulp.lpSum(self.sales_items())
+        self.model += self.sales - self.costs
 
     def solve(self):
         self.feasibility = self.model.solve()
@@ -304,15 +322,12 @@ class MultiProductModel:
     @property
     def status(self):
         return pulp.LpStatus[self.feasibility]
-    
+
     def save(self, filename: str):
         self.model.writeLP(filename)
 
+
 # Функции для просмотра результатов
-
-
-def sales_value(m: MultiProductModel):
-    return pulp.lpSum(m.sales_items()).value()
 
 
 def obj_value(m: MultiProductModel):
@@ -360,6 +375,7 @@ if __name__ == "__main__":
     # 1. Данные на входе задачи
     N_DAYS: int = 14
     capacity_dict: ProductParamDict = {Product.A: 200, Product.B: 100}
+    unit_cost_dict: ProductParamDict = {Product.A: 100 - 30, Product.B: 50 - 10}
     orders_a = generate_orders(
         n_days=N_DAYS,
         total_volume=1.35 * capacity_dict[Product.A] * N_DAYS,
@@ -377,13 +393,17 @@ if __name__ == "__main__":
 
     # 2. Определение модели
     mp = MultiProductModel("Two products model", n_days=N_DAYS, all_products=Product)
+
     # передаем параметры задачи
-    mp.add_orders(order_dict)
-    # задаем ограничения
     mp.set_daily_capacity(capacity_dict)
+    mp.set_unit_cost(unit_cost_dict)
+    mp.add_orders(order_dict)
+    mp.set_max_storage_time(perish_dict)
+
+    # задаем ограничения
     mp.set_non_negative_inventory()
     mp.set_closed_sum()
-    mp.set_max_storage_time(perish_dict)
+
     # целевая функция (выражение для нее становится известно в конце блока определения)
     mp.set_objective()
 
@@ -432,20 +452,23 @@ if __name__ == "__main__":
     )
     print(prop.T)
 
-    print("\nВыручка (долл.США) / Sales ('000 USD):", sales_value(mp))
-    print("Целевая функция: / Target function:   ", obj_value(mp))
+    print("\nВыручка (долл.США) / Sales ('000 USD): %0.0f" % mp.sales.value())
+    print("Затраты (долл.США) / Costs ('000 USD): %0.0f" % mp.costs.value())
+    print("Целевая функция: / Target function:    %0.0f" % obj_value(mp))
 
     filename = "model_two_product.lp"
     mp.save(filename)
     print(f"\nСохранили модель в файл {filename}")
 
     # TODO:
+    # - [x] сохранить модель в тестовый файл формата LP
     # - [x] срок хранения (shelf life)
-    # - [ ] затраты на производство - умножать на производство (costs of production)
+    # - [x] затраты на производство - умножать на производство (costs of production)
     # - [ ] связанное производство (precursors)
     # - [ ] разные варианты целевых функций (стоимость хранения) - target functions, ввести стоимость запасов
-    # - [ ] приблизить к параметрам фактических товаров (more calibration to real data)
+    # - [ ] приблизить к параметрам фактических товаров (more calibration to real data) - см. файл inputs.py
 
     # Not todo (сл.этапы):
     # - [ ] стек запасов - проверить даты произвосдва запасов на складе.
-    # - [ ] web-приложение кнопки - сгенерировать заказы, изменить параметры, пересчитать
+    # - [ ] web-приложение, кнопки - сгенерировать заказы, изменить параметры, пересчитать
+    # - [ ] встроить в Эксель через XlWings
