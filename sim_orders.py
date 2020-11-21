@@ -146,6 +146,7 @@ def generate_volumes(total_volume: float, sizer: Volume) -> List[float]:
             # добавить небольшой остаток, котрый ведет
             # сумму *хs* на величину *total_volume*
             xs.append(total_volume - sum(xs))
+            break
     return xs
 
 
@@ -194,6 +195,7 @@ class MultiProductModel:
         self.set_daily_capacity({p: 0 for p in all_products})
         # создаем нулевые выражения для покупок и запасов
         self.purchases: DictOfExpressionLists = self._create_expressions_dict()
+        self.requirement: DictOfExpressionLists = self._create_expressions_dict()
         self.inventory: DictOfExpressionLists = self._create_expressions_dict()
         # пустые покупки и заказы
         self.order_dict = {p: [] for p in all_products}
@@ -227,6 +229,7 @@ class MultiProductModel:
                 f"{p.name}_AcceptOrder", order_nums, cat="Binary"
             )
         self._init_purchases()
+        self._init_requirement()
 
     def _init_purchases(self):
         """Создать выражения для величины покупок каждого товара в каждый день."""
@@ -240,15 +243,20 @@ class MultiProductModel:
                 ]
                 self.purchases[p][d] = pulp.lpSum(daily_orders_sum)
 
+                
+    def _init_requirement(self):
+        self.requirement = self.purchases.copy()
+        
+
     def set_non_negative_inventory(self):
         """Установить неотрицательную величину запасов.
            Без этого требования запасы переносятся обратно во времени.
         """
         for p in self.all_products:
             prod = self.production[p]
-            pur = self.purchases[p]
+            req = self.requirement[p]
             for d in self.days:
-                self.inventory[p][d] = accumulate(prod, d) - accumulate(pur, d)
+                self.inventory[p][d] = accumulate(prod, d) - accumulate(req, d)
                 self.model += (
                     self.inventory[p][d] >= 0,
                     f"Non-negative inventory of {p.name} at day {d}",
@@ -266,7 +274,7 @@ class MultiProductModel:
                     #        смогут купить за k дней. Вводим условие от обратного.
                     # TODO: обосновать включение (-1).
                     self.model += accumulate(self.production[p], d) <= accumulate(
-                        self.purchases[p], d + max_days_storage - 1
+                        self.requirement[p], d + max_days_storage - 1
                     )
                 except IndexError:
                     # мы не распространяем условие на последние дни периода
@@ -277,7 +285,7 @@ class MultiProductModel:
         """Установить производство равным объему покупок."""
         for p in self.all_products:
             self.model += pulp.lpSum(self.production[p]) == pulp.lpSum(
-                self.purchases[p]
+                self.requirement[p]
             )
 
     def sales_items(self) -> Generator[LpExpression, None, None]:
@@ -368,7 +376,7 @@ if __name__ == "__main__":
     perish_dict = {Product.A: 2, Product.B: 2}
 
     # 2. Определение модели
-    mp = MultiProductModel("Two products", n_days=N_DAYS, all_products=Product)
+    mp = MultiProductModel("Two products model", n_days=N_DAYS, all_products=Product)
     # передаем параметры задачи
     mp.add_orders(order_dict)
     # задаем ограничения
@@ -427,8 +435,9 @@ if __name__ == "__main__":
     print("\nВыручка (долл.США) / Sales ('000 USD):", sales_value(mp))
     print("Целевая функция: / Target function:   ", obj_value(mp))
 
-    filename = "model_two_product.txt"
-    print(f"\nСохранили модель в файл {filename}", mp.save(filename))
+    filename = "model_two_product.lp"
+    mp.save(filename)
+    print(f"\nСохранили модель в файл {filename}")
 
     # TODO:
     # - [x] срок хранения (shelf life)
