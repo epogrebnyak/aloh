@@ -469,11 +469,24 @@ if __name__ == "__main__":
 
     print("\nВыручка (долл.США) / Sales ('000 USD): %0.0f" % mp.sales.value())
     print("Затраты (долл.США) / Costs ('000 USD): %0.0f" % mp.costs.value())
-    print("Целевая функция / Target function:    %0.0f" % obj_value(mp))
+    print("Целевая функция / Target function:     %0.0f" % obj_value(mp))
 
     filename = "model_two_product.lp"
     mp.save(filename)
     print(f"\nСохранили модель в файл {filename}")
+    
+    def lst(xs):
+        return ", ".join(xs) 
+    
+    from pulp import LpSolverDefault
+    
+    print("\nВозможные солверы:", lst(pulp.list_solvers()))
+    print("Доступные:", lst(pulp.list_solvers(onlyAvailable=True)))
+    print("Использован:", LpSolverDefault.name)
+    
+    # https://github.com/coin-or/Cbc
+    # pulp.get_solver('PULP_CBC_CMD').path
+    # https://coin-or.github.io/pulp/guides/how_to_configure_solvers.html
 
     # TODO:
     # - [x] сохранить модель в тестовый файл формата LP
@@ -485,8 +498,13 @@ if __name__ == "__main__":
 
     # FIXME:
     # - [ ] почище дефолтные значения сделать - когда нет данных по какому-то продукту
+    # - [ ] logging
 
     # Not todo (сл.этапы):
     # - [ ] стек запасов - проверить даты произвосдва запасов на складе.
     # - [ ] web-приложение, кнопки - сгенерировать заказы, изменить параметры, пересчитать
     # - [ ] встроить в Эксель через XlWings
+    # - [ ] вывести расчеты в ноутбук Colab
+    # - [ ] сделать пакетом
+    # - [ ] взять реальные данные за месяц, прогнат на них оптимизацию, посмотреть результат
+    # - [ ] расссказать про солверы
