@@ -100,7 +100,7 @@ class Order:
 
 OrderDict = Dict[Product, List[Order]]
 ProductParamDict = Dict[Product, float]
-# FIXME: дает ошибку в проверке mypy
+# FIXME: дает ошибку типа в проверке mypy
 LpExpression = pulp.pulp.LpAffineExpression
 DictOfExpressionLists = Dict[Product, List[LpExpression]]
 
@@ -137,9 +137,14 @@ def generate_volumes(total_volume: float, sizer: Volume) -> List[float]:
     while remaining >= 0:
         x = sizer.generate()
         remaining = remaining - x
-        if remaining >= 0:
+        if remaining == 0:
+            xs.append(x)
+            break
+        elif remaining > 0:
             xs.append(x)
         else:
+            # добавить небольшой остаток, котрый ведет
+            # сумму *хs* на величину *total_volume*
             xs.append(total_volume - sum(xs))
     return xs
 
@@ -148,7 +153,6 @@ def generate_day(n_days: int) -> int:
     return choice(range(n_days))
 
 
-# FIXME: может заканчивать  список нулевым элементом Order(day=0, volume=0.0, price=149.2)]
 def generate_orders(n_days: int, total_volume: float, pricer: Price, sizer: Volume):
     """Создать гипотетический список заказов."""
     days = list(range(n_days))
