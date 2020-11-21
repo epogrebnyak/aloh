@@ -41,7 +41,7 @@ capacity_dict = {Product.A: 200.0, Product.B: 100.0}
 
 # Определение модели
 mp = MultiProductModel("Two products", n_days=N_DAYS, all_products=Product)
-mp.set_daily_capacity(capacity_dict)
+mp.add_daily_capacity(capacity_dict)
 mp.add_orders(order_dict_1)
 mp.set_non_negative_inventory()
 mp.set_closed_sum()

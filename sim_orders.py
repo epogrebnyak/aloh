@@ -174,6 +174,18 @@ def accumulate(var, i) -> LpExpression:
 class MultiProductModel:
     """Модель с несколькими продуктами.
     
+    Задаются переметры (методы add_*):
+    - мощности
+    - стоимость производства
+    - срок хранения 
+    - портфель заказов  
+
+    Используются ограничения (методы set_*):
+    - неотрицательные остатки
+    - сумма производстсва равна сумме потребления за период 
+    
+    Задается целевая функция (метод set_objective):
+    
     Определяются (decision variables):
     - <P>_AcceptOrder_<i> - бинарные переменые брать/не брать i-й заказ на продукт на продукт <P>
     - Production_<P>_<d> - объем производства продукта <P> в день d
@@ -181,7 +193,9 @@ class MultiProductModel:
     Рассчитываются выражения:
     - inventories - остатки на складе на дням
     - purchases - покупки в натуральном выражении (объем отбора со склада) по дням
+    - requirement - общая потребность в товарах на день для отгрузки и для внутреннего использвоания
     - sales_items - продажи, в денежном выражении
+    - cost_items - затраты, в денежном выражении
     """
 
     obj = pulp.LpMaximize
@@ -192,7 +206,7 @@ class MultiProductModel:
         self.all_products = all_products
         # при иницилизации указываем нулевые производственные мощности
         self.production: DictOfExpressionLists = {}
-        self.set_daily_capacity({p: 0 for p in all_products})
+        self.add_daily_capacity({p: 0 for p in all_products})
         # создаем нулевые выражения для покупок и запасов
         self.purchases: DictOfExpressionLists = self._create_expressions_dict()
         self.requirement: DictOfExpressionLists = self._create_expressions_dict()
@@ -200,15 +214,16 @@ class MultiProductModel:
         # пустые покупки и заказы
         self.order_dict = {p: [] for p in all_products}
         self.accept_dict = {p: dict() for p in self.all_products}
+        self.unit_costs = {p: 0 for p in all_products}
 
     def _create_expressions_dict(self) -> DictOfExpressionLists:
         return {p: [pulp.lpSum(0) for d in self.days] for p in self.all_products}
 
-    def set_unit_cost(self, unit_cost_dict: ProductParamDict):
+    def add_unit_cost(self, unit_cost_dict: ProductParamDict):
         self.unit_costs = {p: 0 for p in self.all_products}
         self.unit_costs.update(unit_cost_dict)
 
-    def set_daily_capacity(self, daily_capacity: ProductParamDict):
+    def add_daily_capacity(self, daily_capacity: ProductParamDict):
         """Создать переменные объема производства, ограничить снизу и сверху."""
         for p, cap in daily_capacity.items():
             # создаем переменные вида Production_<P>_<d>
@@ -266,7 +281,7 @@ class MultiProductModel:
                     f"Non-negative inventory of {p.name} at day {d}",
                 )
 
-    def set_max_storage_time(self, storage_time_dict: ProductParamDict):
+    def add_max_storage_time(self, storage_time_dict: ProductParamDict):
         """Ввести ограничение на срок складирования продукта."""
         for p in storage_time_dict.keys():
             max_days_storage = storage_time_dict[p]
@@ -395,10 +410,10 @@ if __name__ == "__main__":
     mp = MultiProductModel("Two products model", n_days=N_DAYS, all_products=Product)
 
     # передаем параметры задачи
-    mp.set_daily_capacity(capacity_dict)
-    mp.set_unit_cost(unit_cost_dict)
+    mp.add_daily_capacity(capacity_dict)
+    mp.add_unit_cost(unit_cost_dict)
     mp.add_orders(order_dict)
-    mp.set_max_storage_time(perish_dict)
+    mp.add_max_storage_time(perish_dict)
 
     # задаем ограничения
     mp.set_non_negative_inventory()
@@ -454,7 +469,7 @@ if __name__ == "__main__":
 
     print("\nВыручка (долл.США) / Sales ('000 USD): %0.0f" % mp.sales.value())
     print("Затраты (долл.США) / Costs ('000 USD): %0.0f" % mp.costs.value())
-    print("Целевая функция: / Target function:    %0.0f" % obj_value(mp))
+    print("Целевая функция / Target function:    %0.0f" % obj_value(mp))
 
     filename = "model_two_product.lp"
     mp.save(filename)
@@ -467,6 +482,9 @@ if __name__ == "__main__":
     # - [ ] связанное производство (precursors)
     # - [ ] разные варианты целевых функций (стоимость хранения) - target functions, ввести стоимость запасов
     # - [ ] приблизить к параметрам фактических товаров (more calibration to real data) - см. файл inputs.py
+
+    # FIXME:
+    # - [ ] почище дефолтные значения сделать - когда нет данных по какому-то продукту
 
     # Not todo (сл.этапы):
     # - [ ] стек запасов - проверить даты произвосдва запасов на складе.
