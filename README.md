@@ -156,3 +156,7 @@ Gurobi или других).
 
 -   [ ] документирование принятых решений в разработке алгоритма
 -   [ ] другие работы, рефакторинг кода
+
+---
+
+Описание математической модели на [colab](https://colab.research.google.com/drive/1Wf39KC496IZcLDSNRpAEu1w-NfzeMSHu?usp=sharing).

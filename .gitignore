@@ -1,8 +1,8 @@
 *.lp
-1*.*
+*.txt
 *.docx
 *.pdf
-log.txt
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -133,3 +133,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+to_docx.bat
