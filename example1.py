@@ -1,5 +1,5 @@
 """
-Пример с двумя связаннами продуктами.
+Пример с двумя связанными продуктами.
 """
 from aloh import Product, Order, Unit, Plant, PlantModel, print_solution
 
