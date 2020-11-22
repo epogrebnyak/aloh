@@ -50,7 +50,9 @@ unit_b = Unit(
     Product.B, capacity=100, unit_cost=40, storage_days=5, requires={Product.A: 1.25}
 )
 plant1 = Plant([unit_a, unit_b])
-ex1 = PlantModel("Two products model example1_py", n_days, plant1, inventory_penalty=1.5)
+ex1 = PlantModel(
+    "Two products model example1_py", n_days, plant1, inventory_penalty=1.5
+)
 ex1.evaluate_orders(order_dict)
 ex1.save()
 print_solution(ex1)

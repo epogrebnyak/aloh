@@ -241,6 +241,7 @@ class Unit:
 @dataclass
 class Plant:
     """Завод состоит из нескольких производств (Unit)."""
+
     units: List[Unit]
 
     def __post_init__(self):
@@ -622,6 +623,7 @@ def print_solution(m):
     print("Прибыль (долл.США):  %0.0f" % (v["sales"] - v["costs"]))
 
     print("\nЦелевая функция:     %0.0f" % v["obj"])
+    print_solvers()
 
 
 def lst(xs):
