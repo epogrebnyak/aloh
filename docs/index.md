@@ -7,7 +7,7 @@
 
 ## Приницпиальная схема расчетов
 
-![изображение](https://user-images.githubusercontent.com/9265326/99982811-15562200-2dbc-11eb-9994-50dc563b5d04.png)
+![изображение](https://user-images.githubusercontent.com/9265326/100020735-5caad580-2df1-11eb-8158-648982413f1c.png)
 
 ## Основные шаги 
 
