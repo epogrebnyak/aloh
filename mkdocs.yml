@@ -1,18 +1,24 @@
 site_name: 'Моделирование выбора заказов и объемов производства'
-site_description: 'Алгоритмы лнейного прграммирования для отбора заказов и планирования производства для четырех продуктов на основе гидроксида алюминия.'
+site_description: 'Алгоритмы линейного прграммирования для отбора заказов и планирования производства для четырех продуктов на основе гидроксида алюминия.'
 site_author: 'E Pogrebnyak'
 docs_dir: docs/
+
 repo_name: 'epogrebnyak/aloh3'
 repo_url: 'https://github.com/epogrebnyak/aloh3'
 edit_uri: ""
+
+copyright: Copyright &copy; 2020 Евгений Погребняк
+
 nav:
-    - 'Начало': index.md
+    - 'Начало': 
+       - Краткое описание: index.md
+       - Ссылки: links.md
 
     - 'Модель':
        - 'Производство': production.md
        - 'Заказы': orders.md
        - 'Задача ЛП': linprog.md
-       - 'Формулы': colab.md
+       - 'Формулы': formulas.md
        - 'Допущения': assumptions.md
        
     - 'Примеры':
@@ -24,14 +30,22 @@ nav:
       - 'План развития': roadmap.md
 
 theme:
+  lang: 'ru'
   name: 'material'
   palette:
     primary: blue
   features:
-    - tabs
+    - navigation.tabs
 
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences    
   - pymdownx.tasklist:
       custom_checkbox: true
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/config.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js      
