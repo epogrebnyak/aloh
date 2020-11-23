@@ -1,10 +1,38 @@
-site_name: Оптимизация заказов и производства
-site_description: 'Отбор заказов и планирование производства для продуктов на основе гидроксида алюминия.'
+site_name: 'Выбор заказов и объемов производства'
+site_description: 'Выбор заказов и планирование производства для четырех продуктов на основе гидроксида алюминия.'
 site_author: 'E Pogrebnyak'
 docs_dir: docs/
 repo_name: 'epogrebnyak/aloh3'
 repo_url: 'https://github.com/epogrebnyak/aloh3'
+edit_uri: ""
 nav:
-    - Home: index.md
+    - 'Начало':
+       - 'Введение': index.md
+
+    - 'Модель':
+       - 'Производство': production.md
+       - 'Заказы': orders.md
+       - 'Задача ЛП': linprog.md
+       - 'Формулы': colab.md
+       - 'Допущения': assumptions.md
+       
+    - 'Примеры':
+       - 'Пример 0': example0.md
+       - 'Пример 1': example1.md
+
+    - 'Планы работ':   
+      - 'Текущий этап': current.md
+      - 'План развития': roadmap.md
+
 theme:
   name: 'material'
+  palette:
+    primary: blue
+  features:
+    - tabs
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences    
+  - pymdownx.tasklist:
+      custom_checkbox: true
