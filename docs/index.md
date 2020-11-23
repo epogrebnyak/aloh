@@ -1,6 +1,6 @@
 # Welcome to MkDocs
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Отбор заказов и планирование производства по дням для химических продуктов на основе гидроксида алюминия.
 
 ## Commands
 
