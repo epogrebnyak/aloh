@@ -1,9 +1,9 @@
-site_name: Test docs
-site_description: 'A docs test'
-site_author: 'Michael Hausenblas'
+site_name: AlOH Optimisation
+site_description: 'Отбор заказов и планирование производства для продуктов на основе гидроксида алюминия.'
+site_author: 'E Pogrebnyak'
 docs_dir: docs/
-repo_name: 'mhausenblas/mkdocs-template'
-repo_url: 'https://github.com/mhausenblas/mkdocs-template'
+repo_name: 'epogrebnyak/aloh3'
+repo_url: 'https://github.com/epogrebnyak/aloh3'
 nav:
     - Home: index.md
 theme:
