@@ -7,24 +7,13 @@
   он используется ключ словарей с данными по продуктам
 - в PuLP задача проще формулируется по строкам, чем в матрице, в модели 
   оптимизации данные организованы как словари по продуктам (характерно для PuLP)
-  
-Запуск  
-------
 
-pip install requirements.txt  
-set PYTHONIOENCODING=utf8  
-python aloh.py > aloh.txt
-cat aloh.txt
-python example1.py > example1.txt
-cat example1.txt
-  
 Known issues
 ------------
 
 - может понадобиться команда set PYTHONIOENCODING=utf8  
 - pulp не очень хорошо транслирует типы для mypy
 - можно поменять print на логирование
-- дублирование документации (README, этот докстринг, формулы в colab)
 
 """
 import warnings
