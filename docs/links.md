@@ -2,7 +2,7 @@
 
 ### Этот проект
 
-- [Код](https://github.com/epogrebnyak/aloh3)
+- [Репо с кодом](https://github.com/epogrebnyak/aloh3)
 - [Документация](https://epogrebnyak.github.io/aloh3/)
 
 ### Заметки
@@ -15,7 +15,8 @@
 - [Сергей Сундуков о кастомной разработке OR решений](https://moscowpython.ru/speakers/sergej-sundukov/)
 - [Николай Попов о конкурсе по комбинаторной оптимизации](https://www.youtube.com/watch?v=qy687faWLIA)
 
-## Вставка кода на Питоне в С++
+
+###Вставка кода на Питоне в С++
 
 - [SWIG](http://www.swig.org)
 - [Embedding Python in Another Application](https://docs.python.org/3/extending/embedding.html)
