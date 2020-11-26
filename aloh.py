@@ -32,7 +32,7 @@ warnings.simplefilter("ignore")
 
 class Product(Enum):
     """Виды продуктов.
-    
+
     Использование:
 
     >>> [p for in Product] # перечисление
@@ -126,8 +126,8 @@ def generate_orders(n_days: int, total_volume: float, pricer: Price, sizer: Volu
 
 @dataclass
 class Unit:
-    """Параметры производства одного продукта: 
-        
+    """Параметры производства одного продукта:
+
     - максимальный выпуск в день (мощность)
     - переменная стоимость производства, долл/т
     - максимальный срок хранения продукта на складе, дней
@@ -169,7 +169,7 @@ class Plant:
 
     def direct_material_requirement(self, echo=False):
         """
-        B - матрица прямых затрат   
+        B - матрица прямых затрат
         """
         B = product_dataframe(arr=0)
         for u in self.units:
@@ -182,7 +182,7 @@ class Plant:
 
     def full_material_requirement(self):
         """
-        R - матрица полных затрат 
+        R - матрица полных затрат
         """
         B = self.direct_material_requirement()
         n = B.shape[0]
@@ -205,10 +205,57 @@ def full_requirement_multipliers(p: Product, R) -> dict:
 def accumulate(var, i) -> LpExpression:
     return pulp.lpSum([var[k] for k in range(i + 1)])
 
+                
+@dataclass
+class Dimension:
+    n_days: int
+    products : Product
+    
+    @property
+    def days(self):
+        return list(range(self.n_days))
+    
+    def empty_matrix(self):
+        return {p: [pulp.lpSum(0) for d in self.days] for p in self.products}
+
+
+class OrderBook:
+    def __init__(self, dims: Dimension, order_dict: OrderDict):
+        """Добавить заказы."""
+        self.order_dict = order_dict
+        
+        """Cоздать бинарные переменные (принят/не принят заказ)."""
+        self.accept_dict = {p: dict() for p in order_dict.keys()}
+        for p, orders in order_dict.items():
+            order_nums = range(len(orders))
+            # создаем переменные вида <P>_AcceptOrder_<k>
+            self.accept_dict[p] = pulp.LpVariable.dicts(
+                f"{p.name}_AcceptOrder", order_nums, cat="Binary"
+            )
+
+        """Создать выражения для покупок каждого товара по дням."""
+        self.purchases =  dims.empty_matrix()
+        for p, orders in order_dict.items():
+            accept = self.accept_dict[p]
+            for d in dims.days:
+                daily_orders_sum = [
+                    order.volume * accept[i]
+                    for i, order in enumerate(orders)
+                    if d == order.day
+                ]
+                self.purchases[p][d] = pulp.lpSum(daily_orders_sum)
+                
+    def sales(self):
+       return pulp.lpSum(order.volume * order.price * self.accept_dict[p][i]
+            for p, orders in self.order_dict.items()
+            for i, order in enumerate(orders)
+            )
+
+            
 
 class PlantModel:
     """Оптимизационная модель звода.
-    
+
     На входе:
     - количество дней периода планирования (n_days)
     - параметры производства (plant)
@@ -216,25 +263,25 @@ class PlantModel:
 
     Используются ограничения (методы set_*):
     - неотрицательные остатки
-    - сумма производства равна сумме потребления за период 
-    
-    Задается целевая функция (метод set_objective):    
+    - сумма производства равна сумме потребления за период
+
+    Задается целевая функция (метод set_objective):
     - выручка минус затраты минус штраф за хранение
-    
+
     Определяются (decision variables):
-        
+
     - <P>_AcceptOrder_<i> - бинарные переменые брать/не брать i-й заказ на продукт на продукт <P>
       метод .orders_accepted() или order_status_all()
-      
+
     - Production_<P>_<d> - объем производства продукта <P> в день d
-      метод .production_values()    
+      метод .production_values()
 
     Рассчитываются выражения (по дням и товарам):
     - inventories - остатки на складе на дням
     - purchases - отгрузка со склада по дням, тонн
     - internal_use - потребности внутреннего использования, тонн
     - requirement - общая потребность в товарах для отгрузки и для внутреннего использвоания, тонн
-    
+
     В сумме за период:
     - sales - продажи, в денежном выражении
     - cost - затраты, в денежном выражении
@@ -273,8 +320,8 @@ class PlantModel:
         return evaluate_vars(self.production)
 
     def _init_production(self):
-        """Создать переменные объема производства, ограничить снизу нулем 
-           и сверху мощностью."""
+        """Создать переменные объема производства, ограничить снизу нулем
+        и сверху мощностью."""
         self.production = {}
         for p, cap in self.plant.capacity.items():
             # создаем переменные вида Production_<P>_<d>
@@ -283,8 +330,8 @@ class PlantModel:
             )
 
     def add_orders(self, order_dict: OrderDict):
-        """Добавить заказы и создать бинарные переменные (принят/не принят 
-           заказ).
+        """Добавить заказы и создать бинарные переменные (принят/не принят
+        заказ).
         """
         self.order_dict = order_dict
         self.accept_dict = {p: dict() for p in order_dict.keys()}
@@ -335,7 +382,7 @@ class PlantModel:
 
     def set_non_negative_inventory(self):
         """Установить неотрицательную величину запасов.
-           Без этого требования запасы переносятся обратно во времени.
+        Без этого требования запасы переносятся обратно во времени.
         """
         for p in self.all_products:
             prod = self.production[p]
@@ -536,7 +583,7 @@ def lst(xs):
 def print_solvers():
     """
     Информация по солверам.
-    
+
     Дополнительные ссылки:
     - https://github.com/coin-or/Cbc
     - https://en.wikipedia.org/wiki/Branch_and_cut
@@ -561,6 +608,7 @@ def useful_stats(m):
 
 if __name__ == "__main__":
     N_DAYS: int = 14
+    dims = Dimension(n_days=14, products=Product)
 
     # создаем заказы
     orders_a = generate_orders(
@@ -576,6 +624,7 @@ if __name__ == "__main__":
         pricer=Price(mean=200, delta=15),
     )
     order_dict: OrderDict = {Product.A: orders_a, Product.B: orders_b}
+    ob = OrderBook(dims, order_dict)
 
     # описываем производство
     unit_a = Unit(Product.A, capacity=200, unit_cost=70, storage_days=2)
