@@ -45,6 +45,18 @@ class Product(Enum):
     C = "TA-HSA-10"
     D = "TA-240"
 
+              
+@dataclass
+class Dimension:
+    n_days: int
+    products : Product
+    
+    @property
+    def days(self):
+        return list(range(self.n_days))
+    
+    def empty_matrix(self):
+        return {p: [pulp.lpSum(0) for d in self.days] for p in self.products}
 
 # Имитация портфеля заказов
 
@@ -145,15 +157,25 @@ class Unit:
 class Plant:
     """Завод состоит из нескольких производств (Unit)."""
 
+    dims: Dimension
     units: List[Unit]
 
     def __post_init__(self):
-        self.all_products = [u.product for u in self.units]
-        self.assert_unique()
+        self._init_production()
 
-    def assert_unique(self):
-        # гарантируем отсутствие дублирования параметров линий
-        assert len(set(self.all_products)) == len(self.all_products)
+
+    def _init_production(self):
+        """Создать переменные объема производства, ограничить снизу нулем
+        и сверху мощностью."""
+        self.production = {}
+        for p, cap in self.capacity.items():
+            # создаем переменные вида Production_<P>_<d>
+            self.production[p] = pulp.LpVariable.dict(
+                f"Production_{p.name}", self.dims.days, lowBound=0, upBound=cap
+            )    
+                
+    def known_products(self):
+        return [u.product for u in self.units]
 
     @property
     def storage_days(self):
@@ -187,6 +209,17 @@ class Plant:
         B = self.direct_material_requirement()
         n = B.shape[0]
         return product_dataframe(np.linalg.inv(np.identity(n) - B))
+
+    @property
+    def costs(self):
+        return pulp.lpSum(self._cost_items())
+
+
+    def _cost_items(self) -> Generator[LpExpression, None, None]:
+        """Элементы расчета величины затрат на производство в деньгах."""
+        for p, prod in self.production.items():
+            for x in prod.values():
+                yield x * self.unit_costs[p]
 
 
 def product_dataframe(arr):
@@ -308,7 +341,7 @@ class PlantModel:
 
     @property
     def all_products(self):
-        return self.plant.all_products
+        return self.plant.known_products()
 
     def daily_capacity(self):
         return {p: [cap for _ in self.days] for p, cap in self.plant.capacity.items()}
@@ -631,7 +664,7 @@ if __name__ == "__main__":
     unit_b = Unit(
         Product.B, capacity=100, unit_cost=40, storage_days=2, requires={Product.A: 1.1}
     )
-    plant1 = Plant([unit_a, unit_b])
+    plant1 = Plant(dims, [unit_a, unit_b])
 
     # модель
     m1 = PlantModel("Two products model aloh_py", n_days=N_DAYS, plant=plant1)
