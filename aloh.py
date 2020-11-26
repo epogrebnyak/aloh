@@ -251,14 +251,14 @@ class Dimension:
     def empty_matrix(self):
         return {p: [pulp.lpSum(0) for d in self.days] for p in self.products}
 
-
-class OrderBook:
-    def __init__(self, dims: Dimension, order_dict: OrderDict):
-        """Добавить заказы."""
-        self.order_dict = order_dict
-        
+@dataclass
+class OrderBook:    
+    dims: Dimension
+    order_dict: OrderDict
+    
+    def __post_init__(self):
         """Cоздать бинарные переменные (принят/не принят заказ)."""
-        self.accept_dict = {p: dict() for p in order_dict.keys()}
+        self.accept_dict = {p: dict() for p in self.order_dict.keys()}
         for p, orders in order_dict.items():
             order_nums = range(len(orders))
             # создаем переменные вида <P>_AcceptOrder_<k>
@@ -267,7 +267,7 @@ class OrderBook:
             )
 
         """Создать выражения для покупок каждого товара по дням."""
-        self.purchases =  dims.empty_matrix()
+        self.purchases =  self.dims.empty_matrix()
         for p, orders in order_dict.items():
             accept = self.accept_dict[p]
             for d in dims.days:
