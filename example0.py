@@ -8,11 +8,10 @@ from aloh import (
     Machine,
     OptModel,
     print_solution,
-    get_values
+    get_values,
 )
 
 N_DAYS = 14
-
 
 # создаем заказы
 orders_a = generate_orders(
@@ -33,11 +32,11 @@ ob = OrderBook(order_dict)
 # описываем производство
 mac_a = Machine(Product.A, capacity=200, unit_cost=70, storage_days=2)
 mac_b = Machine(
-    Product.B, capacity=100, unit_cost=40, storage_days=2, requires={Product.A: 1.1}
+    Product.B, capacity=100, unit_cost=40, storage_days=2, requires={Product.A: 0.8}
 )
 pt = Plant([mac_a, mac_b])
 
-# вывести результаты
+# модель и решение
 om = OptModel(
     "Two products model exmaple0",
     n_days=14,
@@ -46,5 +45,7 @@ om = OptModel(
     inventory_penalty=0.1,
 )
 a, p = om.evaluate()
+
+# вывести результаты
 print_solution(om)
 vs = get_values(om)

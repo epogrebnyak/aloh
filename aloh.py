@@ -541,36 +541,3 @@ def useful_stats(m):
         order_dict=values["order_status"],
         prod=values["prod"],
     )
-
-
-N_DAYS: int = 14
-
-
-# создаем заказы
-orders_a = generate_orders(
-    n_days=N_DAYS,
-    total_volume=1.35 * 200 * N_DAYS,
-    sizer=Volume(min_order=100, max_order=300, round_to=20),
-    pricer=Price(mean=150, delta=30),
-)
-orders_b = generate_orders(
-    n_days=N_DAYS,
-    total_volume=0.8 * 100 * N_DAYS,
-    sizer=Volume(min_order=50, max_order=120, round_to=5),
-    pricer=Price(mean=200, delta=15),
-)
-order_dict = {Product.A: orders_a, Product.B: orders_b}
-ob = OrderBook(order_dict, N_DAYS)
-
-# описываем производство
-unit_a = Machine(Product.A, capacity=200, unit_cost=70, storage_days=2)
-unit_b = Machine(
-    Product.B, capacity=100, unit_cost=40, storage_days=2, requires={Product.A: 1.1}
-)
-pt = Plant([unit_a, unit_b], N_DAYS)
-
-# вывести результаты
-om = OptModel("Two products model exmaple0", 14, ob, pt, inventory_penalty=0.1)
-a2, p2 = om.evaluate()
-print_solution(om)
-vs = get_values(om)

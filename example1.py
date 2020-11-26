@@ -44,13 +44,14 @@ order_dict = {
         Order(day=9, volume=65.0, price=206.0),
     ],
 }
+ob1 = OrderBook(order_dict)
 
-unit_a = Machine(Product.A, capacity=200, unit_cost=70, storage_days=2)
-unit_b = Machine(
+
+mac_a = Machine(Product.A, capacity=200, unit_cost=70, storage_days=2)
+mac_b = Machine(
     Product.B, capacity=100, unit_cost=40, storage_days=5, requires={Product.A: 1.25}
 )
-ob1 = OrderBook(order_dict)
-plant1 = Plant([unit_a, unit_b])
+plant1 = Plant([mac_a, mac_b])
 ex1 = OptModel(
     "Two products model example1_py", n_days, ob1, plant1, inventory_penalty=1.5
 )
