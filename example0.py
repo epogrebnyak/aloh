@@ -1,19 +1,18 @@
 from aloh import (
     Product,
-    Dimension,
     generate_orders,
     Volume,
     Price,
     OrderBook,
     Plant,
-    Unit,
-    PlantModel,
+    Machine,
+    OptModel,
     print_solution,
+    get_values
 )
 
+N_DAYS = 14
 
-N_DAYS: int = 14
-dims = Dimension(n_days=14, products=Product)
 
 # создаем заказы
 orders_a = generate_orders(
@@ -29,19 +28,23 @@ orders_b = generate_orders(
     pricer=Price(mean=200, delta=15),
 )
 order_dict = {Product.A: orders_a, Product.B: orders_b}
-ob = OrderBook(dims, order_dict)
+ob = OrderBook(order_dict)
 
 # описываем производство
-unit_a = Unit(Product.A, capacity=200, unit_cost=70, storage_days=2)
-unit_b = Unit(
+mac_a = Machine(Product.A, capacity=200, unit_cost=70, storage_days=2)
+mac_b = Machine(
     Product.B, capacity=100, unit_cost=40, storage_days=2, requires={Product.A: 1.1}
 )
-plant1 = Plant(dims, [unit_a, unit_b])
+pt = Plant([mac_a, mac_b])
 
-# модель
-m1 = PlantModel(
-    "Two products model aloh_py", n_days=N_DAYS, plant=plant1, inventory_penalty=0.1
+# вывести результаты
+om = OptModel(
+    "Two products model exmaple0",
+    n_days=14,
+    order_book=ob,
+    plant=pt,
+    inventory_penalty=0.1,
 )
-m1.evaluate_orders(order_dict)
-m1.save()
-a1, p1 = m1.orders_accepted(), m1.production_values()
+a, p = om.evaluate()
+print_solution(om)
+vs = get_values(om)

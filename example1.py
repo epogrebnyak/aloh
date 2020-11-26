@@ -1,7 +1,7 @@
 """
 Пример с двумя связанными продуктами.
 """
-from aloh import Product, Order, Unit, Plant, PlantModel, print_solution
+from aloh import Product, Order, Machine, Plant, OrderBook, OptModel, print_solution
 
 n_days = 14
 order_dict = {
@@ -45,19 +45,20 @@ order_dict = {
     ],
 }
 
-unit_a = Unit(Product.A, capacity=200, unit_cost=70, storage_days=2)
-unit_b = Unit(
+unit_a = Machine(Product.A, capacity=200, unit_cost=70, storage_days=2)
+unit_b = Machine(
     Product.B, capacity=100, unit_cost=40, storage_days=5, requires={Product.A: 1.25}
 )
+ob1 = OrderBook(order_dict)
 plant1 = Plant([unit_a, unit_b])
-ex1 = PlantModel(
-    "Two products model example1_py", n_days, plant1, inventory_penalty=1.5
+ex1 = OptModel(
+    "Two products model example1_py", n_days, ob1, plant1, inventory_penalty=1.5
 )
-ex1.evaluate_orders(order_dict)
+a, p = ex1.evaluate()
 ex1.save()
 print_solution(ex1)
 
-assert ex1.orders_accepted() == {
+assert a == {
     Product.A: [
         1.0,
         1.0,
@@ -84,7 +85,7 @@ assert ex1.orders_accepted() == {
     Product.B: [0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0],
 }
 
-assert ex1.production_values() == {
+assert p == {
     Product.A: [
         200.0,
         200.0,
