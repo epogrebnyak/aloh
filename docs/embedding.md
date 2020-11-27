@@ -1,15 +1,15 @@
 # Возможности встраивания
 
-## Вставка кода на Питоне в С++
+### 1. Вставка кода на Питоне в С++
 
 - [SWIG](http://www.swig.org)
 - [Embedding Python in Another Application](https://docs.python.org/3/extending/embedding.html)
 
-## Переписать формулировку модели плюсовом фронтенде
+### 2. Переписать формулировку модели плюсовом пакете
 
-- [Gulp](https://developers.google.com/optimization/introduction/cpp)
+- Пример - [Gulp](https://developers.google.com/optimization/introduction/cpp)
 
-## API localhost
+### 3. API localhost
 
 - API localhost ([FastAPI](https://github.com/tiangolo/fastapi))
 
