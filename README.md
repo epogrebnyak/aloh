@@ -8,7 +8,7 @@ https://epogrebnyak.github.io/aloh3/
   
 ## Запуск  
 
-```
+```console
 pip install _requirements.txt  
 set PYTHONIOENCODING=utf8  
 git clone https://github.com/epogrebnyak/aloh3
