@@ -1,122 +1,55 @@
-"""
-Пример с двумя связанными продуктами.
-"""
-from aloh import Product, Order, Machine, Plant, OrderBook, OptModel, print_solution
+from aloh import Plant, Machine, Product
+from aloh import generate_orders, Volume, Price, OrderBook
+from aloh import OptModel, print_solution, get_values
+from time import perf_counter
 
-n_days = 14
-order_dict = {
-    Product.A: [
-        Order(day=7, volume=100.0, price=177.5),
-        Order(day=11, volume=240.0, price=167.7),
-        Order(day=3, volume=180.0, price=132.2),
-        Order(day=4, volume=160.0, price=169.1),
-        Order(day=7, volume=100.0, price=122.6),
-        Order(day=0, volume=120.0, price=123.9),
-        Order(day=13, volume=180.0, price=151.3),
-        Order(day=4, volume=140.0, price=157.0),
-        Order(day=10, volume=100.0, price=179.2),
-        Order(day=3, volume=280.0, price=161.5),
-        Order(day=13, volume=180.0, price=124.8),
-        Order(day=4, volume=260.0, price=150.2),
-        Order(day=5, volume=240.0, price=124.3),
-        Order(day=1, volume=280.0, price=168.6),
-        Order(day=11, volume=140.0, price=129.8),
-        Order(day=7, volume=160.0, price=171.6),
-        Order(day=8, volume=260.0, price=148.0),
-        Order(day=11, volume=260.0, price=179.7),
-        Order(day=4, volume=120.0, price=162.7),
-        Order(day=10, volume=220.0, price=122.0),
-        Order(day=7, volume=60.0, price=124.0),
-    ],
-    Product.B: [
-        Order(day=2, volume=115.0, price=187.2),
-        Order(day=11, volume=110.0, price=203.6),
-        Order(day=5, volume=75.0, price=214.0),
-        Order(day=9, volume=80.0, price=199.4),
-        Order(day=12, volume=65.0, price=201.5),
-        Order(day=9, volume=65.0, price=194.1),
-        Order(day=1, volume=110.0, price=202.5),
-        Order(day=10, volume=80.0, price=210.0),
-        Order(day=0, volume=100.0, price=213.9),
-        Order(day=10, volume=85.0, price=205.8),
-        Order(day=12, volume=100.0, price=204.6),
-        Order(day=11, volume=70.0, price=193.3),
-        Order(day=9, volume=65.0, price=206.0),
-    ],
-}
-ob1 = OrderBook(order_dict)
+products = [Product.A, Product.B, Product.C, Product.D]
+n_days = 60
 
-
-mac_a = Machine(Product.A, capacity=200, unit_cost=70, storage_days=2)
-mac_b = Machine(
-    Product.B, capacity=100, unit_cost=40, storage_days=5, requires={Product.A: 1.25}
+# Заказы
+ob = OrderBook(products, n_days)
+ob[Product.A] = generate_orders(
+    n_days=n_days,
+    total_volume=1.2 * 4320 * n_days,
+    sizer=Volume(min_order=1000, max_order=2000, round_to=10),
+    pricer=Price(mean=400, delta=40),
 )
-plant1 = Plant([mac_a, mac_b])
-ex1 = OptModel(
-    "Two products model example1_py", n_days, ob1, plant1, inventory_penalty=1.5
+ob[Product.B] = generate_orders(
+    n_days=n_days,
+    total_volume=1.2 * 3600 * n_days,
+    sizer=Volume(min_order=1000, max_order=2000, round_to=10),
+    pricer=Price(mean=500, delta=50),
 )
-a, p = ex1.evaluate()
-ex1.save()
-print_solution(ex1)
+ob[Product.C] = generate_orders(
+    n_days=n_days,
+    total_volume=1.2 * 2160 * n_days,
+    sizer=Volume(min_order=1000, max_order=2000, round_to=10),
+    pricer=Price(mean=1100, delta=110),
+)
+ob[Product.D] = generate_orders(
+    n_days=n_days,
+    total_volume=1.2 * 3300 * n_days,
+    sizer=Volume(min_order=1000, max_order=2000, round_to=10),
+    pricer=Price(mean=900, delta=90),
+)
 
-assert a == {
-    Product.A: [
-        1.0,
-        1.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        0.0,
-        0.0,
-    ],
-    Product.B: [0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0],
-}
+# Завод
+plant = Plant(products, n_days)
+plant[Product.A] = Machine(capacity=4320, unit_cost=293.6, storage_days=14)
+plant[Product.B] = Machine(
+    capacity=3600, unit_cost=340.3, storage_days=14, requires={Product.A: 1.25}
+)
+plant[Product.C] = Machine(capacity=2160, unit_cost=430.1, storage_days=7)
+plant[Product.D] = Machine(capacity=3300, unit_cost=815.1, storage_days=7)
 
-assert p == {
-    Product.A: [
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        200.0,
-        180.0,
-    ],
-    Product.B: [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        75.0,
-        0.0,
-        0.0,
-        0.0,
-        80.0,
-        80.0,
-        65.0,
-        100.0,
-        0.0,
-    ],
-}
+# Модель
+m = OptModel(
+    "Four products model dynamic example0 py", ob, plant, inventory_penalty=1.5
+)
+start = perf_counter()
+a, p = m.evaluate()
+end = perf_counter()
+m.save()
+print_solution(m)
+vs = get_values(m)
+print("\nВремя:", round(end - start, 2), "сек")

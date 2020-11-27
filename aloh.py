@@ -3,17 +3,16 @@
 Особенности реализации 
 ----------------------
 
-- введен класса Product (перечислимый тип Enum с обозначением продуктов),
-  он используется ключ словарей с данными по продуктам
+- введен класс Product (перечислимый тип Enum с обозначением продуктов),
+  используется ключ словарей с данными по продуктам
 - в PuLP задача проще формулируется по строкам, чем в матрице, в модели 
-  оптимизации данные организованы как словари по продуктам (характерно для PuLP)
+  оптимизации данные организованы как словари по продуктам
 
 Known issues
 ------------
 
 - может понадобиться команда set PYTHONIOENCODING=utf8  
 - pulp не очень хорошо транслирует типы для mypy
-- можно поменять print на логирование
 
 """
 import warnings
@@ -64,7 +63,7 @@ class Order:
 
 OrderDict = Dict[Product, List[Order]]
 ProductParamDict = Dict[Product, float]
-# FIXME: дает ошибку типа в проверке mypy
+# WONTFIX: дает ошибку типа в проверке mypy
 LpExpression = pulp.pulp.LpAffineExpression
 
 
@@ -137,59 +136,65 @@ class Machine:
     - прямое потребление других продуктов, необходимое для выпуск 1 т данного продукта
     """
 
-    product: Product
     capacity: float
     unit_cost: float
     storage_days: int
     requires: ProductParamDict = field(default_factory=dict)
 
 
-def production(capacity_dict, n_days):
-    """Создать переменные объема производства, ограничить снизу нулем
-        и сверху мощностью."""
-    days = list(range(n_days))
-    production = {}
-    for p, cap in capacity_dict.items():
-        production[p] = pulp.LpVariable.dict(
-            f"Production_{p.name}", days, lowBound=0, upBound=cap
-        )
-    return production
-
 @dataclass
-class Plant:
-    """Завод состоит из нескольких производств (Unit)."""
-
-    units: List[Machine]
-    n_days: int = 0
+class BaseMatrix:
+    products: List[Product]
+    n_days: int
 
     def __post_init__(self):
-        assert len(set(self.products)) == len(self.units)
-        self.production = production(self.capacity, self.n_days)
+        self._dict = {p: None for p in self.products}
+        self.post_action()
 
-    @property
-    def products(self):
-        return [u.product for u in self.units]
+    def post_action(self):
+        """Дополнительные действия после конструктора класса."""
+        pass
+
+    def __setitem__(self, p: Product, x):
+        if p in self.products:
+            self._dict[p] = x
+        else:
+            raise KeyError(f"Key must be of {self.products}, got {p}")
+
+    def __getitem__(self, key: Product):
+        return self._dict[key]
+
+    def property_dict(self, key):
+        return {p: m.__dict__[key] for p, m in self._dict.items() if m}
+
+    def empty_matrix(self):
+        return {p: [pulp.lpSum(0) for d in range(self.n_days)] for p in self.products}
+
+
+@dataclass
+class Plant(BaseMatrix):
+    """Завод состоит из нескольких производств (Unit)."""
 
     @property
     def capacity(self):
-        return {u.product: u.capacity for u in self.units}
+        return self.property_dict("capacity")
 
     @property
     def storage_days(self):
-        return {u.product: u.storage_days for u in self.units}
+        return self.property_dict("storage_days")
 
     @property
     def unit_costs(self):
-        return {u.product: u.unit_cost for u in self.units}
+        return self.property_dict("unit_cost")
 
+    # WONTFIX: можно поменять print на логирование
     def direct_material_requirement(self, echo=False):
         """
         B - матрица прямых затрат
         """
         B = product_dataframe(0, self.products)
-        for u in self.units:
-            p = u.product
-            for k, v in u.requires.items():
+        for p, machine in self._dict.items():
+            for k, v in machine.requires.items():
                 if echo:
                     print("На 1 тонну", p.name, "используется", v, "тонн", k.name)
                 B.loc[p, k] = v
@@ -203,14 +208,31 @@ class Plant:
         n = B.shape[0]
         return product_dataframe(np.linalg.inv(np.identity(n) - B), self.products)
 
-    def costs(self) -> LpExpression:
-        """Элементы расчета величины затрат на производство в деньгах."""
-        xs = []
-        for p in self.products:
-            prod = self.production[p]
-            for x in prod.values():
-                xs.append(x * self.unit_costs[p])
-        return pulp.lpSum(xs)
+    def evaluate(self):
+        self.production = production(self.capacity, self.n_days)
+        self.costs = costs(self.production, self.unit_costs)
+
+
+def production(capacity_dict, n_days) -> LpExpression:
+    """Создать переменные объема производства, ограничить снизу нулем
+       и сверху мощностью."""
+    days = list(range(n_days))
+    production = {}
+    for p, capacity in capacity_dict.items():
+        production[p] = pulp.LpVariable.dict(
+            f"Production_{p.name}", days, lowBound=0, upBound=capacity
+        )
+    return production
+
+
+def costs(production, unit_costs) -> LpExpression:
+    """Элементы расчета величины затрат на производство в деньгах."""
+    xs = []
+    for p in production.keys():
+        prod = production[p]
+        for x in prod.values():
+            xs.append(x * unit_costs[p])
+    return pulp.lpSum(xs)
 
 
 # Оптимизационная модель
@@ -229,7 +251,7 @@ def accept_dict(order_dict):
     return accept_dict
 
 
-def purchases(matrix, order_dict, accept_dict):
+def shipment(matrix, order_dict, accept_dict):
     for p, orders in order_dict.items():
         accept = accept_dict[p]
         for d, _ in enumerate(matrix[p]):
@@ -242,29 +264,21 @@ def purchases(matrix, order_dict, accept_dict):
     return matrix
 
 
+def sales(accept_dict, order_dict):
+    return pulp.lpSum(
+        order.volume * order.price * accept_dict[p][i]
+        for p, orders in order_dict.items()
+        for i, order in enumerate(orders)
+    )
+
+
 @dataclass
-class OrderBook:
-    order_dict: OrderDict
-    n_days: int = 0
-
-    @property
-    def products(self):
-        return [x for x in self.order_dict.keys()]
-
-    def empty_matrix(self):
-        return empty_matrix(self.n_days, self.products)        
-
-    def __post_init__(self):
-        self.accept_dict = accept_dict(self.order_dict)
+class OrderBook(BaseMatrix):
+    def evaluate(self):
+        self.accept_dict = accept_dict(self._dict)
         mat = self.empty_matrix()
-        self.purchases = purchases(mat, self.order_dict, self.accept_dict)
-
-    def sales(self):
-        return pulp.lpSum(
-            order.volume * order.price * self.accept_dict[p][i]
-            for p, orders in self.order_dict.items()
-            for i, order in enumerate(orders)
-        )
+        self.shipment = shipment(mat, self._dict, self.accept_dict)
+        self.sales = sales(self.accept_dict, self._dict)
 
 
 def product_dataframe(arr, products):
@@ -277,18 +291,18 @@ def full_requirement_multipliers(p: Product, R) -> dict:
     return {p: m for m, p in zip(vec, Product) if m}
 
 
-def total_requirement(plant: Plant, order_book: OrderBook):
-    requirement = empty_matrix(order_book.n_days, order_book.products)
+def total_requirement(plant, order_book):
+    mat = plant.empty_matrix()
     R = plant.full_material_requirement()
     for p1 in plant.products:
         # для продукта p1 мы знаем потребности в остальных продуктах
         full_req = full_requirement_multipliers(p1, R)
-        for d in range(order_book.n_days):
-            wanted = order_book.purchases[p1][d]
+        for d in range(plant.n_days):
+            wanted = order_book.shipment[p1][d]
             # итерируем по компонентам продукта p1
             for p2, m in full_req.items():
-                requirement[p2][d] += wanted * m
-    return requirement
+                mat[p2][d] += wanted * m
+    return mat
 
 
 def accumulate(var, i) -> LpExpression:
@@ -298,7 +312,6 @@ def accumulate(var, i) -> LpExpression:
 @dataclass
 class OptModel:
     name: str
-    n_days: int
     order_book: OrderBook
     plant: Plant
     inventory_penalty: float = 0.1
@@ -306,12 +319,13 @@ class OptModel:
     feasibility: int = 0
 
     def __post_init__(self):
-        # одинаковый перечень продуктов
         assert self.order_book.products == self.plant.products
+        assert self.order_book.n_days == self.plant.n_days
         self.products = self.plant.products
-        # добавляем одинаковое количество дней
-        self.order_book = OrderBook(self.order_book.order_dict, self.n_days)
-        self.plant = Plant(self.plant.units, self.n_days)
+        self.n_days = self.order_book.n_days
+        # рассчитать выражения
+        self.order_book.evaluate()
+        self.plant.evaluate()
         # модель
         self.model = pulp.LpProblem(self.name, self.objective_type)
         self.requirement = total_requirement(self.plant, self.order_book)
@@ -360,9 +374,7 @@ class OptModel:
         return pulp.lpSum(xs)
 
     def set_objective(self):
-        self.model += (
-            self.order_book.sales() - self.plant.costs() - self.inventory_items()
-        )
+        self.model += self.order_book.sales - self.plant.costs - self.inventory_items()
 
     def solve(self):
         self.feasibility = self.model.solve()
@@ -395,10 +407,7 @@ def collect(orders: List[Order], days: List):
 
 
 def demand_dict(m: OptModel):
-    return {
-        p: collect(orders, range(m.n_days))
-        for p, orders in m.order_book.order_dict.items()
-    }
+    return {p: collect(m.order_book[p], range(m.n_days)) for p in m.order_book.products}
 
 
 def evaluate_expr(holder):
@@ -413,12 +422,13 @@ def evaluate_vars(holder):
         for p in holder.keys()
     }
 
+
 def my_round(x):
     if x is None:
         return None
     else:
         return round(x, 1)
-        
+
 
 def df(dict_, index_name="день"):
     df = pd.DataFrame(dict_)
@@ -428,9 +438,7 @@ def df(dict_, index_name="день"):
 
 def order_status(m, p: Product):
     res = []
-    for order, status in zip(
-        m.order_book.order_dict[p], m.order_book.accept_dict[p].values()
-    ):
+    for order, status in zip(m.order_book[p], m.order_book.accept_dict[p].values()):
         x = order.__dict__
         x["accepted"] = True if status.value() == 1 else False
         res.append(x)
@@ -438,7 +446,7 @@ def order_status(m, p: Product):
 
 
 def order_status_all(m):
-    return {p: order_status(m, p) for p in m.order_book.order_dict.keys()}
+    return {p: order_status(m, p) for p in m.order_book.products}
 
 
 def obj_value(m):
@@ -457,12 +465,12 @@ def get_values(m):
         capacity=m.plant.capacity,
         capacity_list=daily_capacity(m),
         prod=evaluate_vars(m.plant.production),
-        ship=evaluate_expr(m.order_book.purchases),
+        ship=evaluate_expr(m.order_book.shipment),
         req=evaluate_expr(m.requirement),
         inv=evaluate_expr(m.inventory),
         n_days=m.n_days,
-        sales=m.order_book.sales().value(),
-        costs=m.plant.costs().value(),
+        sales=m.order_book.sales.value(),
+        costs=m.plant.costs.value(),
         obj=obj_value(m),
         status=m.feasibility,
     )
