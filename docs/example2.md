@@ -2,7 +2,6 @@
 
 <https://github.com/epogrebnyak/aloh3/blob/main/example2.py>
 
-
 Хороший проход:
 
 ```

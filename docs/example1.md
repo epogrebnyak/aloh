@@ -1,5 +1,7 @@
 # Пример 1
 
+<https://github.com/epogrebnyak/aloh3/blob/main/example1a.py>
+
 ```
 Количество заказов: 34
 Дней: 14
@@ -7,9 +9,6 @@
 
 Время: 0.41 сек
 ```
-
-<https://github.com/epogrebnyak/aloh3/blob/main/example1a.py>
-
 
 ```
 Название модели: Two products model example1_py
