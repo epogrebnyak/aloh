@@ -11,8 +11,6 @@ https://epogrebnyak.github.io/aloh3/
 ```
 pip install _requirements.txt  
 set PYTHONIOENCODING=utf8  
-python aloh.py > aloh.txt
-cat aloh.txt
-python example1.py > example1.txt
-cat example1.txt
+python example0.py > example0.txt
+cat example0.txt
 ```  
