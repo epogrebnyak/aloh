@@ -1,12 +1,28 @@
 # Пример 2
 
-```Количество заказов: 640
+<https://github.com/epogrebnyak/aloh3/blob/main/example2.py>
+
+
+Хороший проход:
+
+```
+Количество заказов: 640
 Дней: 60
 Продуктов: 4
 
-Время: 274.63 сек```
+Время: 274.63 сек
+```
 
-<https://github.com/epogrebnyak/aloh3/blob/main/example2.py>
+Плохой проход:
+
+```
+Количество заказов: 641
+Дней: 60
+Продуктов: 4
+
+Время: 1509.82 сек
+```
+
 
 ```
 Мы сохранили модель в файл four_products_model_dynamic_example0_py.lp
