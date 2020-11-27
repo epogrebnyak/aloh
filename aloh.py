@@ -163,6 +163,10 @@ class BaseMatrix:
 
     def __getitem__(self, key: Product):
         return self._dict[key]
+        
+    def __len__(self):
+        return sum([len(vs) for k, vs in self._dict.items()])
+        
 
     def property_dict(self, key):
         return {p: m.__dict__[key] for p, m in self._dict.items() if m}

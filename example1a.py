@@ -3,8 +3,10 @@
 Состав заказов: фиксированный 
 Дней: 14
 """
+from time import perf_counter
 from aloh import Product, Order, Machine, Plant, OrderBook, OptModel, print_solution
 
+start = perf_counter()
 products = [Product.A, Product.B]
 n_days = 14
 ob = OrderBook(products, n_days)
@@ -58,6 +60,12 @@ ex1 = OptModel("Two products model example1_py", ob, plant, inventory_penalty=1.
 a, p = ex1.evaluate()
 ex1.save()
 print_solution(ex1)
+
+end = perf_counter()
+print("\nКоличество заказов:", len(ob))
+print("Дней:", n_days)
+print("Продуктов:", len(products))
+print("\nВремя:", round(end - start, 2), "сек")
 
 assert a == {
     Product.A: [

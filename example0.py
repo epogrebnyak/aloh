@@ -1,3 +1,4 @@
+from time import perf_counter
 from aloh import (
     Product,
     generate_orders,
@@ -11,9 +12,9 @@ from aloh import (
     get_values,
 )
 
-
+start = perf_counter()
 products = [Product.A, Product.B]
-n_days = 14
+n_days = 90
 ob = OrderBook(products, n_days)
 ob[Product.A] = generate_orders(
     n_days=n_days,
@@ -38,7 +39,14 @@ plant[Product.B] = Machine(
 ex0 = OptModel(
     "Two products model dynamic example0 py", ob, plant, inventory_penalty=1.5
 )
+
 a, p = ex0.evaluate()
 ex0.save()
 print_solution(ex0)
 vs = get_values(ex0)
+end = perf_counter()
+
+print("\nКоличество заказов:", len(ob))
+print("Дней:", n_days)
+print("Продуктов:", len(products))
+print("\nВремя:", round(end - start, 2), "сек")

@@ -36,9 +36,7 @@ ob[Product.D] = generate_orders(
 # Завод
 plant = Plant(products, n_days)
 plant[Product.A] = Machine(capacity=4320, unit_cost=293.6, storage_days=14)
-plant[Product.B] = Machine(
-    capacity=3600, unit_cost=340.3, storage_days=14, requires={Product.A: 1.25}
-)
+plant[Product.B] = Machine(capacity=3600, unit_cost=340.3, storage_days=14)
 plant[Product.C] = Machine(capacity=2160, unit_cost=430.1, storage_days=7)
 plant[Product.D] = Machine(capacity=3300, unit_cost=815.1, storage_days=7)
 
@@ -52,4 +50,7 @@ end = perf_counter()
 m.save()
 print_solution(m)
 vs = get_values(m)
+print("\nКоличество заказов:", len(ob))
+print("Дней:", n_days)
+print("Продуктов:", len(products))
 print("\nВремя:", round(end - start, 2), "сек")

@@ -16,12 +16,8 @@
 - [Николай Попов о конкурсе по комбинаторной оптимизации](https://www.youtube.com/watch?v=qy687faWLIA)
 
 
-###Вставка кода на Питоне в С++
-
-- [SWIG](http://www.swig.org)
-- [Embedding Python in Another Application](https://docs.python.org/3/extending/embedding.html)
-
 ### Прочее
 
 - [Быстрый справочник по LaTeX](https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference)
 - [Mosek](https://docs.mosek.com/modeling-cookbook/linear.html)
+- [Бенчмарки по солверам](http://plato.la.asu.edu/bench.html)
