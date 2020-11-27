@@ -155,17 +155,6 @@ def production(capacity_dict, n_days):
         )
     return production
 
-
-def product_dataframe(arr, products=Product):
-    return pd.DataFrame(arr, columns=products, index=products)
-
-
-def full_requirement_multipliers(p: Product, R) -> dict:
-    row = np.array([(1 if x == p else 0) for x in Product])
-    vec = np.matmul(row, R.to_numpy())
-    return {p: m for m, p in zip(vec, Product) if m}
-
-
 @dataclass
 class Plant:
     """Завод состоит из нескольких производств (Unit)."""
@@ -197,7 +186,7 @@ class Plant:
         """
         B - матрица прямых затрат
         """
-        B = product_dataframe(arr=0)
+        B = product_dataframe(0, self.products)
         for u in self.units:
             p = u.product
             for k, v in u.requires.items():
@@ -212,7 +201,7 @@ class Plant:
         """
         B = self.direct_material_requirement()
         n = B.shape[0]
-        return product_dataframe(np.linalg.inv(np.identity(n) - B))
+        return product_dataframe(np.linalg.inv(np.identity(n) - B), self.products)
 
     def costs(self) -> LpExpression:
         """Элементы расчета величины затрат на производство в деньгах."""
@@ -229,7 +218,7 @@ class Plant:
 
 def accept_dict(order_dict):
     """Cоздать бинарные переменные (принят/не принят заказ).
-           вида <P>_AcceptOrder_<k>
+       вида <P>_AcceptOrder_<k>
     """
     accept_dict = {p: dict() for p in order_dict.keys()}
     for p, orders in order_dict.items():
@@ -240,17 +229,17 @@ def accept_dict(order_dict):
     return accept_dict
 
 
-def purchases(mat, order_dict, accept_dict):
+def purchases(matrix, order_dict, accept_dict):
     for p, orders in order_dict.items():
         accept = accept_dict[p]
-        for d, _ in enumerate(mat[p]):
-            daily_orders_sum = [
+        for d, _ in enumerate(matrix[p]):
+            daily_orders = [
                 order.volume * accept[i]
                 for i, order in enumerate(orders)
                 if d == order.day
             ]
-            mat[p][d] = pulp.lpSum(daily_orders_sum)
-    return mat
+            matrix[p][d] = pulp.lpSum(daily_orders)
+    return matrix
 
 
 @dataclass
@@ -262,9 +251,12 @@ class OrderBook:
     def products(self):
         return [x for x in self.order_dict.keys()]
 
+    def empty_matrix(self):
+        return empty_matrix(self.n_days, self.products)        
+
     def __post_init__(self):
         self.accept_dict = accept_dict(self.order_dict)
-        mat = empty_matrix(self.n_days, self.products)
+        mat = self.empty_matrix()
         self.purchases = purchases(mat, self.order_dict, self.accept_dict)
 
     def sales(self):
@@ -273,6 +265,16 @@ class OrderBook:
             for p, orders in self.order_dict.items()
             for i, order in enumerate(orders)
         )
+
+
+def product_dataframe(arr, products):
+    return pd.DataFrame(arr, columns=products, index=products)
+
+
+def full_requirement_multipliers(p: Product, R) -> dict:
+    row = np.array([(1 if x == p else 0) for x in R.columns])
+    vec = np.matmul(row, R.to_numpy())
+    return {p: m for m, p in zip(vec, Product) if m}
 
 
 def total_requirement(plant: Plant, order_book: OrderBook):
@@ -301,11 +303,13 @@ class OptModel:
     plant: Plant
     inventory_penalty: float = 0.1
     objective_type: int = pulp.LpMaximize
+    feasibility: int = 0
 
     def __post_init__(self):
-        # одинаковая размерность
+        # одинаковый перечень продуктов
         assert self.order_book.products == self.plant.products
         self.products = self.plant.products
+        # добавляем одинаковое количество дней
         self.order_book = OrderBook(self.order_book.order_dict, self.n_days)
         self.plant = Plant(self.plant.units, self.n_days)
         # модель
@@ -399,16 +403,22 @@ def demand_dict(m: OptModel):
 
 def evaluate_expr(holder):
     """Получить словарь со значениями выражений"""
-    return {p: [round(item.value(), 1) for item in holder[p]] for p in holder.keys()}
+    return {p: [my_round(item.value()) for item in holder[p]] for p in holder.keys()}
 
 
 def evaluate_vars(holder):
     """Получить словарь со значениями переменных"""
     return {
-        p: [round(item.value(), 1) for item in holder[p].values()]
+        p: [my_round(item.value()) for item in holder[p].values()]
         for p in holder.keys()
     }
 
+def my_round(x):
+    if x is None:
+        return None
+    else:
+        return round(x, 1)
+        
 
 def df(dict_, index_name="день"):
     df = pd.DataFrame(dict_)
