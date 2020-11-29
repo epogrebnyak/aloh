@@ -4,13 +4,13 @@
 Дней: 14
 """
 from time import perf_counter
-from aloh import Product, Order, Machine, Plant, OrderBook, OptModel, print_solution
+from aloh import Order, Machine, Plant, OrderBook, OptModel, print_solution
 
 start = perf_counter()
-products = [Product.A, Product.B]
+products = ["A", "B"]
 n_days = 14
-ob = OrderBook(products, n_days)
-ob[Product.A] = [
+order_book = OrderBook(products, n_days)
+order_book["A"] = [
     Order(day=7, volume=100.0, price=177.5),
     Order(day=11, volume=240.0, price=167.7),
     Order(day=3, volume=180.0, price=132.2),
@@ -33,7 +33,7 @@ ob[Product.A] = [
     Order(day=10, volume=220.0, price=122.0),
     Order(day=7, volume=60.0, price=124.0),
 ]
-ob[Product.B] = [
+order_book["B"] = [
     Order(day=2, volume=115.0, price=187.2),
     Order(day=11, volume=110.0, price=203.6),
     Order(day=5, volume=75.0, price=214.0),
@@ -50,25 +50,28 @@ ob[Product.B] = [
 ]
 
 plant = Plant(products, n_days)
-plant[Product.A] = Machine(capacity=200, unit_cost=70, storage_days=2)
-plant[Product.B] = Machine(
-    capacity=100, unit_cost=40, storage_days=5, requires={Product.A: 1.25}
+plant["A"] = Machine(capacity=200, unit_cost=70, storage_days=2)
+plant["B"] = Machine(capacity=100, unit_cost=40, storage_days=5, requires={"A": 1.25})
+
+
+ex1 = OptModel(
+    "Two products, fixed orders, 14 days model",
+    order_book,
+    plant,
+    inventory_penalty=1.5,
 )
-
-
-ex1 = OptModel("Two products model example1_py", ob, plant, inventory_penalty=1.5)
 a, p = ex1.evaluate()
 ex1.save()
 print_solution(ex1)
 
 end = perf_counter()
-print("\nКоличество заказов:", len(ob))
+print("\nКоличество заказов:", len(order_book))
 print("Дней:", n_days)
 print("Продуктов:", len(products))
 print("\nВремя:", round(end - start, 2), "сек")
 
-assert a == {
-    Product.A: [
+assert a == dict(
+    A=[
         1.0,
         1.0,
         0.0,
@@ -91,11 +94,12 @@ assert a == {
         0.0,
         0.0,
     ],
-    Product.B: [0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0],
-}
+    B=[0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+)
 
-assert p == {
-    Product.A: [
+
+assert p == dict(
+    A=[
         200.0,
         200.0,
         200.0,
@@ -111,20 +115,5 @@ assert p == {
         200.0,
         180.0,
     ],
-    Product.B: [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        75.0,
-        0.0,
-        0.0,
-        0.0,
-        80.0,
-        80.0,
-        65.0,
-        100.0,
-        0.0,
-    ],
-}
+    B=[0.0, 0.0, 0.0, 0.0, 0.0, 75.0, 0.0, 0.0, 0.0, 80.0, 80.0, 65.0, 100.0, 0.0,],
+)

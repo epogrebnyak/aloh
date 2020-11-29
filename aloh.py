@@ -222,7 +222,7 @@ def production(capacity_dict, n_days) -> LpExpression:
     production = {}
     for p, capacity in capacity_dict.items():
         production[p] = pulp.LpVariable.dict(
-            f"Production_{p.name}", days, lowBound=0, upBound=capacity
+            f"Production_{p}", days, lowBound=0, upBound=capacity
         )
     return production
 
@@ -248,7 +248,7 @@ def accept_dict(order_dict):
     for p, orders in order_dict.items():
         order_nums = range(len(orders))
         accept_dict[p] = pulp.LpVariable.dicts(
-            f"{p.name}_AcceptOrder", order_nums, cat="Binary"
+            f"{p}_AcceptOrder", order_nums, cat="Binary"
         )
     return accept_dict
 
@@ -287,10 +287,10 @@ def product_dataframe(arr, products):
     return pd.DataFrame(arr, columns=products, index=products)
 
 
-def full_requirement_multipliers(p: Product, R) -> dict:
+def full_requirement_multipliers(p: Product, R, products) -> dict:
     row = np.array([(1 if x == p else 0) for x in R.columns])
     vec = np.matmul(row, R.to_numpy())
-    return {p: m for m, p in zip(vec, Product) if m}
+    return {p: m for m, p in zip(vec, products) if m}
 
 
 def total_requirement(plant, order_book):
@@ -298,7 +298,7 @@ def total_requirement(plant, order_book):
     R = plant.full_material_requirement()
     for p1 in plant.products:
         # для продукта p1 мы знаем потребности в остальных продуктах
-        full_req = full_requirement_multipliers(p1, R)
+        full_req = full_requirement_multipliers(p1, R, plant.products)
         for d in range(plant.n_days):
             wanted = order_book.shipment[p1][d]
             # итерируем по компонентам продукта p1
@@ -357,7 +357,7 @@ class OptModel:
                 self.inventory[p][d] = accumulate(prod, d) - accumulate(req, d)
                 self.model += (
                     self.inventory[p][d] >= 0,
-                    f"Non-negative inventory of {p.name} at day {d}",
+                    f"Non-negative inventory of {p} at day {d}",
                 )
 
     def set_closed_sum(self):
@@ -393,9 +393,16 @@ class OptModel:
         )
 
     def save(self, filename: str = ""):
-        fn = filename if filename else self.name.lower().replace(" ", "_") + ".lp"
+        fn = filename if filename else self.filename_default
         self.model.writeLP(fn)
         print(f"Мы сохранили модель в файл {fn}")
+
+    @property
+    def filename_default(self):
+        return (
+            self.name.lower().replace(" ", "_").replace(",", "_").replace(".", "_")
+            + ".lp"
+        )
 
 
 # Функции для просмотра результатов
@@ -503,10 +510,10 @@ def print_solution(m):
 
     print("\nМощности производства, тонн в день:")
     for p, cap in v["capacity"].items():
-        print(f"  {p.name}:", cap)
+        print(f"  {p}:", cap)
 
     for p in v["all_products"]:
-        print("\nЗаказы на продукт", p.name)
+        print("\nЗаказы на продукт", p)
         order_df = df(v["order_status"][p], "N заказа")
         print(order_df)
 

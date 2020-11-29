@@ -1,6 +1,6 @@
 # Пример 0
 
-<https://github.com/epogrebnyak/aloh3/blob/main/example0.py>
+<https://github.com/epogrebnyak/aloh3/blob/main/examples/example0.py>
 
 ```
 Количество заказов: 208

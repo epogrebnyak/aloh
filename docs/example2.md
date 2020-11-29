@@ -1,6 +1,6 @@
 # Пример 2
 
-<https://github.com/epogrebnyak/aloh3/blob/main/example2.py>
+<https://github.com/epogrebnyak/aloh3/blob/main/examples/example2.py>
 
 Хороший проход:
 
