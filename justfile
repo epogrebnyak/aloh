@@ -2,6 +2,10 @@ main := "aloh.py"
 deps := "requirements.txt"
 env := "env1"
 
+codepage:
+  set PYTHONIOENCODING=utf8  
+  chcp 1251
+
 # install dependencies
 pip-install:
   pip install {{deps}}
