@@ -134,3 +134,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 to_docx.bat
+.vscode/settings.json
