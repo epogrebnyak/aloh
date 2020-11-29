@@ -1,7 +1,6 @@
 """
 Пример с двумя связанными продуктами.
-Состав заказов: фиксированный 
-Дней: 14
+Состав заказов: динамический
 """
 from time import perf_counter
 from aloh import Plant, Machine
