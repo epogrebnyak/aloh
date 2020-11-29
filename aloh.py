@@ -21,10 +21,9 @@ from enum import Enum
 from random import choice, uniform
 from typing import Dict, List
 
+import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import pulp  # type: ignore
-import numpy as np  # type: ignore
-
 
 warnings.simplefilter("ignore")
 
