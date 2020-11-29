@@ -1,3 +1,7 @@
+"""
+Пример с 4 связанными продуктами.
+Состав заказов: динамический
+"""
 from aloh import Plant, Machine
 from aloh import generate_orders, Volume, Price, OrderBook
 from aloh import OptModel, print_solution, get_values
