@@ -1,9 +1,8 @@
 *.lp
-*.txt
 *.docx
 *.pdf
 *.rar
-
+env1
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

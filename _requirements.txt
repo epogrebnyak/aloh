@@ -1,0 +1,9 @@
+amply==0.1.4
+docutils==0.16
+numpy==1.19.3
+pandas==1.1.4
+PuLP==2.3.1
+pyparsing==2.4.7
+python-dateutil==2.8.1
+pytz==2020.4
+six==1.15.0
