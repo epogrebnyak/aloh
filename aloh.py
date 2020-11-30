@@ -3,8 +3,6 @@
 Особенности реализации 
 ----------------------
 
-- введен класс Product (перечислимый тип Enum с обозначением продуктов),
-  используется ключ словарей с данными по продуктам
 - в PuLP задача проще формулируется по строкам, чем в матрице, в модели 
   оптимизации данные организованы как словари по продуктам
 
@@ -12,44 +10,21 @@ Known issues
 ------------
 
 - может понадобиться команда set PYTHONIOENCODING=utf8  
-- pulp не очень хорошо транслирует типы для mypy
 
 """
 import warnings
 from dataclasses import dataclass, field
-from enum import Enum
 from random import choice, uniform
-from typing import Dict, List
+from typing import Dict, List, Any
 
-import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import pulp  # type: ignore
+import numpy as np  # type: ignore
+
 
 warnings.simplefilter("ignore")
 
-
-class Product(Enum):
-    """Виды продуктов.
-
-    Использование:
-
-    >>> [p for in Product] # перечисление
-    >>> Product.A          # обозначение продукта
-    >>> Product.A.name
-    """
-
-    A = "H"
-    B = "H10"
-    C = "TA-HSA-10"
-    D = "TA-240"
-
-
-def empty_matrix(n_days, products):
-    return {p: [pulp.lpSum(0) for d in range(n_days)] for p in products}
-
-
 # Имитация портфеля заказов
-
 
 @dataclass
 class Order:
@@ -59,12 +34,10 @@ class Order:
     volume: float
     price: float
 
-
-OrderDict = Dict[Product, List[Order]]
-ProductParamDict = Dict[Product, float]
-# WONTFIX: дает ошибку типа в проверке mypy
-LpExpression = pulp.pulp.LpAffineExpression
-
+ProductName = str
+OrderDict = Dict[ProductName, List[Order]]
+ProductParamDict = Dict[ProductName, float]
+LpExpression = Any # https://github.com/epogrebnyak/aloh3/issues/5
 
 def rounds(x, step=1):
     """Округление, обычно до 5 или 10. Используется для выравнивания объема заказа."""
@@ -127,14 +100,13 @@ def generate_orders(n_days: int, total_volume: float, pricer: Price, sizer: Volu
 
 @dataclass
 class Machine:
-    """Параметры производства одного продукта:
+    """Параметры производства продукта:
 
     - максимальный выпуск в день (мощность)
     - переменная стоимость производства, долл/т
     - максимальный срок хранения продукта на складе, дней
     - прямое потребление других продуктов, необходимое для выпуск 1 т данного продукта
     """
-
     capacity: float
     unit_cost: float
     storage_days: int
@@ -143,51 +115,50 @@ class Machine:
 
 @dataclass
 class BaseMatrix:
-    products: List[Product]
+    """Представление матрицы продукты * дни."""
+        
+    products: List[str]
     n_days: int
 
     def __post_init__(self):
         self._dict = {p: None for p in self.products}
-        self.post_action()
 
-    def post_action(self):
-        """Дополнительные действия после конструктора класса."""
-        pass
-
-    def __setitem__(self, p: Product, x):
+    def __setitem__(self, p: ProductName, x):
         if p in self.products:
             self._dict[p] = x
         else:
             raise KeyError(f"Key must be of {self.products}, got {p}")
 
-    def __getitem__(self, key: Product):
+    def __getitem__(self, key: str):
         return self._dict[key]
 
     def __len__(self):
         return sum([len(vs) for k, vs in self._dict.items()])
 
-    def property_dict(self, key):
-        return {p: m.__dict__[key] for p, m in self._dict.items() if m}
-
     def empty_matrix(self):
-        return {p: [pulp.lpSum(0) for d in range(self.n_days)] for p in self.products}
+        return empty_matrix(self.n_days, self.products)
 
+def empty_matrix(n_days, products):
+    return {p: [pulp.lpSum(0) for d in range(n_days)] for p in products}
 
 @dataclass
 class Plant(BaseMatrix):
     """Завод состоит из нескольких производств (Unit)."""
 
+    def _property_dict(self, key):
+        return {p: m.__dict__[key] for p, m in self._dict.items() if m}
+
     @property
     def capacity(self):
-        return self.property_dict("capacity")
+        return self._property_dict("capacity")
 
     @property
     def storage_days(self):
-        return self.property_dict("storage_days")
+        return self._property_dict("storage_days")
 
     @property
     def unit_costs(self):
-        return self.property_dict("unit_cost")
+        return self._property_dict("unit_cost")
 
     # WONTFIX: можно поменять print на логирование
     def direct_material_requirement(self, echo=False):
@@ -287,7 +258,7 @@ def product_dataframe(arr, products):
     return pd.DataFrame(arr, columns=products, index=products)
 
 
-def full_requirement_multipliers(p: Product, R, products) -> dict:
+def full_requirement_multipliers(p: ProductName, R, products) -> dict:
     row = np.array([(1 if x == p else 0) for x in R.columns])
     vec = np.matmul(row, R.to_numpy())
     return {p: m for m, p in zip(vec, products) if m}
@@ -393,16 +364,13 @@ class OptModel:
         )
 
     def save(self, filename: str = ""):
-        fn = filename if filename else self.filename_default
+        fn = filename if filename else self.default_filename
         self.model.writeLP(fn)
         print(f"Мы сохранили модель в файл {fn}")
-
+   
     @property
-    def filename_default(self):
-        return (
-            self.name.lower().replace(" ", "_").replace(",", "_").replace(".", "_")
-            + ".lp"
-        )
+    def default_filename(self):
+        return self.name.lower().replace(" ", "_").replace(".", "_") + ".lp"
 
 
 # Функции для просмотра результатов
@@ -445,7 +413,7 @@ def df(dict_, index_name="день"):
     return df
 
 
-def order_status(m, p: Product):
+def order_status(m: OptModel, p: ProductName):
     res = []
     for order, status in zip(m.order_book[p], m.order_book.accept_dict[p].values()):
         x = order.__dict__
@@ -510,7 +478,7 @@ def print_solution(m):
 
     print("\nМощности производства, тонн в день:")
     for p, cap in v["capacity"].items():
-        print(f"  {p}:", cap)
+        print(" ", p, cap)
 
     for p in v["all_products"]:
         print("\nЗаказы на продукт", p)
