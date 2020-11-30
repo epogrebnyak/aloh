@@ -15,16 +15,16 @@ Known issues
 import warnings
 from dataclasses import dataclass, field
 from random import choice, uniform
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
+import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import pulp  # type: ignore
-import numpy as np  # type: ignore
-
 
 warnings.simplefilter("ignore")
 
 # Имитация портфеля заказов
+
 
 @dataclass
 class Order:
@@ -34,10 +34,13 @@ class Order:
     volume: float
     price: float
 
+
 ProductName = str
 OrderDict = Dict[ProductName, List[Order]]
 ProductParamDict = Dict[ProductName, float]
-LpExpression = Any # https://github.com/epogrebnyak/aloh3/issues/5
+# WONTFIX:  типы pulp не проверяются mypy
+LpExpression = Any  # https://github.com/epogrebnyak/aloh3/issues/5
+
 
 def rounds(x, step=1):
     """Округление, обычно до 5 или 10. Используется для выравнивания объема заказа."""
@@ -107,6 +110,7 @@ class Machine:
     - максимальный срок хранения продукта на складе, дней
     - прямое потребление других продуктов, необходимое для выпуск 1 т данного продукта
     """
+
     capacity: float
     unit_cost: float
     storage_days: int
@@ -116,7 +120,7 @@ class Machine:
 @dataclass
 class BaseMatrix:
     """Представление матрицы продукты * дни."""
-        
+
     products: List[str]
     n_days: int
 
@@ -138,8 +142,10 @@ class BaseMatrix:
     def empty_matrix(self):
         return empty_matrix(self.n_days, self.products)
 
+
 def empty_matrix(n_days, products):
     return {p: [pulp.lpSum(0) for d in range(n_days)] for p in products}
+
 
 @dataclass
 class Plant(BaseMatrix):
@@ -366,8 +372,8 @@ class OptModel:
     def save(self, filename: str = ""):
         fn = filename if filename else self.default_filename
         self.model.writeLP(fn)
-        print(f"Мы сохранили модель в файл {fn}")
-   
+        print(f"Cохранили модель в файл {fn}")
+
     @property
     def default_filename(self):
         return self.name.lower().replace(" ", "_").replace(".", "_") + ".lp"
