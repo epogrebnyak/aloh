@@ -1,5 +1,5 @@
 main := "aloh.py"
-deps := "requirements.txt"
+deps := "_requirements.txt"
 env := "env1"
 
 codepage:
@@ -12,7 +12,7 @@ pip-install:
 
 # start environment
 env-start:
-  call {{env}}\Scripts\activate.bat
+  cmd.exe \C call {{env}}\Scripts\activate.bat
 
 # install package locally
 setup-dev:
