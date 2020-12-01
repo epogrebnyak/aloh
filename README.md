@@ -8,8 +8,8 @@ https://epogrebnyak.github.io/aloh3/
 
 ```console
 set PYTHONIOENCODING=utf8  
-git clone https://github.com/epogrebnyak/aloh3
-cd aloh3
+git clone https://github.com/epogrebnyak/aloh
+cd aloh
 pip install _requirements.txt  
 pip install -e .
 cd examples
