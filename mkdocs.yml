@@ -3,9 +3,9 @@ site_description: 'Алгоритмы линейного программиро�
 site_author: 'E Pogrebnyak'
 docs_dir: docs/
 
-repo_name: 'epogrebnyak/aloh3'
-repo_url: 'https://github.com/epogrebnyak/aloh3'
-edit_uri: ""
+repo_name: 'epogrebnyak/aloh'
+repo_url: 'https://github.com/epogrebnyak/aloh'
+edit_uri: 'edit/main/'
 
 copyright: Copyright &copy; 2020 Евгений Погребняк
 
