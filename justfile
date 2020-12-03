@@ -12,7 +12,7 @@ pip-install:
 
 # start environment
 env-start:
-  cmd.exe \C call {{env}}\Scripts\activate.bat
+  echo call {{env}}\Scripts\activate.bat
 
 # install package locally
 setup-dev:
