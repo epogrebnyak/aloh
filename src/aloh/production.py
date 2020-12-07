@@ -1,5 +1,6 @@
-from typing import Dict, List, Any
 from dataclasses import dataclass
+from typing import Any, Dict, List
+
 import pulp
 
 

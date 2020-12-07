@@ -1,5 +1,6 @@
-from production import Machine, prod_and_cost
 import pulp
+
+from production import Machine, prod_and_cost
 
 
 def test_prodcution_and_costs():

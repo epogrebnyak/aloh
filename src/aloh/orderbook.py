@@ -1,8 +1,10 @@
-from random import choice, uniform
-from production import ProductName
-from typing import List
 from dataclasses import dataclass
+from random import choice, uniform
+from typing import List
+
 import pulp
+
+from production import ProductName
 
 # Оптимизационная модель
 

@@ -1,5 +1,6 @@
-from orderbook import Order, make_accept_variables, get_shipment, get_sales
 import pulp
+
+from orderbook import Order, get_sales, get_shipment, make_accept_variables
 
 
 def test_sales():

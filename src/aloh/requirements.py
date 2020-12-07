@@ -1,9 +1,10 @@
-import numpy as np
 from dataclasses import dataclass
-from production import ProductName
+from typing import List
+
+import numpy as np  # type: ignore
 import pandas as pd
 
-from typing import List
+from production import ProductName
 
 
 @dataclass

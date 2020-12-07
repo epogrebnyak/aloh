@@ -1,30 +1,25 @@
 """Выбор заказов и расчетов объемов производства по нескольким продуктам."""
 import warnings
 from dataclasses import dataclass
+from typing import Dict, List
 
-from typing import Any, Dict, List
-
-import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import pulp  # type: ignore
 
-warnings.simplefilter("ignore")
+from orderbook import (
+    Order,
+    empty_matrix,
+    get_sales,
+    get_shipment,
+    make_accept_variables,
+)
+from production import Machine, ProductName, prod_and_cost
 
-# Имитация портфеля заказов
+warnings.simplefilter("ignore")
 
 
 def accumulate(var, i):
     return pulp.lpSum([var[k] for k in range(i + 1)])
-
-
-from production import ProductName, Machine, prod_and_cost
-from orderbook import (
-    Order,
-    make_accept_variables,
-    get_shipment,
-    get_sales,
-    empty_matrix,
-)
 
 
 @dataclass
@@ -35,6 +30,7 @@ class OptModel:
     order_dict: Dict[ProductName, List[Order]]
     plant: Dict[ProductName, Machine]
     storage_days: Dict[ProductName, int]
+    # TODO: small penalty size should not affect the modelling result
     inventory_penalty: float = 0.1
     objective_type: int = pulp.LpMaximize
     feasibility: int = 0
@@ -45,20 +41,17 @@ class OptModel:
         self.ship = get_shipment(self.n_days, self.order_dict, self.accept_dict)
         self.sales = get_sales(self.n_days, self.order_dict, self.accept_dict)
         self.model = pulp.LpProblem(self.name, self.objective_type)
+        # TODO: requirement should include full capacity
         self.req = self.ship
 
-    # def set_storage_limit(self):
-    #     """Ввести ограничение на срок складирования продукта."""
-    #     for p in self.plant.products:
-    #         s = self.plant.storage_days[p]
-    #         for d in range(self.n_days):
-    #             try:
-    #                 self.model += accumulate(self.plant.production[p], d) <= accumulate(
-    #                     self.requirement[p], d + s
-    #                 )
-    #             except IndexError:
-    #                 # Мы не распространяем условие на последние s дней периода
-    #                 pass
+    def set_storage_limit(self):
+        """Ввести ограничение на срок складирования продукта."""
+        for p in self.products:
+            s = self.storage_days[p]
+            for d in range(self.n_days):
+                self.model += accumulate(self.prod[p], d) <= accumulate(
+                    self.req[p], min(self.n_days, d + s)
+                )
 
     def set_non_negative_inventory(self):
         """Установить неотрицательную величину запасов.
@@ -82,6 +75,7 @@ class OptModel:
 
     def inventory_items(self):
         """Штраф за хранение запасов, для целевой функции."""
+        # TODO: установить в % от цены продукта, аналог production.sales()
         m = self.inventory_penalty
         xs = [
             m * self.inventory[p][d] for p in self.products for d in range(self.n_days)
@@ -99,7 +93,7 @@ class OptModel:
     def evaluate(self):
         self.set_non_negative_inventory()
         self.set_closed_sum()
-        # self.set_storage_limit()
+        self.set_storage_limit()
         self.set_objective()
         self.solve()
         return (
@@ -115,20 +109,6 @@ class OptModel:
     @property
     def default_filename(self):
         return self.name.lower().replace(" ", "_").replace(".", "_") + ".lp"
-
-
-# Функции для просмотра результатов
-
-
-def collect(orders: List[Order], days: List):
-    acc = [0 for _ in days]
-    for order in orders:
-        acc[order.day] += order.volume
-    return acc
-
-
-def demand_dict(m: OptModel):
-    return {p: collect(m.order_book[p], range(m.n_days)) for p in m.order_book.products}
 
 
 def evaluate_expr(holder):
@@ -149,6 +129,20 @@ def my_round(x):
         return None
     else:
         return round(x, 1)
+
+
+# Функции для просмотра результатов
+
+
+def collect(orders: List[Order], days: List):
+    acc = [0 for _ in days]
+    for order in orders:
+        acc[order.day] += order.volume
+    return acc
+
+
+def demand_dict(m: OptModel):
+    return {p: collect(m.order_book[p], range(m.n_days)) for p in m.order_book.products}
 
 
 def df(dict_, index_name="день"):
