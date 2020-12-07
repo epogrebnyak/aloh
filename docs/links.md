@@ -22,3 +22,5 @@
 - [Mosek](https://docs.mosek.com/modeling-cookbook/linear.html)
 - [Бенчмарки по солверам](http://plato.la.asu.edu/bench.html)
 - [10 примеров оптимизации за 10 минут](https://github.com/tommyod/10_optimization_problems), с нелинейными задачами
+- http://yetanothermathprogrammingconsultant.blogspot.com/2020/11/machine-scheduding-maintance-and.html?m=1
+- 15%
