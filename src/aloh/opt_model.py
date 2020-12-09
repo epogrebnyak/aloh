@@ -23,6 +23,28 @@ def accumulate(var, i):
 
 
 @dataclass
+class ModelParam:
+    inventory_penalty: float = 0.1
+    objective_type: int = pulp.LpMaximize
+    feasibility: int = 0
+
+
+@dataclass
+class PlantParam:
+    n_days: int
+    order_dict: Dict[ProductName, List[Order]]
+    machines: Dict[ProductName, Machine]
+    storage_days: Dict[ProductName, int]
+
+    def __post_init__(self):
+        assert self.order_dict.keys() == self.machines.keys() == self.storage_days.keys()
+    
+    @property    
+    def products(self):
+        return list(self.order_dict.keys())
+
+
+@dataclass
 class OptModel:
     name: str
     n_days: int
