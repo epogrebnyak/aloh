@@ -58,5 +58,7 @@ for p in products:
                    sales[p][d] += calc_sales(order)
                    ship[p][d] += calc_ship(order)
                    
+def accumulate(var, i):
+    return pulp.lpSum([var[k] for k in range(i + 1)])
                    
 
