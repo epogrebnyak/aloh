@@ -5,20 +5,25 @@ import pulp
 from pandas import DataFrame as DF
 from orderbook import Order
 
+
 def make_prod(n_days: int, capacity_dict: Dict[str, float]) -> DF:
     days = list(range(n_days))
     df = pd.DataFrame(index=days)
     for p in capacity_dict.keys():
-        dict_ = pulp.LpVariable.dict(f"Production_{p}", days, 
-                             lowBound=0, upBound=capacity_dict[p])
-        df[p] = pd.DataFrame({p: dict_}, index = days)
-    return df    
+        dict_ = pulp.LpVariable.dict(
+            f"Production_{p}", days, lowBound=0, upBound=capacity_dict[p]
+        )
+        df[p] = pd.DataFrame({p: dict_}, index=days)
+    return df
+
 
 def ordered(_dict, df):
     return [_dict[p] for p in df.columns]
 
+
 def add(df):
-  return pulp.lpSum(df.values.tolist())
+    return pulp.lpSum(df.values.tolist())
+
 
 def values(df):
     def val(x):
@@ -26,22 +31,32 @@ def values(df):
             return x.value()
         except AttributeError:
             return x
+
     return df.applymap(val).fillna(0)
+
 
 def yield_orders(order_dict):
     for p, orders in order_dict.items():
         for order in orders:
             _dict = order.__dict__
-            _dict ['_product'] = p
+            _dict["_product"] = p
             yield _dict
 
-def make_sales_req_dataframes(order_dict):        
+
+def make_sales_req_dataframes(order_dict):
     order_df = pd.DataFrame(yield_orders(order_dict))
-    order_df["accept"]=pd.Series(pulp.LpVariable.dicts("AcceptOrder", order_df.index, cat="Binary"), index=order_df.index)
-    order_df["shipment"]=order_df.accept * order_df.volume
-    order_df["sales"]=order_df.accept * order_df.volume * order_df.price
-    sales_df = order_df.pivot_table(index='day', columns='_product', values='sales', aggfunc=add)
-    req_df = order_df.pivot_table(index='day', columns='_product', values='sales', aggfunc=add)
+    order_df["accept"] = pd.Series(
+        pulp.LpVariable.dicts("AcceptOrder", order_df.index, cat="Binary"),
+        index=order_df.index,
+    )
+    order_df["shipment"] = order_df.accept * order_df.volume
+    order_df["sales"] = order_df.accept * order_df.volume * order_df.price
+    sales_df = order_df.pivot_table(
+        index="day", columns="_product", values="sales", aggfunc=add
+    )
+    req_df = order_df.pivot_table(
+        index="day", columns="_product", values="sales", aggfunc=add
+    )
     return sales_df, req_df
 
 
@@ -66,8 +81,8 @@ capacity_dict = {"A": 20, "B": 5}
 prod_df = make_prod(6, capacity_dict)
 u = ordered(unit_cost_dict, prod_df)
 cost_df = u * prod_df
-sales_df, req_df = make_sales_req_dataframes(order_dict)    
-        
+sales_df, req_df = make_sales_req_dataframes(order_dict)
+
 model = pulp.LpProblem("Test prod model", pulp.LpMaximize)
 model += add(sales_df)
 model.solve()
