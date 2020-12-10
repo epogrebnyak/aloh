@@ -37,9 +37,11 @@ class PlantParam:
     storage_days: Dict[ProductName, int]
 
     def __post_init__(self):
-        assert self.order_dict.keys() == self.machines.keys() == self.storage_days.keys()
-    
-    @property    
+        assert (
+            self.order_dict.keys() == self.machines.keys() == self.storage_days.keys()
+        )
+
+    @property
     def products(self):
         return list(self.order_dict.keys())
 

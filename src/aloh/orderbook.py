@@ -20,7 +20,7 @@ class Order:
 
 def make_accept_variables(order_dict):
     """Cоздать бинарные переменные (принят/не принят заказ).
-       вида <P>_AcceptOrder_<k>
+    вида <P>_AcceptOrder_<k>
     """
     accept_dict = {p: dict() for p in order_dict.keys()}
     for p, orders in order_dict.items():

@@ -6,8 +6,8 @@ import pulp
 
 @dataclass
 class Machine:
-    """Станок, машина:        
-    capacity - максимальный выпуск (мощность), тонн в день 
+    """Станок, машина:
+    capacity - максимальный выпуск (мощность), тонн в день
     unit_cost - переменная стоимость производства, долл/т
     """
 
@@ -49,7 +49,7 @@ def unit_costs(plant: Plant):
 
 def production(capacity_dict, n_days: int) -> LpExpression:
     """Создать переменные объема производства, ограничить снизу нулем
-       и сверху мощностью."""
+    и сверху мощностью."""
     days = list(range(n_days))
     production = {}
     for p, capacity in capacity_dict.items():
