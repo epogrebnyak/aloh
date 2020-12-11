@@ -37,15 +37,18 @@ p["B"] = product(
 
 
 def test_model_no_storage_constraint():
-   
+
     om = OptModel(p, model_name="No_storage_constraint", inventory_weight=0.1,)
 
     ac, xs = om.evaluate()
     assert ac == {"A": [0, 0, 1, 1], "B": [1, 1, 1, 0]}
-    assert xs == {'A': [0.0, 70.0, 150.0, 0.0, 0.0, 0.0],
- 'B': [0.0, 0.0, 20.0, 100.0, 100.0, 30.0]}
+    assert xs == {
+        "A": [0.0, 70.0, 150.0, 0.0, 0.0, 0.0],
+        "B": [0.0, 0.0, 20.0, 100.0, 100.0, 30.0],
+    }
 
-def test_model_with_storage_constraint(): 
+
+def test_model_with_storage_constraint():
     d = p.copy()
     d["A"]["storage_days"] = 0
     d["B"]["storage_days"] = 0

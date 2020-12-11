@@ -33,8 +33,8 @@ def values(mat):
 
 def values_to_list(mat):
     res = {}
-    for p in mat.keys():        
-            res[p] = [pulp.value(x) for x in mat[p].values()]
+    for p in mat.keys():
+        res[p] = [pulp.value(x) for x in mat[p].values()]
     return res
 
 
