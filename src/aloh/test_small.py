@@ -27,6 +27,7 @@ assert ac == {'A': [1, 0, 1, 0], 'B': [0, 1, 1]}
 assert xs == {'A': [55, 0, 55], 'B': [0, 100, 200]}
 prod_df, ship_df, inv_df, sales_df, cost_df = variable_dataframes(m)
 dfs = product_dataframes(m)
+vs = variable_dataframes(m)
 # fmt: on
 
 print("Production:", values(m.prod))

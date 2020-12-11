@@ -2,17 +2,18 @@ main := "src/aloh"
 deps := "_requirements.txt"
 env := "env1"
 
+# ensure codepage
 codepage:
   set PYTHONIOENCODING=utf8  
   chcp 1251
 
 # install dependencies
 pip-install:
-  pip install {{deps}}
+  pip install -r {{deps}}
 
 # start environment
 env-start:
-  echo call {{env}}\Scripts\activate.bat
+  @echo call {{env}}\Scripts\activate.bat
 
 # install package locally
 setup-dev:

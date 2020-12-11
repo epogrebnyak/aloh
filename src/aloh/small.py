@@ -4,6 +4,8 @@ from typing import Dict
 import pandas as pd
 import pulp
 
+from time import perf_counter
+
 from interface import n_days, pick
 
 # Matrix-like manipulation and helpers
@@ -102,6 +104,7 @@ class OptModel:
     def __init__(
         self, product_dict: Dict, model_name: str, inventory_weight: float = 0
     ):
+        self.elapsed = 0 
         self.weight = inventory_weight
 
         self.order_dict = pick(product_dict, "orders")
@@ -156,11 +159,21 @@ class OptModel:
         self.set_non_negative_inventory()
         self.set_closed_sum()
         self.set_storage_limit()
-        self.model.solve()
+        self.solve()
         return self.accept_orders(), values_to_list(self.prod)
+
+    
+    def solve(self):
+        start = perf_counter()
+        self.model.solve()
+        self.elapsed = perf_counter() - start
 
     def accept_orders(self):
         return {p: [int(x.value()) for x in self.accept_dict[p]] for p in self.products}
+    
+    def save(self, filename: str):
+        self.model.writeLP(filename)
+        print(f"Cохранили модель в файл {filename}")
 
 
 def next_use(xs, d, s):
@@ -202,4 +215,18 @@ def as_df(mat):
 
 
 def variable_dataframes(m: OptModel):
-    return map(as_df, [m.prod, m.ship, m.inv, m.sales, m.costs])
+    res = {}
+    for key in ['prod', 'ship', 'inv', 'sales', 'costs']:
+        res[key] = as_df(m.__getattribute__(key))
+    return res    
+
+#TODO:
+"""Объемы мощностей, заказов, производства, покупок (тонн)
+                    A       B
+capacity       2800.0  1400.0
+orders         3780.0  1120.0
+purchase       2280.0   400.0
+internal_use    500.0     0.0
+requirement    2780.0   400.0
+production     2780.0   400.0
+avg_inventory   174.5     4.6"""
