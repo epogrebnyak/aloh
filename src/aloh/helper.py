@@ -1,7 +1,9 @@
 import pulp
 
+
 def lst(xs):
     return ", ".join(xs)
+
 
 def print_solvers():
     """

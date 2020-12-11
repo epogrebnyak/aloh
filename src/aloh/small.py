@@ -1,30 +1,12 @@
-from collections import UserDict
 from dataclasses import dataclass
+from typing import Dict
 
 import pandas as pd
 import pulp
 
-
-class ProductDict(UserDict):
-    """Data holder dictionary for product, production and order parameters."""
-    pass
-
-    def pick(self, key):
-        return {k: v[key] for k, v in self.items()}
-
-    def max_day(self):
-        return max([order.day for k in self.keys() for order in self[k]["orders"]])
-
-    def days(self):
-        return list(range(self.max_day() + 1))
-
-    def products(self):
-        return list(self.keys())
+from interface import n_days, pick
 
 # Matrix-like manipulation and helpers
-
-def accum(var, i):
-    return pulp.lpSum([var[k] for k in range(i + 1)])
 
 
 def multiply(vec, mat):
@@ -48,15 +30,19 @@ def values(mat):
             res[p][d] = pulp.value(mat[p][d])
     return res
 
+
+def values_to_list(mat):
+    res = {}
+    for p in mat.keys():        
+            res[p] = [pulp.value(x) for x in mat[p].values()]
+    return res
+
+
+def accum(var, i):
+    return pulp.lpSum([var[k] for k in range(i + 1)])
+
+
 # Orders
-
-@dataclass
-class Order:
-    """Order parameters."""
-
-    day: int
-    volume: float
-    price: float
 
 
 def make_accept_dict(order_dict):
@@ -68,7 +54,9 @@ def make_accept_dict(order_dict):
         ]
     return accept
 
+
 # Methods to work with (product * days) matrices
+
 
 @dataclass
 class Dim:
@@ -111,19 +99,20 @@ class Dim:
 
 
 class OptModel:
-    def __init__(self, product_dict: ProductDict, **kwargs):
-        name = kwargs.get("model_name")
-        self.weight = kwargs.get("inventory_weight", 0)
+    def __init__(
+        self, product_dict: Dict, model_name: str, inventory_weight: float = 0
+    ):
+        self.weight = inventory_weight
 
-        self.order_dict = product_dict.pick("orders")
+        self.order_dict = pick(product_dict, "orders")
         self.accept_dict = make_accept_dict(self.order_dict)
 
-        self.capacities = product_dict.pick("capacity")
-        self.unit_costs = product_dict.pick("unit_cost")
-        self.storage_days = product_dict.pick("storage_days")
-        
-        self.products = product_dict.products()
-        self.days = product_dict.days()
+        self.capacities = pick(product_dict, "capacity")
+        self.unit_costs = pick(product_dict, "unit_cost")
+        self.storage_days = pick(product_dict, "storage_days")
+
+        self.products = list(product_dict.keys())
+        self.days = list(range(n_days(product_dict)))
         dim = Dim(self.products, self.days)
 
         self.prod = dim.make_production(self.capacities)
@@ -132,14 +121,12 @@ class OptModel:
             self.order_dict, self.accept_dict
         )
         self.inv = dim.calculate_inventory(self.prod, self.ship)
-        self.model = pulp.LpProblem(name, pulp.LpMaximize)
+        self.model = pulp.LpProblem(model_name, pulp.LpMaximize)
 
     def set_objective(self):
         # Целевая функция
         self.model += (
-            lp_sum(self.sales)
-            - lp_sum(self.costs)
-            - lp_sum(self.inv) * self.weight
+            lp_sum(self.sales) - lp_sum(self.costs) - lp_sum(self.inv) * self.weight
         )
 
     def set_non_negative_inventory(self):
@@ -170,13 +157,14 @@ class OptModel:
         self.set_closed_sum()
         self.set_storage_limit()
         self.model.solve()
+        return self.accept_orders(), values_to_list(self.prod)
 
     def accept_orders(self):
         return {p: [int(x.value()) for x in self.accept_dict[p]] for p in self.products}
 
 
 def next_use(xs, d, s):
-    """Slice *xs* between d and s"""
+    """Slice *xs* list between *d* and *d+s* properly."""
     if s == 0:
         return 0
     else:
@@ -184,7 +172,9 @@ def next_use(xs, d, s):
         up_to = min(last, d + s) + 1
         return [xs[t] for t in range(d + 1, up_to)]
 
-# Dataframe lookup functions
+
+# Data frame functions - report what is inside model
+
 
 def series(var, p: str):
     return values(var)[p].values()

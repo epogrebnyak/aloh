@@ -1,7 +1,15 @@
-from small import Order
-from random import choice, uniform 
 from dataclasses import dataclass
+from random import choice, uniform
 from typing import List
+
+
+@dataclass
+class Order:
+    """Order parameters."""
+
+    day: int
+    volume: float
+    price: float
 
 
 def rounds(x, step=1):
@@ -12,6 +20,7 @@ def rounds(x, step=1):
 @dataclass
 class Price:
     """Параметры распределения цены."""
+
     mean: float
     delta: float
 
@@ -23,6 +32,7 @@ class Price:
 @dataclass
 class Volume:
     """Параметры распределения объема."""
+
     min_order: float
     max_order: float
     round_to: float = 1.0

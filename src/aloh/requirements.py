@@ -4,12 +4,10 @@ from typing import List
 import numpy as np  # type: ignore
 import pandas as pd
 
-from production import ProductName
-
 
 @dataclass
 class Materials:
-    products: List[ProductName]
+    products: List[str]
 
     def __post_init__(self):
         """
@@ -18,7 +16,7 @@ class Materials:
         """
         self.B = self._dataframe(0)
 
-    def require(self, p_i: ProductName, x: float, p_j: ProductName):
+    def require(self, p_i: str, x: float, p_j: str):
         self.B.loc[p_i, p_j] = x
         return self
 

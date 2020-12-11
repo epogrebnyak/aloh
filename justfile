@@ -1,4 +1,4 @@
-main := "aloh.py"
+main := "src/aloh"
 deps := "_requirements.txt"
 env := "env1"
 
@@ -20,8 +20,8 @@ setup-dev:
 
 # black and isort
 lint:
-  black .
-  isort {{main}}
+  black {{main}}
+  isort --recursive {{main}}
 
 # start docs server
 serve:

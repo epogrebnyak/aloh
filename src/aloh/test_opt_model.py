@@ -1,11 +1,13 @@
-import pulp
+from generate import Order
+from interface import product
+from small import OptModel
 
-from opt_model import OptModel
-from orderbook import Order
-from production import Machine
+p = {}
 
-order_dict = {
-    "A": [
+p["A"] = product(
+    capacity=150,
+    unit_cost=70,
+    orders=[
         # свыше мощности, не берем
         Order(day=0, volume=160, price=100),
         # отрицтельная маржа, не берем
@@ -15,7 +17,13 @@ order_dict = {
         # берем, запасаемся, если хранение позволяет
         Order(day=2, volume=160, price=100),
     ],
-    "B": [
+)
+
+
+p["B"] = product(
+    capacity=100,
+    unit_cost=40,
+    orders=[
         # берем
         Order(day=3, volume=100, price=50),
         # берем, запасаемся
@@ -25,47 +33,27 @@ order_dict = {
         # не можем взять, свыше мощности
         Order(day=5, volume=1000, price=50),
     ],
-}
-plant = {
-    "A": Machine(capacity=150, unit_cost=70),
-    "B": Machine(capacity=100, unit_cost=40),
-}
+)
 
 
 def test_model_no_storage_constraint():
-    om = OptModel(
-        name="No storage constraint",
-        n_days=6,
-        products=["A", "B"],
-        order_dict=order_dict,
-        plant=plant,
-        storage_days={"A": 6, "B": 6},
-        inventory_penalty=0.1,
-        objective_type=pulp.LpMaximize,
-        feasibility=0,
-    )
+   
+    om = OptModel(p, model_name="No_storage_constraint", inventory_weight=0.1,)
 
-    ac, ps = om.evaluate()
+    ac, xs = om.evaluate()
     assert ac == {"A": [0, 0, 1, 1], "B": [1, 1, 1, 0]}
-    assert ps == {"A": [0, 70, 150, 0, 0, 0], "B": [0, 0, 20, 100, 100, 30]}
+    assert xs == {'A': [0.0, 70.0, 150.0, 0.0, 0.0, 0.0],
+ 'B': [0.0, 0.0, 20.0, 100.0, 100.0, 30.0]}
 
+def test_model_with_storage_constraint(): 
+    d = p.copy()
+    d["A"]["storage_days"] = 0
+    d["B"]["storage_days"] = 0
+    om = OptModel(p, model_name="With_storage_constraint", inventory_weight=0.1,)
 
-def test_model_with_storage_constraint():
-    om2 = OptModel(
-        name="Storage 0 days, same day consumption",
-        n_days=6,
-        products=["A", "B"],
-        order_dict=order_dict,
-        plant=plant,
-        storage_days={"A": 0, "B": 0},
-        inventory_penalty=0.1,
-        objective_type=pulp.LpMaximize,
-        feasibility=0,
-    )
-
-    ac2, ps2 = om2.evaluate()
-    assert ac2 == {"A": [0.0, 0.0, 1.0, 0.0], "B": [1.0, 0.0, 1.0, 0.0]}
-    assert ps2 == {
-        "A": [0.0, 60.0, 0.0, 0.0, 0.0, 0.0],
-        "B": [0.0, 0.0, 0.0, 100.0, 0.0, 30.0],
+    ac2, xs2 = om.evaluate()
+    assert ac2 == {"A": [0, 0, 1, 0], "B": [1, 0, 1, 0]}
+    assert xs2 == {
+        "A": [0, 60, 0, 0, 0, 0],
+        "B": [0, 0, 0, 100, 0, 30],
     }

@@ -1,15 +1,10 @@
-from small import (
-    OptModel,
-    Order,
-    ProductDict,
-    product_dataframes,
-    values,
-    variable_dataframes,
-)
+from generate import Order
+from interface import product
+from small import OptModel, product_dataframes, values, variable_dataframes
 
 # fmt: off
-ps = ProductDict()
-ps["A"] = dict(
+ps = dict()
+ps["A"] = product(
     capacity=100,
     unit_cost=0.8,
     storage_days=0,
@@ -18,7 +13,7 @@ ps["A"] = dict(
             Order(day=2, volume=55, price=1.6),  # under storage=0 can take just one
             Order(day=2, volume=55, price=1.4)], # under storage=0 can take just one
 )
-ps["B"] = dict(
+ps["B"] = product(
     capacity=200, 
     unit_cost=0.6, 
     storage_days=3,
@@ -27,7 +22,9 @@ ps["B"] = dict(
             Order(day=2, volume=150, price=0.8)] # prefer to take, higher margin 
 )
 m = OptModel(ps, model_name="tiny_model", inventory_weight=0.1)
-m.evaluate()
+ac, xs = m.evaluate()
+assert ac == {'A': [1, 0, 1, 0], 'B': [0, 1, 1]}
+assert xs == {'A': [55, 0, 55], 'B': [0, 100, 200]}
 prod_df, ship_df, inv_df, sales_df, cost_df = variable_dataframes(m)
 dfs = product_dataframes(m)
 # fmt: on
@@ -39,9 +36,12 @@ print(dfs["A"])
 print("Продукт B")
 print(dfs["B"])
 
+dfa = dfs["A"]
+dfb = dfs["B"]
+
+
 def test_all():
-    dfa = dfs["A"]
-    dfb = dfs["B"]
+    assert len(dfa) == 3
     profit = (dfa.sales - dfa.costs + dfb.sales - dfb.costs).sum()
     assert profit >= m.model.objective.value()
     assert (dfa.x - dfa.ship).sum() == 0
@@ -53,6 +53,7 @@ def test_all():
     assert (dfa.x >= 0).all()
     assert (dfb.x >= 0).all()
     assert m.accept_orders() == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
+
 
 if __name__ == "__main__":
     test_all()
