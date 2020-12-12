@@ -73,7 +73,7 @@ m.product_dataframe("A")
 
 ## Документация
 
-https://epogrebnyak.github.io/aloh3/
+https://epogrebnyak.github.io/aloh/
 
 ## Запуск  
 
