@@ -4,7 +4,8 @@ from typing import Dict, List
 
 import pandas as pd
 import pulp
-from interface import Product, make_dataset
+
+from .interface import Product, make_dataset
 
 # This is a  dict of dicts that mimics a matrix.
 # We need this data structure to work with pulp
@@ -193,6 +194,12 @@ class OptModel:
     def save(self, filename: str):
         self.model.writeLP(filename)
         print(f"Cохранили модель в файл {filename}")
+        
+    def orders_dataframe(self, p: str):
+        return orders_dataframe(p, self)
+
+    def product_dataframe(self, p: str):
+        return product_dataframe(p, self)
 
 
 def next_use(xs, d, s):
@@ -208,11 +215,11 @@ def next_use(xs, d, s):
 # Data frame functions - report what is inside model
 
 
-def orders_dataframe(p: str, m: OptModel):    
+def orders_dataframe(p: str, m: OptModel):
     df = pd.DataFrame(m.order_dict[p])
     df["accept"] = m.accept_orders()[p]
     return df
-    
+
 
 def series(var, p: str):
     return values(var)[p].values()
