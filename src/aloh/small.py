@@ -208,24 +208,30 @@ def next_use(xs, d, s):
 # Data frame functions - report what is inside model
 
 
+def orders_dataframe(p: str, m: OptModel):    
+    df = pd.DataFrame(m.order_dict[p])
+    df["accept"] = m.accept_orders()[p]
+    return df
+    
+
 def series(var, p: str):
     return values(var)[p].values()
 
 
-def product_dataframe(p: str, prod, ship, inv, sales, costs):
+def product_dataframe(p: str, m: OptModel):
     df = pd.DataFrame()
-    df["x"] = series(prod, p)
-    df["ship"] = series(ship, p)
-    df["inv"] = series(inv, p)
-    df["sales"] = series(sales, p)
-    df["costs"] = series(costs, p)
+    df["x"] = series(m.prod, p)
+    df["ship"] = series(m.ship, p)
+    df["inv"] = series(m.inv, p)
+    df["sales"] = series(m.sales, p)
+    df["costs"] = series(m.costs, p)
     return df
 
 
 def product_dataframes(m: OptModel):
     dfs = {}
     for p in m.products:
-        dfs[p] = product_dataframe(p, m.prod, m.ship, m.inv, m.sales, m.costs)
+        dfs[p] = product_dataframe(p, m)
     return dfs
 
 
