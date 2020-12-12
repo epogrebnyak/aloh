@@ -194,7 +194,7 @@ class OptModel:
     def save(self, filename: str):
         self.model.writeLP(filename)
         print(f"Cохранили модель в файл {filename}")
-        
+
     def orders_dataframe(self, p: str):
         return orders_dataframe(p, self)
 

@@ -17,6 +17,7 @@ print("Product", "A")
 print(df_a, "\n")
 print(df_orders)
 
+
 def test_0():
     assert ac == {"A": [0, 1, 0, 1, 1]}
     assert xs == {"A": [7, 2, 10]}
