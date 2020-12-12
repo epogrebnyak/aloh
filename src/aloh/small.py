@@ -5,7 +5,7 @@ from typing import Dict, List
 import pandas as pd
 import pulp
 
-from .interface import Product, make_dataset
+from aloh.interface import Product, make_dataset
 
 # This is a  dict of dicts that mimics a matrix.
 # We need this data structure to work with pulp
