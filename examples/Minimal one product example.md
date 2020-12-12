@@ -29,11 +29,11 @@ Production (*x*), shipments (*ship*), inventory (_inv_) volumes by day, *sales* 
 m.product_dataframe("A")
 ```
 
-|    |   x |  ship |  inv |  sales |  costs |
-|:--:|:---:|:-----:|:----:|:------:|:------:|
-|  0 |   7 |     7 |    0 |    2.1 |    0.7 |
-|  1 |   2 |     0 |    2 |    0   |    0.2 |
-|  2 |  10 |    12 |    0 |    3   |    1   |
+| day |   x |  ship |  inv |  sales |  costs |
+|:---:|:---:|:-----:|:----:|:------:|:------:|
+|   0 |   7 |     7 |    0 |    2.1 |    0.7 |
+|   1 |   2 |     0 |    2 |    0   |    0.2 |
+|   2 |  10 |    12 |    0 |    3   |    1   |
 
 
 
@@ -46,8 +46,8 @@ m.product_dataframe("A")
  m.orders_dataframe("A")
 ```
 
-|    |   day |   volume |   price |   accept |
-|---:|------:|---------:|--------:|---------:|
+|  n |   day |   volume |   price |   accept |
+|:--:|:-----:|:--------:|:-------:|:--------:|
 |  0 |     0 |        7 |    0.2  |        0 |
 |  1 |     0 |        7 |    0.3  |        1 |
 |  2 |     1 |       10 |    0.09 |        0 |
