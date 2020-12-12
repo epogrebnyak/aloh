@@ -22,7 +22,7 @@ setup-dev:
 # black and isort
 lint:
   black {{main}}
-  isort --recursive {{main}}
+  isort {{main}}
 
 # start docs server
 serve:

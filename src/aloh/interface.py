@@ -1,44 +1,75 @@
-from typing import Dict, List, Union
-
-from generate import Order
-
-
-def max_day(orders: List[Order]):
-    return max([order.day for order in orders])
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
 
 
-def product(
-    capacity: float,
-    unit_cost: float,
-    orders=List[Order],
-    storage_days: Union[int, None] = None,
-    requires: Dict[str, float] = {},
-):
-    if storage_days is None:
-        storage_days = max_day(orders)
-    return dict(
-        capacity=capacity,
-        unit_cost=unit_cost,
-        orders=orders,
-        storage_days=storage_days,
-        requires=requires,
-    )
+@dataclass
+class Order:
+    """Order parameters."""
+
+    day: int
+    volume: float
+    price: float
 
 
-def pick(ps: Dict, key: str):
-    return {k: v[key] for k, v in ps.items()}
+VERY_LARGE_NUMBER = 10_000
 
 
-def n_days(ps: Dict):
-    return max([max_day(ps[key]["orders"]) for key in ps.keys()]) + 1
+class Commodity:
+    name: str
+    storage_days: int = VERY_LARGE_NUMBER
 
 
-ps = dict()
-ps["A"] = product(capacity=100, unit_cost=10, orders=[Order(5, 100, 13)])
-ps["B"] = product(capacity=50, unit_cost=15, storage_days=3, orders=[Order(1, 50, 17)])
+class Machine:
+    capacity: float
+    unit_cost: float
 
-assert pick(ps, "capacity") == {"A": 100, "B": 50}
-assert pick(ps, "unit_cost") == {"A": 10, "B": 15}
-assert pick(ps, "storage_days") == {"A": 5, "B": 3}
-kwarg = dict(capacity=10, unit_cost=0.8, orders=[Order(0, 10, 1)])
-assert product(**kwarg)["storage_days"] == 0
+
+@dataclass
+class Product:
+    name: str
+    capacity: float = 0
+    unit_cost: Optional[float] = None
+    storage_days: Optional[int] = None
+    orders: List = field(default_factory=list)
+    requires: Dict = field(default_factory=dict)
+
+    def add_order(self, day: int, volume: float, price: float):
+        self.orders.append(Order(day, volume, price))
+
+    def require(self, product: str, volume: float):
+        pass
+
+
+@dataclass
+class Dataset:
+    product_names: List[str]
+    capacities: Dict[str, float]
+    unit_costs: Dict[str, float]
+    storage_days: Dict[str, int]
+    order_dict: Dict[str, List[Order]]
+
+    @property
+    def max_day(self):
+        all_orders = [order for orders in self.order_dict.values() for order in orders]
+        return max([order.day for order in all_orders])
+
+    @property
+    def n_days(self):
+        return 1 + self.max_day
+
+    @property
+    def days(self):
+        return list(range(self.n_days))
+
+
+def make_dataset(products: List[Product]):
+    product_names = [p.name for p in products]
+    capacities = {p.name: p.capacity for p in products}
+    unit_costs = {p.name: p.unit_cost for p in products}
+    storage_days = {p.name: p.storage_days for p in products}
+    order_dict = {p.name: p.orders for p in products}
+    ds = Dataset(product_names, capacities, unit_costs, storage_days, order_dict)
+    for k, v in ds.storage_days.items():
+        if v is None:
+            ds.storage_days[k] = ds.n_days - 1
+    return ds

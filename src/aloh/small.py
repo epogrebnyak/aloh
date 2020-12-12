@@ -1,30 +1,34 @@
 from dataclasses import dataclass
-from typing import Dict
+from time import perf_counter
+from typing import Dict, List
 
 import pandas as pd
 import pulp
+from interface import Product, make_dataset
 
-from time import perf_counter
+# This is a  dict of dicts that mimics a matrix.
+# We need this data structure to work with pulp
+Matrix = Dict[str, Dict[int, float]]
 
-from interface import n_days, pick
-
-# Matrix-like manipulation and helpers
+# Matrix manipulation and helpers
 
 
-def multiply(vec, mat):
+def multiply(vec: Dict, mat: Matrix):
+    """Vector by matrix multiplication, results in a matrix."""
     res = {}
     for p in mat.keys():
         res[p] = {}
+        m = vec[p]
         for d in mat[p].keys():
-            res[p][d] = vec[p] * mat[p][d]
+            res[p][d] = m * mat[p][d]
     return res
 
 
-def lp_sum(mat):
+def lp_sum(mat: Matrix):
     return pulp.lpSum([mat[p][d] for p in mat.keys() for d in mat[p].keys()])
 
 
-def values(mat):
+def values(mat: Matrix):
     res = {}
     for p in mat.keys():
         res[p] = {}
@@ -33,21 +37,18 @@ def values(mat):
     return res
 
 
-def values_to_list(mat):
+def values_to_list(mat: Matrix):
     res = {}
     for p in mat.keys():
         res[p] = [pulp.value(x) for x in mat[p].values()]
     return res
 
 
-def accum(var, i):
-    return pulp.lpSum([var[k] for k in range(i + 1)])
-
-
 # Orders
 
 
 def make_accept_dict(order_dict):
+    """Create a binary decision variable for each order."""
     accept = {}
     for p in order_dict.keys():
         accept[p] = [
@@ -62,7 +63,8 @@ def make_accept_dict(order_dict):
 
 @dataclass
 class Dim:
-    """Hold product * days dimensions for matrices and use in functions."""
+    """Hold product * days dimensions for matrices.
+    Keeps fucntions that use these dimnsions together."""
 
     products: [str]
     days: list
@@ -71,6 +73,10 @@ class Dim:
         return {p: {d: 0 for d in self.days} for p in self.products}
 
     def make_production(self, capacities):
+        """Create a decision variable for production:
+        0 < prod[p][d] <  capacity[p],
+        where p is product and d is day.
+        """
         prod = self.empty_matrix()
         for p in self.products:
             cap = capacities[p]
@@ -79,6 +85,9 @@ class Dim:
         return prod
 
     def make_shipment_sales(self, order_dict, accept_dict):
+        """Create expressions for shipment (volume of daily off-take)
+        and sales (same in dollars).
+        """
         ship = self.empty_matrix()
         sales = self.empty_matrix()
         for p in self.products:
@@ -91,6 +100,9 @@ class Dim:
         return ship, sales
 
     def calculate_inventory(self, prod, use):
+        """Create expressions for inventory.
+        Inventory is end of day stock of produced, but not shipped goods.
+        """
         inv = self.empty_matrix()
         for p in self.products:
             xs = prod[p]
@@ -100,22 +112,25 @@ class Dim:
         return inv
 
 
+def accum(var, i):
+    return pulp.lpSum([var[k] for k in range(i + 1)])
+
+
 class OptModel:
     def __init__(
-        self, product_dict: Dict, model_name: str, inventory_weight: float = 0
+        self, products: List[Product], model_name: str, inventory_weight: float
     ):
-        self.elapsed = 0 
-        self.weight = inventory_weight
+        dataset = make_dataset(products)
 
-        self.order_dict = pick(product_dict, "orders")
+        self.order_dict = dataset.order_dict
         self.accept_dict = make_accept_dict(self.order_dict)
 
-        self.capacities = pick(product_dict, "capacity")
-        self.unit_costs = pick(product_dict, "unit_cost")
-        self.storage_days = pick(product_dict, "storage_days")
+        self.capacities = dataset.capacities
+        self.unit_costs = dataset.unit_costs
+        self.storage_days = dataset.storage_days
 
-        self.products = list(product_dict.keys())
-        self.days = list(range(n_days(product_dict)))
+        self.products = dataset.product_names
+        self.days = dataset.days
         dim = Dim(self.products, self.days)
 
         self.prod = dim.make_production(self.capacities)
@@ -125,11 +140,15 @@ class OptModel:
         )
         self.inv = dim.calculate_inventory(self.prod, self.ship)
         self.model = pulp.LpProblem(model_name, pulp.LpMaximize)
+        self.inventory_weight = inventory_weight
+        self.time_elapsed = 0
 
     def set_objective(self):
         # Целевая функция
         self.model += (
-            lp_sum(self.sales) - lp_sum(self.costs) - lp_sum(self.inv) * self.weight
+            lp_sum(self.sales)
+            - lp_sum(self.costs)
+            - lp_sum(self.inv) * self.inventory_weight
         )
 
     def set_non_negative_inventory(self):
@@ -162,15 +181,15 @@ class OptModel:
         self.solve()
         return self.accept_orders(), values_to_list(self.prod)
 
-    
     def solve(self):
         start = perf_counter()
         self.model.solve()
-        self.elapsed = perf_counter() - start
+        self.time_elapsed = perf_counter() - start
+        print("Solved in {:.3f} sec".format(self.time_elapsed))
 
     def accept_orders(self):
         return {p: [int(x.value()) for x in self.accept_dict[p]] for p in self.products}
-    
+
     def save(self, filename: str):
         self.model.writeLP(filename)
         print(f"Cохранили модель в файл {filename}")
@@ -216,11 +235,12 @@ def as_df(mat):
 
 def variable_dataframes(m: OptModel):
     res = {}
-    for key in ['prod', 'ship', 'inv', 'sales', 'costs']:
+    for key in ["prod", "ship", "inv", "sales", "costs"]:
         res[key] = as_df(m.__getattribute__(key))
-    return res    
+    return res
 
-#TODO:
+
+# TODO:
 """Объемы мощностей, заказов, производства, покупок (тонн)
                     A       B
 capacity       2800.0  1400.0

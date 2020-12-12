@@ -1,10 +1,8 @@
-from generate import Order
-from interface import product
+from interface import Order, Product
 from small import OptModel
 
-p = {}
-
-p["A"] = product(
+pa = Product(
+    "A",
     capacity=150,
     unit_cost=70,
     orders=[
@@ -20,15 +18,16 @@ p["A"] = product(
 )
 
 
-p["B"] = product(
+pb = Product(
+    "B",
     capacity=100,
     unit_cost=40,
     orders=[
         # берем
         Order(day=3, volume=100, price=50),
-        # берем, запасаемся
-        Order(day=4, volume=120, price=50),
         # берем, если хранение позволяет
+        Order(day=4, volume=120, price=50),
+        # берем
         Order(day=5, volume=30, price=50),
         # не можем взять, свыше мощности
         Order(day=5, volume=1000, price=50),
@@ -37,8 +36,11 @@ p["B"] = product(
 
 
 def test_model_no_storage_constraint():
-
-    om = OptModel(p, model_name="No_storage_constraint", inventory_weight=0.1,)
+    om = OptModel(
+        [pa, pb],
+        model_name="No_storage_constraint",
+        inventory_weight=0.1,
+    )
 
     ac, xs = om.evaluate()
     assert ac == {"A": [0, 0, 1, 1], "B": [1, 1, 1, 0]}
@@ -49,10 +51,13 @@ def test_model_no_storage_constraint():
 
 
 def test_model_with_storage_constraint():
-    d = p.copy()
-    d["A"]["storage_days"] = 0
-    d["B"]["storage_days"] = 0
-    om = OptModel(p, model_name="With_storage_constraint", inventory_weight=0.1,)
+    pa.storage_days = 0
+    pb.storage_days = 0
+    om = OptModel(
+        [pa, pb],
+        model_name="With_storage_constraint",
+        inventory_weight=0.1,
+    )
 
     ac2, xs2 = om.evaluate()
     assert ac2 == {"A": [0, 0, 1, 0], "B": [1, 0, 1, 0]}
