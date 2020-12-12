@@ -1,4 +1,4 @@
-from interface import Order, Product, make_dataset
+from aloh.interface import Order, Product, make_dataset
 
 pa = Product("A")
 pa.capacity = 100
@@ -44,3 +44,4 @@ def test_pb():
 
 def test_dataset_invocation():
     ds = make_dataset([pa, pb])
+    assert ds

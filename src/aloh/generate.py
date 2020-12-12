@@ -2,14 +2,7 @@ from dataclasses import dataclass
 from random import choice, uniform
 from typing import List
 
-
-@dataclass
-class Order:
-    """Order parameters."""
-
-    day: int
-    volume: float
-    price: float
+from .interface import Order
 
 
 def rounds(x, step=1):

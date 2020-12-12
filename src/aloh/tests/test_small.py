@@ -1,5 +1,5 @@
-from interface import Product, make_dataset
-from small import OptModel, product_dataframes, values, variable_dataframes
+from aloh.interface import Product, make_dataset
+from aloh.small import OptModel, product_dataframes, values, variable_dataframes
 
 pa = Product("A")
 pa.capacity = 100

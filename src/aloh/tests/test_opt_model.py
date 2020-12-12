@@ -1,5 +1,5 @@
-from interface import Order, Product
-from small import OptModel
+from aloh.interface import Order, Product
+from aloh.small import OptModel
 
 pa = Product(
     "A",

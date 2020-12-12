@@ -1,4 +1,4 @@
-from requirements import Materials
+from aloh.requirements import Materials
 
 
 def test_car_assembly():

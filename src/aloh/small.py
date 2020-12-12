@@ -116,6 +116,9 @@ class Dim:
 def accum(var, i):
     return pulp.lpSum([var[k] for k in range(i + 1)])
 
+def clean(s):
+    return s.replace(" ", "_").replace(",", "_")
+
 
 class OptModel:
     def __init__(
@@ -140,7 +143,7 @@ class OptModel:
             self.order_dict, self.accept_dict
         )
         self.inv = dim.calculate_inventory(self.prod, self.ship)
-        self.model = pulp.LpProblem(model_name, pulp.LpMaximize)
+        self.model = pulp.LpProblem(clean(model_name), pulp.LpMaximize)
         self.inventory_weight = inventory_weight
         self.time_elapsed = 0
 
