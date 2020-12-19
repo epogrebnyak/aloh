@@ -3,6 +3,7 @@
 *.pdf
 *.rar
 env1
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

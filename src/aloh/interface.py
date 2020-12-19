@@ -34,42 +34,41 @@ class Product:
     requires: Dict = field(default_factory=dict)
 
     def add_order(self, day: int, volume: float, price: float):
-        self.orders.append(Order(day, volume, price))
+        x = dict(day=day, volume=volume, price=price)
+        self.orders.append(x)
 
     def require(self, product: str, volume: float):
-        pass
+        self.requires[product] = volume
 
 
-@dataclass
-class Dataset:
-    product_names: List[str]
-    capacities: Dict[str, float]
-    unit_costs: Dict[str, float]
-    storage_days: Dict[str, int]
-    order_dict: Dict[str, List[Order]]
-
-    @property
-    def max_day(self):
-        all_orders = [order for orders in self.order_dict.values() for order in orders]
-        return max([order.day for order in all_orders])
-
-    @property
-    def n_days(self):
-        return 1 + self.max_day
-
-    @property
-    def days(self):
-        return list(range(self.n_days))
+def names(products):
+    return {p.name: p for p in products}
 
 
-def make_dataset(products: List[Product]):
-    product_names = [p.name for p in products]
-    capacities = {p.name: p.capacity for p in products}
-    unit_costs = {p.name: p.unit_cost for p in products}
-    storage_days = {p.name: p.storage_days for p in products}
-    order_dict = {p.name: p.orders for p in products}
-    ds = Dataset(product_names, capacities, unit_costs, storage_days, order_dict)
-    for k, v in ds.storage_days.items():
-        if v is None:
-            ds.storage_days[k] = ds.n_days - 1
-    return ds
+def capacities(products):
+    return {p.name: p.capacity for p in products}
+
+
+def unit_costs(products):
+    return {p.name: p.unit_cost for p in products}
+
+
+def storage_days(products, max_day: int):
+    sub = lambda x: x if (x is not None) else max_day
+    return {p.name: sub(p.storage_days) for p in products}
+
+
+def order_dict(products):
+    return {p.name: [Order(**abc) for abc in p.orders] for p in products}
+
+
+def max_day(order_dict):
+    return max([order.day for orders in order_dict.values() for order in orders])
+
+
+def n_days(order_dict):
+    return 1 + max_day(order_dict)
+
+
+def days(order_dict):
+    return list(range(n_days(order_dict)))

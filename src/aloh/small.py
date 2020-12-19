@@ -5,7 +5,8 @@ from typing import Dict, List
 import pandas as pd
 import pulp
 
-from aloh.interface import Product, make_dataset
+from aloh.interface import (Product, capacities, days, n_days, names,
+                            order_dict, storage_days, unit_costs)
 
 # This is a  dict of dicts that mimics a matrix.
 # We need this data structure to work with pulp
@@ -116,6 +117,7 @@ class Dim:
 def accum(var, i):
     return pulp.lpSum([var[k] for k in range(i + 1)])
 
+
 def clean(s):
     return s.replace(" ", "_").replace(",", "_")
 
@@ -124,19 +126,22 @@ class OptModel:
     def __init__(
         self, products: List[Product], model_name: str, inventory_weight: float
     ):
-        dataset = make_dataset(products)
+        # model parameters
+        self.inventory_weight = inventory_weight
+        self.time_elapsed = 0
 
-        self.order_dict = dataset.order_dict
+        #  plant and order parameters
+        self.products = names(products)
+        self.order_dict = order_dict(products)
+        self.days = days(self.order_dict)
+        max_day = n_days(self.order_dict)
+        self.capacities = capacities(products)
+        self.unit_costs = unit_costs(products)
+        self.storage_days = storage_days(products, max_day)
+
+        # LP model
         self.accept_dict = make_accept_dict(self.order_dict)
-
-        self.capacities = dataset.capacities
-        self.unit_costs = dataset.unit_costs
-        self.storage_days = dataset.storage_days
-
-        self.products = dataset.product_names
-        self.days = dataset.days
         dim = Dim(self.products, self.days)
-
         self.prod = dim.make_production(self.capacities)
         self.costs = multiply(self.unit_costs, self.prod)
         self.ship, self.sales = dim.make_shipment_sales(
@@ -144,8 +149,6 @@ class OptModel:
         )
         self.inv = dim.calculate_inventory(self.prod, self.ship)
         self.model = pulp.LpProblem(clean(model_name), pulp.LpMaximize)
-        self.inventory_weight = inventory_weight
-        self.time_elapsed = 0
 
     def set_objective(self):
         # Целевая функция
@@ -183,7 +186,7 @@ class OptModel:
         self.set_closed_sum()
         self.set_storage_limit()
         self.solve()
-        return self.accept_orders(), values_to_list(self.prod)
+        return self.accepted_orders(), self.estimated_production()
 
     def solve(self):
         start = perf_counter()
@@ -191,7 +194,10 @@ class OptModel:
         self.time_elapsed = perf_counter() - start
         print("Solved in {:.3f} sec".format(self.time_elapsed))
 
-    def accept_orders(self):
+    def estimated_production(self):
+        return values_to_list(self.prod)
+
+    def accepted_orders(self):
         return {p: [int(x.value()) for x in self.accept_dict[p]] for p in self.products}
 
     def save(self, filename: str):
@@ -220,7 +226,7 @@ def next_use(xs, d, s):
 
 def orders_dataframe(p: str, m: OptModel):
     df = pd.DataFrame(m.order_dict[p])
-    df["accept"] = m.accept_orders()[p]
+    df["accept"] = m.accepted_orders()[p]
     return df
 
 

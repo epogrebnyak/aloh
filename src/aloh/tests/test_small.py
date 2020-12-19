@@ -1,5 +1,5 @@
-from aloh.interface import Product, make_dataset
-from aloh.small import OptModel, product_dataframes, values, variable_dataframes
+from aloh.interface import Product
+from aloh.small import (OptModel, product_dataframes, variable_dataframes)
 
 pa = Product("A")
 pa.capacity = 100
@@ -18,8 +18,6 @@ pb.add_order(day=0, volume=100, price=0.3)  # will not take, loss-making
 pb.add_order(day=2, volume=150, price=0.7)
 pb.add_order(day=2, volume=150, price=0.8)  # prefer to take, higher margin
 
-
-ds = make_dataset([pa, pb])
 m = OptModel([pa, pb], model_name="tiny_model", inventory_weight=0.1)
 ac, xs = m.evaluate()
 
@@ -29,9 +27,8 @@ prod_df, ship_df, inv_df, sales_df, cost_df = variable_dataframes(m)
 dfs = product_dataframes(m)
 vs = variable_dataframes(m)
 
-
-print("Production:", values(m.prod))
-print("Orders:", m.accept_orders())
+print("Production:", m.estimated_production())
+print("Orders:", m.accepted_orders())
 print("Продукт A")
 print(dfs["A"])
 print("Продукт B")
@@ -53,7 +50,8 @@ def test_all():
     assert (dfb.x <= pb.capacity).all()
     assert (dfa.x >= 0).all()
     assert (dfb.x >= 0).all()
-    assert m.accept_orders() == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
+    assert m.accepted_orders() == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
+    assert m.estimated_production() == {"A": [55, 0, 55], "B": [0, 100, 200]}
 
 
 if __name__ == "__main__":

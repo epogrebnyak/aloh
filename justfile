@@ -3,7 +3,7 @@ deps := "_requirements.txt"
 env := "env1"
 
 # ensure codepage
-codepage:
+win-codepage:
   set PYTHONIOENCODING=utf8  
   chcp 1251
 

@@ -1,9 +1,9 @@
 from aloh import OptModel, Product
 
 pa = Product(name="A", capacity=10, unit_cost=0.1, storage_days=1)
-pa.add_order(day=0, volume=7, price=0.2)
-pa.add_order(day=0, volume=7, price=0.3)
-pa.add_order(day=1, volume=10, price=0.09)
+pa.add_order(day=0, volume=7, price=0.20)
+pa.add_order(day=0, volume=7, price=0.30)
+pa.add_order(day=1, volume=9, price=0.09)
 pa.add_order(day=2, volume=6, price=0.25)
 pa.add_order(day=2, volume=6, price=0.25)
 
