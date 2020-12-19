@@ -11,19 +11,6 @@ class Order:
     price: float
 
 
-VERY_LARGE_NUMBER = 10_000
-
-
-class Commodity:
-    name: str
-    storage_days: int = VERY_LARGE_NUMBER
-
-
-class Machine:
-    capacity: float
-    unit_cost: float
-
-
 @dataclass
 class Product:
     name: str

@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from random import choice, uniform
 from typing import List
 
-from .interface import Order
-
+__all__ = ["Price", "Volume", "generate_orders"]
 
 def rounds(x, step=1):
     """Округление, обычно до 5 или 10. Используется для выравнивания объема заказа."""
@@ -65,4 +64,8 @@ def generate_orders(n_days: int, total_volume: float, pricer: Price, sizer: Volu
     n = len(sim_volumes)
     sim_days = [choice(days) for _ in range(n)]
     sim_prices = [pricer.generate() for _ in range(n)]
-    return [Order(d, v, p) for (d, v, p) in zip(sim_days, sim_volumes, sim_prices)]
+    return [elem(d, v, p) for (d, v, p) in zip(sim_days, sim_volumes, sim_prices)]
+
+
+def elem(d, v, p):
+    return dict(day=d, volume=v, price=p)
