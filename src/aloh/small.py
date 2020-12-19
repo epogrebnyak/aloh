@@ -204,12 +204,33 @@ class OptModel:
         self.model.writeLP(filename)
         print(f"Cохранили модель в файл {filename}")
 
-    def orders_dataframe(self, p: str):
-        return orders_dataframe(p, self)
+    def orders_dataframes(self):
+        res = {}
+        for p in self.products:
+            res[p] = orders_dataframe(p, self)
+        return res
 
-    def product_dataframe(self, p: str):
-        return product_dataframe(p, self)
+    def product_dataframes(self):
+        res = {}
+        for p in self.products:
+            res[p] = product_dataframe(p, self)
+        return res
 
+    def variables_dataframes(self):
+        return variable_dataframes(self)
+    
+    def summary_dataframe(self):
+        pass
+        # TODO:
+"""Объемы мощностей, заказов, производства, покупок (тонн)
+                    A       B
+capacity       2800.0  1400.0
+orders         3780.0  1120.0
+purchase       2280.0   400.0
+internal_use    500.0     0.0
+requirement    2780.0   400.0
+production     2780.0   400.0
+avg_inventory   174.5     4.6"""
 
 def next_use(xs, d, s):
     """Slice *xs* list between *d* and *d+s* properly."""
@@ -244,13 +265,6 @@ def product_dataframe(p: str, m: OptModel):
     return df
 
 
-def product_dataframes(m: OptModel):
-    dfs = {}
-    for p in m.products:
-        dfs[p] = product_dataframe(p, m)
-    return dfs
-
-
 def as_df(mat):
     return pd.DataFrame(values(mat))
 
@@ -260,15 +274,3 @@ def variable_dataframes(m: OptModel):
     for key in ["prod", "ship", "inv", "sales", "costs"]:
         res[key] = as_df(m.__getattribute__(key))
     return res
-
-
-# TODO:
-"""Объемы мощностей, заказов, производства, покупок (тонн)
-                    A       B
-capacity       2800.0  1400.0
-orders         3780.0  1120.0
-purchase       2280.0   400.0
-internal_use    500.0     0.0
-requirement    2780.0   400.0
-production     2780.0   400.0
-avg_inventory   174.5     4.6"""

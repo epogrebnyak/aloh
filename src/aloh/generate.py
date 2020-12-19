@@ -64,8 +64,12 @@ def generate_orders(n_days: int, total_volume: float, pricer: Price, sizer: Volu
     n = len(sim_volumes)
     sim_days = [choice(days) for _ in range(n)]
     sim_prices = [pricer.generate() for _ in range(n)]
-    return [elem(d, v, p) for (d, v, p) in zip(sim_days, sim_volumes, sim_prices)]
+    res = [elem(d, v, p) for (d, v, p) in zip(sim_days, sim_volumes, sim_prices)]
+    return sorted(res, key=by_day_and_price)
 
 
 def elem(d, v, p):
     return dict(day=d, volume=v, price=p)
+
+def by_day_and_price(x):
+    return x['day'], x['price']

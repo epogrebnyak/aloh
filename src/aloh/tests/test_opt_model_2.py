@@ -10,8 +10,8 @@ pa.add_order(day=2, volume=6, price=0.25)
 m = OptModel(products=[pa], model_name="model_0", inventory_weight=0)
 ac, xs = m.evaluate()
 
-df_a = m.product_dataframe("A")
-df_orders = m.orders_dataframe("A")
+df_a = m.product_dataframes()["A"]
+df_orders = m.orders_dataframes()["A"]
 
 print("Product", "A")
 print(df_a, "\n")

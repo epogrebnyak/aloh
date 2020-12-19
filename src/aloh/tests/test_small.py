@@ -1,5 +1,5 @@
 from aloh.interface import Product
-from aloh.small import (OptModel, product_dataframes, variable_dataframes)
+from aloh.small import (OptModel)
 
 pa = Product("A")
 pa.capacity = 100
@@ -23,9 +23,8 @@ ac, xs = m.evaluate()
 
 assert ac == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
 assert xs == {"A": [55, 0, 55], "B": [0, 100, 200]}
-prod_df, ship_df, inv_df, sales_df, cost_df = variable_dataframes(m)
-dfs = product_dataframes(m)
-vs = variable_dataframes(m)
+prod_df, ship_df, inv_df, sales_df, cost_df = m.variables_dataframes()
+dfs = m.product_dataframes()
 
 print("Production:", m.estimated_production())
 print("Orders:", m.accepted_orders())
