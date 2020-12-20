@@ -207,11 +207,18 @@ class OptModel:
         return values_to_list(self.prod)
 
     def accepted_orders(self):
-        return {p: [int(x.value()) for x in self.accept_dict[p]] for p in self.products}
+        return {p: [as_int(x) for x in self.accept_dict[p]] for p in self.products}
 
     def save(self, filename: str):
         self.model.writeLP(filename)
         print(f"Cохранили модель в файл {filename}")
+
+
+def as_int(x):
+    try:
+        return int(x.value())
+    except TypeError:
+        return 0
 
 
 def next_use(xs, d, s):
