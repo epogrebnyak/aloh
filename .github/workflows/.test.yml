@@ -21,4 +21,5 @@ jobs:
         if [ -f _requirements.txt ]; then pip install -r _requirements.txt; fi
     - name: Test with pytest
       run: |
+        pip install -e . 
         pytest src/aloh
