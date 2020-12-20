@@ -20,7 +20,6 @@ class Materials:
 
     def require(self, p_i: str, x: float, p_j: str):
         self.B.loc[p_i, p_j] = x
-        return self
 
     def _dataframe(self, x):
         return pd.DataFrame(x, columns=self.products, index=self.products)
@@ -39,3 +38,11 @@ class Materials:
         I = np.identity(len(self.products))
         R = np.linalg.inv(I - self.B)
         return self._round(self._dataframe(R))
+
+
+ms = Materials(["A", "B", "C"])
+ms.require("A", 0.8, "B")
+ms.require("A", 1, "C")
+ms.require("B", 0.5, "C")
+
+ms.B

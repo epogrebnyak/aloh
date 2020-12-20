@@ -2,6 +2,8 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
+from aloh.requirements import Materials
+
 
 @dataclass
 class Order:
@@ -30,7 +32,7 @@ class Product:
 
 
 def names(products):
-    return {p.name: p for p in products}
+    return [p.name for p in products]
 
 
 def capacities(products):
@@ -60,3 +62,15 @@ def _n_days(order_dict):
 
 def days(order_dict):
     return list(range(_n_days(order_dict)))
+
+
+def get_materials(products):
+    ms = Materials(names(products))
+    print(ms.B)
+    for p in products:
+        for k, v in p.requires.items():
+            ms.B.loc[p.name, k] = v
+            # ms.require(p_i=p.name, x=v, p_j=k)
+            print(p.name, k, v)
+            print(ms.B)
+    return ms
