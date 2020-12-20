@@ -1,5 +1,5 @@
 from aloh.interface import Product
-from aloh.small import (OptModel)
+from aloh.small import DataframeViewer, OptModel
 
 pa = Product("A")
 pa.capacity = 100
@@ -23,21 +23,38 @@ ac, xs = m.evaluate()
 
 assert ac == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
 assert xs == {"A": [55, 0, 55], "B": [0, 100, 200]}
-prod_df, ship_df, inv_df, sales_df, cost_df = m.variables_dataframes()
-dfs = m.product_dataframes()
 
 print("Production:", m.estimated_production())
 print("Orders:", m.accepted_orders())
+
+dv = DataframeViewer(m)
+prod_df, ship_df, inv_df, sales_df, cost_df = dv.variables()
+dfs = dv.product_dataframes()
 print("Продукт A")
 print(dfs["A"])
 print("Продукт B")
 print(dfs["B"])
 
-dfa = dfs["A"]
-dfb = dfs["B"]
+def test_product_dataframes():
+    assert dfs["A"].to_dict() == {
+        "x": {0: 55, 1: 0, 2: 55},
+        "ship": {0: 55, 1: 0, 2: 55},
+        "inv": {0: 0, 1: 0, 2: 0},
+        "sales": {0: 82.5, 1: 0, 2: 88},
+        "costs": {0: 44, 1: 0, 2: 44},
+    }
+    assert dfs["B"].to_dict() == {
+        "x": {0: 0, 1: 100, 2: 200},
+        "ship": {0: 0, 1: 0, 2: 300},
+        "inv": {0: 0, 1: 100, 2: 0},
+        "sales": {0: 0, 1: 0, 2: 225},
+        "costs": {0: 0, 1: 60, 2: 120},
+    }
 
 
 def test_all():
+    dfa = dfs["A"]
+    dfb = dfs["B"]
     assert len(dfa) == 3
     profit = (dfa.sales - dfa.costs + dfb.sales - dfb.costs).sum()
     assert profit >= m.model.objective.value()

@@ -5,11 +5,11 @@ from typing import Dict, List
 import pandas as pd
 import pulp
 
-from aloh.interface import (Product, capacities, days, n_days, names,
-                            order_dict, storage_days, unit_costs)
+import aloh.interface
+from aloh.interface import Product
 
-# This is a  dict of dicts that mimics a matrix.
-# We need this data structure to work with pulp
+# This is a dict of dicts that mimics a matrix.
+# We need this data structure to work with pulp.
 Matrix = Dict[str, Dict[int, float]]
 
 # Matrix manipulation and helpers
@@ -46,6 +46,10 @@ def values_to_list(mat: Matrix):
     return res
 
 
+def as_df(mat: Matrix):
+    return pd.DataFrame(values(mat))
+
+
 # Orders
 
 
@@ -65,8 +69,10 @@ def make_accept_dict(order_dict):
 
 @dataclass
 class Dim:
-    """Hold product * days dimensions for matrices.
-    Keeps fucntions that use these dimnsions together."""
+    """
+    Keeps fucntions that work on matrices of dimensions
+    (number of products *  number of days).
+    """
 
     products: [str]
     days: list
@@ -131,13 +137,14 @@ class OptModel:
         self.time_elapsed = 0
 
         #  plant and order parameters
-        self.products = names(products)
-        self.order_dict = order_dict(products)
-        self.days = days(self.order_dict)
-        max_day = n_days(self.order_dict)
-        self.capacities = capacities(products)
-        self.unit_costs = unit_costs(products)
-        self.storage_days = storage_days(products, max_day)
+        self.products = aloh.interface.names(products)
+        self.capacities = aloh.interface.capacities(products)
+        self.unit_costs = aloh.interface.unit_costs(products)
+        self.order_dict = aloh.interface.order_dict(products)
+        self.days = aloh.interface.days(self.order_dict)
+        self.storage_days = aloh.interface.storage_days(
+            products, max_allowed_storage_days=self.days[-1] + 1
+        )
 
         # LP model
         self.accept_dict = make_accept_dict(self.order_dict)
@@ -204,33 +211,6 @@ class OptModel:
         self.model.writeLP(filename)
         print(f"Cохранили модель в файл {filename}")
 
-    def orders_dataframes(self):
-        res = {}
-        for p in self.products:
-            res[p] = orders_dataframe(p, self)
-        return res
-
-    def product_dataframes(self):
-        res = {}
-        for p in self.products:
-            res[p] = product_dataframe(p, self)
-        return res
-
-    def variables_dataframes(self):
-        return variable_dataframes(self)
-    
-    def summary_dataframe(self):
-        pass
-        # TODO:
-"""Объемы мощностей, заказов, производства, покупок (тонн)
-                    A       B
-capacity       2800.0  1400.0
-orders         3780.0  1120.0
-purchase       2280.0   400.0
-internal_use    500.0     0.0
-requirement    2780.0   400.0
-production     2780.0   400.0
-avg_inventory   174.5     4.6"""
 
 def next_use(xs, d, s):
     """Slice *xs* list between *d* and *d+s* properly."""
@@ -265,12 +245,40 @@ def product_dataframe(p: str, m: OptModel):
     return df
 
 
-def as_df(mat):
-    return pd.DataFrame(values(mat))
-
-
 def variable_dataframes(m: OptModel):
     res = {}
     for key in ["prod", "ship", "inv", "sales", "costs"]:
         res[key] = as_df(m.__getattribute__(key))
     return res
+
+
+@dataclass
+class DataframeViewer:
+    om: OptModel
+
+    def orders_dataframe(self, p: str):
+        return orders_dataframe(p, self.om)
+
+    def orders_dataframes(self):
+        return {p: orders_dataframe(p, self.om) for p in self.om.products}
+
+    def product_dataframe(self, p: str):
+        return product_dataframe(p, self.om)
+
+    def product_dataframes(self):
+        return {p: product_dataframe(p, self.om) for p in self.om.products}
+
+    def variables(self):
+        return variable_dataframes(self.om)
+
+    def summary_dataframe(self):
+        pass
+        """Объемы мощностей, заказов, производства, покупок (тонн)
+                    A       B
+capacity       2800.0  1400.0
+orders         3780.0  1120.0
+purchase       2280.0   400.0
+internal_use    500.0     0.0
+requirement    2780.0   400.0
+production     2780.0   400.0
+avg_inventory   174.5     4.6"""

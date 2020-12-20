@@ -17,7 +17,8 @@ def test_car_assembly():
         "metal": 1540.0,
         "rubber": 80.0,
     }
-    
+
+
 # 1 day
 # 3 products
 # a: requres 0.8 b, 0.5 c

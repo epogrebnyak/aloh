@@ -66,7 +66,7 @@ def test_model_with_storage_constraint():
         "B": [0, 0, 0, 100, 0, 30],
     }
 
+
 if __name__ == "__main__":
     test_model_no_storage_constraint()
     test_model_with_storage_constraint()
-    

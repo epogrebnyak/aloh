@@ -4,6 +4,7 @@ from typing import List
 
 __all__ = ["Price", "Volume", "generate_orders"]
 
+
 def rounds(x, step=1):
     """Округление, обычно до 5 или 10. Используется для выравнивания объема заказа."""
     return round(x / step, 0) * step
@@ -71,5 +72,6 @@ def generate_orders(n_days: int, total_volume: float, pricer: Price, sizer: Volu
 def elem(d, v, p):
     return dict(day=d, volume=v, price=p)
 
+
 def by_day_and_price(x):
-    return x['day'], x['price']
+    return x["day"], x["price"]

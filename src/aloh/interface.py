@@ -40,8 +40,8 @@ def unit_costs(products):
     return {p.name: p.unit_cost for p in products}
 
 
-def storage_days(products, max_day: int):
-    sub = lambda x: x if (x is not None) else max_day
+def storage_days(products, max_allowed_storage_days: int):
+    sub = lambda x: x if (x is not None) else max_allowed_storage_days
     return {p.name: sub(p.storage_days) for p in products}
 
 
@@ -49,13 +49,13 @@ def order_dict(products):
     return {p.name: [Order(**abc) for abc in p.orders] for p in products}
 
 
-def max_day(order_dict):
+def _max_day(order_dict):
     return max([order.day for orders in order_dict.values() for order in orders])
 
 
-def n_days(order_dict):
-    return 1 + max_day(order_dict)
+def _n_days(order_dict):
+    return 1 + _max_day(order_dict)
 
 
 def days(order_dict):
-    return list(range(n_days(order_dict)))
+    return list(range(_n_days(order_dict)))
