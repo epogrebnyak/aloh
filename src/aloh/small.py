@@ -1,3 +1,5 @@
+"""Linear programming model for orders and production."""
+
 from dataclasses import dataclass
 from time import perf_counter
 from typing import Dict, List
@@ -124,7 +126,7 @@ def accum(var, i):
     return pulp.lpSum([var[k] for k in range(i + 1)])
 
 
-def clean(s):
+def clean(s: str):
     return s.replace(" ", "_").replace(",", "_")
 
 
@@ -166,13 +168,13 @@ class OptModel:
         )
 
     def set_non_negative_inventory(self):
-        # Ограничение: неотрицательные запасы
+        """Ограничение: неотрицательные запасы."""
         for p in self.products:
             for d in self.days:
                 self.model += (self.inv[p][d] >= 0, f"Non_negative_inventory_{p}_{d}")
 
     def set_closed_sum(self):
-        # Ограничение: закрытая сумма
+        """Ограничение: закрытая сумма, нулевые входящие и исходящие остатки."""
         for p in self.products:
             self.model += (
                 pulp.lpSum(self.prod[p]) == pulp.lpSum(self.ship[p]),
@@ -282,3 +284,18 @@ internal_use    500.0     0.0
 requirement    2780.0   400.0
 production     2780.0   400.0
 avg_inventory   174.5     4.6"""
+        prod_df, ship_df, inv_df, sales_df, cost_df = self.variables().values()
+        return pd.DataFrame(
+            {
+                # capacity
+                # "orders": df(v["demand"]).sum(),
+                "ship": ship_df.sum(),
+                # "internal_use": df(v["req"]).sum() - df(v["ship"]).sum(),
+                # "requirement": df(v["req"]).sum(),
+                "prod": prod_df.sum(),
+                "avg_inventory": inv_df.mean().round(1),
+                "sales": sales_df.sum(),
+                "costs": cost_df.sum(),
+                "profit": sales_df.sum() - cost_df.sum(),
+            }
+        ).T

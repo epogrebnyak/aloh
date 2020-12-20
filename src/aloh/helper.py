@@ -1,3 +1,5 @@
+"""Auxillary information about solvers."""
+
 import pulp
 
 

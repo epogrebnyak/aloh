@@ -28,12 +28,17 @@ print("Production:", m.estimated_production())
 print("Orders:", m.accepted_orders())
 
 dv = DataframeViewer(m)
-prod_df, ship_df, inv_df, sales_df, cost_df = dv.variables()
+prod_df, ship_df, inv_df, sales_df, cost_df = dv.variables().values()
 dfs = dv.product_dataframes()
 print("Продукт A")
 print(dfs["A"])
 print("Продукт B")
 print(dfs["B"])
+
+ds = dv.summary_dataframe()
+print("Summary dataframe:")
+print(ds)
+
 
 def test_product_dataframes():
     assert dfs["A"].to_dict() == {

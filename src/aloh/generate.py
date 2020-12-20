@@ -1,3 +1,5 @@
+"""Generate fake order volumes and prices."""
+
 from dataclasses import dataclass
 from random import choice, uniform
 from typing import List

@@ -1,3 +1,5 @@
+"""Direct and full material requirements."""
+
 from dataclasses import dataclass
 from typing import List
 
