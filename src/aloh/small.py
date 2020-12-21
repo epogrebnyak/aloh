@@ -195,7 +195,7 @@ class OptModel:
         self.set_closed_sum()
         self.set_storage_limit()
         self.solve()
-        return self.accepted_orders(), self.estimated_production()
+        return self.accepted_flags(), self.estimated_production()
 
     def solve(self):
         start = perf_counter()
@@ -206,8 +206,15 @@ class OptModel:
     def estimated_production(self):
         return values_to_list(self.prod)
 
-    def accepted_orders(self):
+    def accepted_flags(self):
         return {p: [as_int(x) for x in self.accept_dict[p]] for p in self.products}
+    
+    def accepted_orders(self):
+        res = {}
+        for p in self.products:
+            res[p] = [dict(order=d.__dict__, accepted=as_int(a)) for a, d in zip(self.accept_dict[p],
+                                             self.order_dict[p])]
+        return res    
 
     def save(self, filename: str):
         self.model.writeLP(filename)
@@ -236,7 +243,7 @@ def next_use(xs, d, s):
 
 def orders_dataframe(p: str, m: OptModel):
     df = pd.DataFrame(m.order_dict[p])
-    df["accept"] = m.accepted_orders()[p]
+    df["accept"] = m.accepted_flags()[p]
     return df
 
 

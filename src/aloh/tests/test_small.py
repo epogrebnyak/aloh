@@ -71,7 +71,7 @@ def test_all():
     assert (dfb.x <= pb.capacity).all()
     assert (dfa.x >= 0).all()
     assert (dfb.x >= 0).all()
-    assert m.accepted_orders() == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
+    assert m.accepted_flags() == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
     assert m.estimated_production() == {"A": [55, 0, 55], "B": [0, 100, 200]}
 
 
