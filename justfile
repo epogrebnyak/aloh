@@ -1,11 +1,7 @@
 main := "src/aloh"
-deps := "_requirements.txt"
+docs := "docs"
+deps := "requirements.txt"
 env := "env1"
-
-# ensure codepage
-win-codepage:
-  set PYTHONIOENCODING=utf8  
-  chcp 1251
 
 # install dependencies
 pip-install:
@@ -24,13 +20,23 @@ lint:
   black {{main}}
   isort {{main}}
 
+# start Jupyter lab in examples
+lab:
+  jupyter notebook --notebook-dir="examples"
+
+# publish documentation to GitHub Pages
+publish:
+  ghp-import -p docs
+
 # start docs server
 serve:
   mkdocs serve
 
-# start Jupyter lab in examples
-lab:
-  jupyter notebook --notebook-dir="examples"
+# project-specific
+# ensure codepage
+win-codepage:
+  set PYTHONIOENCODING=utf8  
+  chcp 1251
 
 # run all examples
 examples-all:
