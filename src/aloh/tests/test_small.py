@@ -28,7 +28,7 @@ print("Production:", m.estimated_production())
 print("Orders:", m.accepted_orders())
 
 dv = DataframeViewer(m)
-prod_df, ship_df, inv_df, sales_df, cost_df = dv.variables().values()
+prod_df, ship_df, req_df, inv_df, sales_df, cost_df = dv.inspect_variables()
 dfs = dv.product_dataframes()
 print("Продукт A")
 print(dfs["A"])
@@ -40,20 +40,20 @@ print("Summary dataframe:")
 print(ds)
 
 
-def test_product_dataframes():
+def test_variables():
+    vs = dv.inspect_variables()
+    prod_df, ship_df, req_df, inv_df, sales_df, cost_df = vs
+    assert len(vs) == 6
+
+
+def test_product_dataframe_A():
     assert dfs["A"].to_dict() == {
-        "x": {0: 55, 1: 0, 2: 55},
-        "ship": {0: 55, 1: 0, 2: 55},
-        "inv": {0: 0, 1: 0, 2: 0},
-        "sales": {0: 82.5, 1: 0, 2: 88},
-        "costs": {0: 44, 1: 0, 2: 44},
-    }
-    assert dfs["B"].to_dict() == {
-        "x": {0: 0, 1: 100, 2: 200},
-        "ship": {0: 0, 1: 0, 2: 300},
-        "inv": {0: 0, 1: 100, 2: 0},
-        "sales": {0: 0, 1: 0, 2: 225},
-        "costs": {0: 0, 1: 60, 2: 120},
+        "x": {0: 55.0, 1: 0.0, 2: 55.0},
+        "ship": {0: 55.0, 1: 0.0, 2: 55.0},
+        "req": {0: 55.0, 1: 0.0, 2: 55.0},
+        "inv": {0: 0.0, 1: 0.0, 2: 0.0},
+        "sales": {0: 82.5, 1: 0.0, 2: 88.0},
+        "costs": {0: 44.0, 1: 0.0, 2: 44.0},
     }
 
 

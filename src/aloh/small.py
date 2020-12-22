@@ -97,10 +97,10 @@ class Dim:
 
     def make_shipment_sales(self, order_dict, accept_dict):
         """Create expressions for:
-          - shipment (volume of daily off-take)
-          - sales (same in dollars).
+        - shipment (volume of daily off-take)
+        - sales (same in dollars).
         """
-        ship = self.empty_matrix()        
+        ship = self.empty_matrix()
         sales = self.empty_matrix()
         for p in self.products:
             for i, order in enumerate(order_dict[p]):
@@ -110,14 +110,31 @@ class Dim:
                         ship[p][d] += a * order.volume
                         sales[p][d] += a * order.volume * order.price
         return ship, sales
-    
+
     def make_requirements(self, ship, ms: Materials):
+        # 1. We are given a matrix *ship*, sized (product * day).
+        # 2. For this matrix we calculate total volume
+        #    of products that must be produced to fulfill the shipment.
+        #
+        # Assumption: all needed products will be produced on the same day.
+        #
         req = self.empty_matrix()
-        # We are given a matrix *ship*, sized (product * day)
-        # For this matrix we need to calculate total volume
-        # of production 
-        pass
-        
+        # create requrements function
+        f = ms.make_req_func()
+        # iterate over all products
+        for p in self.products:
+            # get full requirements for particular product
+            req_dict = f(p)
+            print(req_dict)
+            # iterate over days
+            for d in self.days:
+                # transmit requirements by product
+                for p2, v in req_dict.items():
+                    # if requirement is zero do nothing
+                    if v:
+                        req[p2][d] += v * ship[p][d]
+        return req
+
     def calculate_inventory(self, prod, use):
         """Create expressions for inventory.
         Inventory is end of day stock of produced, but not shipped goods.
@@ -165,7 +182,9 @@ class OptModel:
         self.ship, self.sales = dim.make_shipment_sales(
             self.order_dict, self.accept_dict
         )
-        self.inv = dim.calculate_inventory(self.prod, self.ship)
+        self.ms = aloh.interface.get_materials(products)
+        self.req = dim.make_requirements(self.ship, self.ms)
+        self.inv = dim.calculate_inventory(self.prod, self.req)
         self.model = pulp.LpProblem(clean(model_name), pulp.LpMaximize)
 
     def set_objective(self):
@@ -186,7 +205,7 @@ class OptModel:
         """Ограничение: закрытая сумма, нулевые входящие и исходящие остатки."""
         for p in self.products:
             self.model += (
-                pulp.lpSum(self.prod[p]) == pulp.lpSum(self.ship[p]),
+                pulp.lpSum(self.prod[p]) == pulp.lpSum(self.req[p]),
                 f"Closed sum for {p}",
             )
 
@@ -259,7 +278,7 @@ def accepted_orders_full(m: OptModel):
 def orders_dataframe(p: str, m: OptModel):
     df = pd.DataFrame(m.order_dict[p])
     df["accept"] = m.accepted_orders()[p]
-    df.index.name = 'n'
+    df.index.name = "n"
     return df
 
 
@@ -271,18 +290,17 @@ def product_dataframe(p: str, m: OptModel):
     df = pd.DataFrame()
     df["x"] = series(m.prod, p)
     df["ship"] = series(m.ship, p)
+    df["req"] = series(m.req, p)
     df["inv"] = series(m.inv, p)
     df["sales"] = series(m.sales, p)
     df["costs"] = series(m.costs, p)
-    df.index.name = 'day'
+    df.index.name = "day"
     return df
 
 
 def variable_dataframes(m: OptModel):
-    res = {}
-    for key in ["prod", "ship", "inv", "sales", "costs"]:
-        res[key] = as_df(m.__getattribute__(key))
-    return res
+    keys = ["prod", "ship", "req", "inv", "sales", "costs"]
+    return [as_df(m.__getattribute__(key)) for key in keys]
 
 
 @dataclass
@@ -301,7 +319,7 @@ class DataframeViewer:
     def product_dataframes(self):
         return {p: product_dataframe(p, self.om) for p in self.om.products}
 
-    def variables(self):
+    def inspect_variables(self):
         return variable_dataframes(self.om)
 
     def summary_dataframe(self):
@@ -315,14 +333,14 @@ internal_use    500.0     0.0
 requirement    2780.0   400.0
 production     2780.0   400.0
 avg_inventory   174.5     4.6"""
-        prod_df, ship_df, inv_df, sales_df, cost_df = self.variables().values()
+        prod_df, ship_df, req_df, inv_df, sales_df, cost_df = self.inspect_variables()
         return pd.DataFrame(
             {
-                # capacity
+                # "capacity"
                 # "orders": df(v["demand"]).sum(),
                 "ship": ship_df.sum(),
-                # "internal_use": df(v["req"]).sum() - df(v["ship"]).sum(),
-                # "requirement": df(v["req"]).sum(),
+                "internal_use": req_df.sum() - ship_df.sum(),
+                "requirement": req_df.sum(),
                 "prod": prod_df.sum(),
                 "avg_inventory": inv_df.mean().round(1),
                 "sales": sales_df.sum(),

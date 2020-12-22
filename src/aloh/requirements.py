@@ -38,3 +38,21 @@ class Materials:
         I = np.identity(len(self.products))
         R = np.linalg.inv(I - self.B)
         return self._round(self._dataframe(R))
+
+    def make_req_func(self):
+        """Предоставить функцию, которая будет рассчитывать
+        полные потребности в продуктах для продукта *p*.
+        """
+
+        def req(p: str):
+            return g(p, self.products, self.R)
+
+        return req
+
+
+def g(product: str, products: List[str], R: pd.DataFrame):
+    R = R.to_numpy()
+    xs = [(1 if (p == product) else 0) for p in products]
+    xs = np.array(xs)
+    res = np.matmul(xs, R)
+    return {p: r for r, p in zip(res, products)}

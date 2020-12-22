@@ -66,7 +66,6 @@ def days(order_dict):
 
 def get_materials(products):
     ms = Materials(names(products))
-    print(ms.B)
     for p in products:
         for k, v in p.requires.items():
             ms.require(p_i=p.name, x=v, p_j=k)
