@@ -1,3 +1,7 @@
+# TODO: more tests needed to see if work with material requirements is done right.
+#
+# To install aloh:
+#    pip install --upgrade git+https://github.com/epogrebnyak/aloh.git
 from aloh import DataframeViewer, OptModel
 from aloh.interface import Product, get_materials
 
@@ -22,9 +26,10 @@ pc.storage_days = 1
 pc.add_order(day=0, volume=0, price=0)
 
 m = OptModel([pa, pb, pc], model_name="Product depenedencies", inventory_weight=0)
+# returns a vector of accepted orders flags (1/0) and production schedule by product
 ac, xs = m.evaluate()
-print("Orders:", m.accepted_orders())
-print("Production:", m.estimated_production())
+print("Orders:", m.accepted_orders()) # this is `ac`
+print("Production:", m.estimated_production()) # this is `xs`
 
 
 # to use in REPL
