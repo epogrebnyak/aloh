@@ -1,4 +1,4 @@
-![](https://github.com/epogrebnyak/aloh/workflows/Test_package/badge.svg)
+![](https://github.com/epogrebnyak/aloh/workflows/pytest/badge.svg)
 
 # Моделирование выбора заказов и объемов производства
 
