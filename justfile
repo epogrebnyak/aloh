@@ -8,11 +8,11 @@ pip-install:
   pip install -r {{deps}}
 
 install-git:
-  pip install git+https://github.com/epogrebnyak/aloh.git  
+  pip install -U git+https://github.com/epogrebnyak/aloh.git  
 
 # install package locally
 install-dev:
-  pip install -e .
+  pip install -U -e .
 # start environment
 env-start:
   @echo call {{env}}\Scripts\activate.bat
