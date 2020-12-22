@@ -23,8 +23,8 @@ pc.add_order(day=0, volume=0, price=0)
 
 m = OptModel([pa, pb, pc], model_name="Product depenedencies", inventory_weight=0)
 ac, xs = m.evaluate()
-print("Orders:", m.accepted_orders())
-print("Production:", m.estimated_production())
+print("Orders:", ac)
+print("Production:", xs)
 
 
 # to use in REPL
@@ -34,6 +34,9 @@ prod_df, ship_df, req_df, inv_df, sales_df, cost_df = dv.inspect_variables()
 ms = get_materials([pa, pb, pc])
 print("Direct requirements\n", ms.B)
 print("Full requirements\n", ms.R)
+
+print("\nSummary dataframe:")
+print(dv.summary_dataframe())
 
 
 def test_requirements_factory():

@@ -171,7 +171,7 @@ class OptModel:
         self.order_dict = aloh.interface.order_dict(products)
         self.days = aloh.interface.days(self.order_dict)
         self.storage_days = aloh.interface.storage_days(
-            products, max_allowed_storage_days=self.days[-1] + 1
+            products, max_allowed_storage_days=self.n_days
         )
 
         # LP model
@@ -186,6 +186,10 @@ class OptModel:
         self.req = dim.make_requirements(self.ship, self.ms)
         self.inv = dim.calculate_inventory(self.prod, self.req)
         self.model = pulp.LpProblem(clean(model_name), pulp.LpMaximize)
+
+    @property
+    def n_days(self):
+        return self.days[-1] + 1
 
     def set_objective(self):
         # Целевая функция
@@ -313,6 +317,19 @@ class DataframeViewer:
     def orders_dataframes(self):
         return {p: orders_dataframe(p, self.om) for p in self.om.products}
 
+    def orders_summary(self):
+        res = pd.DataFrame()
+        for k, v in self.orders_dataframes().items():
+            v["product"] = k
+            res = pd.concat([res, v], axis=0)
+        return (
+            res.groupby(["day", "product"])
+            .sum()
+            .reset_index()
+            .pivot(index="day", values="volume", columns="product")
+            .fillna(0)
+        )
+
     def product_dataframe(self, p: str):
         return product_dataframe(p, self.om)
 
@@ -323,11 +340,23 @@ class DataframeViewer:
         return variable_dataframes(self.om)
 
     def summary_dataframe(self):
+        """Объемы мощностей, заказов, производства, покупок (тонн)
+
+                Пример:
+                            A       B
+        capacity       2800.0  1400.0
+        orders         3780.0  1120.0
+        purchase       2280.0   400.0
+        internal_use    500.0     0.0
+        requirement    2780.0   400.0
+        production     2780.0   400.0
+        avg_inventory   174.5     4.6"""
+
         prod_df, ship_df, req_df, inv_df, sales_df, cost_df = self.inspect_variables()
         df = pd.DataFrame(
             {
-                # "capacity"
-                # "orders": df(v["demand"]).sum(),
+                "orders": self.orders_summary().sum(),
+                "capacity": self.om.capacities,
                 "x": prod_df.sum(),
                 "ship": ship_df.sum(),
                 "internal_use": (req_df - ship_df).sum(),
@@ -338,14 +367,6 @@ class DataframeViewer:
                 "profit": (sales_df - cost_df).sum(),
             }
         )
+        df.index.name = ""
+        df["capacity"] *= self.om.n_days
         return df.T
-        # TODO: add capacoty and orders
-        """Объемы мощностей, заказов, производства, покупок (тонн)
-                    A       B
-capacity       2800.0  1400.0
-orders         3780.0  1120.0
-purchase       2280.0   400.0
-internal_use    500.0     0.0
-requirement    2780.0   400.0
-production     2780.0   400.0
-avg_inventory   174.5     4.6"""

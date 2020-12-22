@@ -2,3 +2,5 @@ ghp-import
 pytest
 black
 isort
+mkdocs
+mkdocs-material

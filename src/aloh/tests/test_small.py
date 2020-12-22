@@ -20,13 +20,10 @@ pb.add_order(day=2, volume=150, price=0.8)  # prefer to take, higher margin
 
 m = OptModel([pa, pb], model_name="tiny_model", inventory_weight=0.1)
 ac, xs = m.evaluate()
+print("Orders:", ac)
+print("Production:", xs)
 
-assert ac == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
-assert xs == {"A": [55, 0, 55], "B": [0, 100, 200]}
-
-print("Production:", m.estimated_production())
-print("Orders:", m.accepted_orders())
-
+# to use in REPL
 dv = DataframeViewer(m)
 prod_df, ship_df, req_df, inv_df, sales_df, cost_df = dv.inspect_variables()
 dfs = dv.product_dataframes()
@@ -34,12 +31,12 @@ print("Продукт A")
 print(dfs["A"])
 print("Продукт B")
 print(dfs["B"])
+print("\nSummary dataframe:")
+print(dv.summary_dataframe())
 
-ds = dv.summary_dataframe()
-print("Summary dataframe:")
-print(ds)
 
-df = dv.summary_dataframe()
+def test_orders_are_callable():
+    assert dv.orders_summary().any().any()
 
 
 def test_variables():
@@ -76,10 +73,12 @@ def test_product_dataframe_properties():
 
 
 def test_estimated_production():
+    assert m.estimated_production() == xs
     assert m.estimated_production() == {"A": [55, 0, 55], "B": [0, 100, 200]}
 
 
 def test_accepted_orders():
+    assert m.accepted_orders() == ac
     assert m.accepted_orders() == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
 
 

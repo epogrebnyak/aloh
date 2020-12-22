@@ -2,6 +2,7 @@ site_name: 'Моделирование выбора заказов и объем
 site_description: 'Алгоритмы линейного программирования для отбора заказов и планирования производства для четырех продуктов на основе гидроксида алюминия.'
 site_author: 'E Pogrebnyak'
 docs_dir: docs/
+site_dir: site/
 
 repo_name: 'epogrebnyak/aloh'
 repo_url: 'https://github.com/epogrebnyak/aloh'

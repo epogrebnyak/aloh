@@ -1,22 +1,28 @@
 main := "src/aloh"
 docs := "docs"
 deps := "requirements.txt"
+deps_dev := "requirements-dev.txt"
 env := "env1"
 
 # install dependencies
-pip-install:
+pip-r:
   pip install -r {{deps}}
 
+# install dev dependencies
+pip-dev:
+  pip install -r {{deps_dev}}
+
+# install package from git
 install-git:
   pip install -U git+https://github.com/epogrebnyak/aloh.git  
 
-# install package locally
+# install package locally (editable)
 install-dev:
   pip install -U -e .
+
 # start environment
 env-start:
   @echo call {{env}}\Scripts\activate.bat
-
 
 # black and isort
 lint:
@@ -29,10 +35,15 @@ lab:
 
 # publish documentation to GitHub Pages
 publish:
-  ghp-import -p docs
+  mkdocs build
+  ghp-import -p site
 
 # start docs server
-serve:
+docs-build:
+  mkdocs build
+
+# start docs server
+docs-serve:
   mkdocs serve
 
 # project-specific
