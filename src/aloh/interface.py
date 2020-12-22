@@ -69,8 +69,5 @@ def get_materials(products):
     print(ms.B)
     for p in products:
         for k, v in p.requires.items():
-            ms.B.loc[p.name, k] = v
-            # ms.require(p_i=p.name, x=v, p_j=k)
-            print(p.name, k, v)
-            print(ms.B)
+            ms.require(p_i=p.name, x=v, p_j=k)
     return ms

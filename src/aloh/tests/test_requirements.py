@@ -19,6 +19,18 @@ def test_car_assembly():
     }
 
 
-# 1 day
-# 3 products
-# a: requres 0.8 b, 0.5 c
+def test_ABC():
+    ms = Materials(["A", "B", "C"])
+    ms.require("A", 0.8, "B")
+    ms.require("A", 1, "C")
+    ms.require("B", 0.5, "C")
+    assert ms.B.to_dict() == {
+        "A": {"A": 0, "B": 0, "C": 0},
+        "B": {"A": 0.8, "B": 0.0, "C": 0.0},
+        "C": {"A": 1.0, "B": 0.5, "C": 0.0},
+    }
+    assert ms.R.to_dict() == {
+        "A": {"A": 1.0, "B": 0.0, "C": 0.0},
+        "B": {"A": 0.8, "B": 1.0, "C": 0.0},
+        "C": {"A": 1.4, "B": 0.5, "C": 1.0},
+    }

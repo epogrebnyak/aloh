@@ -57,7 +57,7 @@ def test_product_dataframes():
     }
 
 
-def test_all():
+def test_product_dataframe_properties():
     dfa = dfs["A"]
     dfb = dfs["B"]
     assert len(dfa) == 3
@@ -71,9 +71,33 @@ def test_all():
     assert (dfb.x <= pb.capacity).all()
     assert (dfa.x >= 0).all()
     assert (dfb.x >= 0).all()
-    assert m.accepted_flags() == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
+
+
+def test_estimated_production():
     assert m.estimated_production() == {"A": [55, 0, 55], "B": [0, 100, 200]}
 
 
+def test_accepted_orders():
+    assert m.accepted_orders() == {"A": [1, 0, 1, 0], "B": [0, 1, 1]}
+
+
+def test_accepted_orders_full():
+    assert m.accepted_orders_full() == {
+        "A": [
+            {"order": {"day": 0, "volume": 55, "price": 1.5}, "accepted": 1},
+            {"order": {"day": 1, "volume": 110, "price": 1.5}, "accepted": 0},
+            {"order": {"day": 2, "volume": 55, "price": 1.6}, "accepted": 1},
+            {"order": {"day": 2, "volume": 55, "price": 1.4}, "accepted": 0},
+        ],
+        "B": [
+            {"order": {"day": 0, "volume": 100, "price": 0.3}, "accepted": 0},
+            {"order": {"day": 2, "volume": 150, "price": 0.7}, "accepted": 1},
+            {"order": {"day": 2, "volume": 150, "price": 0.8}, "accepted": 1},
+        ],
+    }
+
+
 if __name__ == "__main__":
-    test_all()
+    import pytest
+
+    pytest.main([__file__])

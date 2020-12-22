@@ -25,7 +25,7 @@ pc.unit_cost = 0.1
 pc.storage_days = 1
 pc.add_order(day=0, volume=0, price=0.2)
 
-m = OptModel([pa, pb, pc], model_name="tiny_model", inventory_weight=0.1)
+m = OptModel([pa, pb, pc], model_name="Product depenedencies", inventory_weight=0)
 ac, xs = m.evaluate()
 
 print("Orders:", m.accepted_orders())
@@ -46,5 +46,3 @@ def test_R_matrix():
 def test_all():
     assert ac == {"A": [1], "B": [0], "C": [0]}
     assert xs == {"A": [1], "B": [0.8], "C": [1.5]}
-
-

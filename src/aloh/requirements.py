@@ -38,11 +38,3 @@ class Materials:
         I = np.identity(len(self.products))
         R = np.linalg.inv(I - self.B)
         return self._round(self._dataframe(R))
-
-
-ms = Materials(["A", "B", "C"])
-ms.require("A", 0.8, "B")
-ms.require("A", 1, "C")
-ms.require("B", 0.5, "C")
-
-ms.B
