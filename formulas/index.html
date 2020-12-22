@@ -1,0 +1,1159 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Алгоритмы линейного программирования для отбора заказов и планирования производства для четырех продуктов на основе гидроксида алюминия.">
+      
+      
+      
+        <meta name="author" content="E Pogrebnyak">
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.2">
+    
+    
+      
+        <title>Формулы - Моделирование выбора заказов и объемов производства</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.73f7c429.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.39b8e14a.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="Моделирование выбора заказов и объемов производства" class="md-header-nav__button md-logo" aria-label="Моделирование выбора заказов и объемов производства">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Моделирование выбора заказов и объемов производства
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Формулы
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/epogrebnyak/aloh/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    epogrebnyak/aloh
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        Начало
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../production/" class="md-tabs__link md-tabs__link--active">
+        Модель
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../example0/" class="md-tabs__link">
+        Примеры
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../current/" class="md-tabs__link">
+        Реализация
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Моделирование выбора заказов и объемов производства" class="md-nav__button md-logo" aria-label="Моделирование выбора заказов и объемов производства">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Моделирование выбора заказов и объемов производства
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/epogrebnyak/aloh/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    epogrebnyak/aloh
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+
+  
+  <li class="md-nav__item md-nav__item--nested">
+    
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" >
+    
+    <label class="md-nav__link" for="nav-1">
+      Начало
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Начало" data-md-level="1">
+      <label class="md-nav__title" for="nav-1">
+        <span class="md-nav__icon md-icon"></span>
+        Начало
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href=".." class="md-nav__link">
+      Краткое описание
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../links/" class="md-nav__link">
+      Ссылки
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  
+
+
+  
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      Модель
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Модель" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        Модель
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../production/" class="md-nav__link">
+      Производство
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../orders/" class="md-nav__link">
+      Заказы
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../linprog/" class="md-nav__link">
+      Задача ЛП
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Формулы
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Формулы
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    0. Размерность (время и продукты)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1. Производство, отгрузка, запасы
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Производство, отгрузка, запасы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 Производство
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 Отгрузка
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    1.3 Совокупный объем использования
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15" class="md-nav__link">
+    1.5 Запасы
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. Заказы
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Заказы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1 Структура данных заказа
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    2.2 Переменные выбора заказа
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    2.3 Расчеты на основе заказов
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. Ограничения
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Ограничения">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    3.1 Мощность
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    3.2 Запасы неотрицательные
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    3.3 Закрытая сумма за период
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    3.4 Ограничение срока хранения
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. Целевая функция
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5. Результат расчетов
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Возможные изменения
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../assumptions/" class="md-nav__link">
+      Допущения
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+
+  
+  <li class="md-nav__item md-nav__item--nested">
+    
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+    
+    <label class="md-nav__link" for="nav-3">
+      Примеры
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Примеры" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        Примеры
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../example0/" class="md-nav__link">
+      Пример 0
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../example1/" class="md-nav__link">
+      Пример 1
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../example2/" class="md-nav__link">
+      Пример 2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+
+  
+  <li class="md-nav__item md-nav__item--nested">
+    
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+    
+    <label class="md-nav__link" for="nav-4">
+      Реализация
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Реализация" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Реализация
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../current/" class="md-nav__link">
+      Текущий этап
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../perf/" class="md-nav__link">
+      Скорость работы
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../embedding/" class="md-nav__link">
+      Интеграция
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
+    <a href="../roadmap/" class="md-nav__link">
+      План развития
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    0. Размерность (время и продукты)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1. Производство, отгрузка, запасы
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Производство, отгрузка, запасы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 Производство
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 Отгрузка
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    1.3 Совокупный объем использования
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15" class="md-nav__link">
+    1.5 Запасы
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. Заказы
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Заказы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1 Структура данных заказа
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    2.2 Переменные выбора заказа
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    2.3 Расчеты на основе заказов
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. Ограничения
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Ограничения">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    3.1 Мощность
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    3.2 Запасы неотрицательные
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    3.3 Закрытая сумма за период
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    3.4 Ограничение срока хранения
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. Целевая функция
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5. Результат расчетов
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Возможные изменения
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/epogrebnyak/aloh/edit/main/docs/formulas.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="_1">Математическая формулировка задачи</h1>
+<p>v2020.11.25</p>
+<p>Базовая модель:</p>
+<ul>
+<li>бинарные (0 или 1) переменные для каждого заказа (приняли/отклонили)</li>
+<li>отгрузка продукции - это принятые заказы</li>
+<li>объем производства ограничен сверху мощностью</li>
+<li>запасы для каждого дня - это накопленное производство минус накопленная отгрузка</li>
+<li>запасы неотрицательные </li>
+<li>срок хранения и объем склада не ограничены</li>
+<li>максимизиурем выручку минус затраты в деньгах</li>
+</ul>
+<p>Расширения:</p>
+<ul>
+<li>ограничен срок хранения (3.3)</li>
+<li>связанные продукты - для производства одного продукта нужен другой продукт  (1.4)</li>
+<li>в ц.ф. добавляем штраф на величину запасов</li>
+</ul>
+<h2 id="0">0. Размерность (время и продукты)</h2>
+<p><strong>0.1</strong> Мы решаем задачу отбора заказов и планирования выпуска на горизонте <span class="arithmatex">\(n_{days}\)</span> дней</p>
+<div class="arithmatex">\[
+t = 1, ... n_{days}
+\]</div>
+<p><strong>0.2</strong> Мы рассматриваем производство четырех продуктов, которым присвоены буквенные обозначения.</p>
+<div class="arithmatex">\[
+p \in [A, B, C, D]
+\]</div>
+<h2 id="1">1. Производство, отгрузка, запасы</h2>
+<h3 id="11">1.1 Производство</h3>
+<p><span class="arithmatex">\(prod_{pt}\)</span>  - объем производства продукта <em>p</em> в день <em>t</em>, тонн</p>
+<p>Объем производства определяется как результат решения задачи оптимизации.</p>
+<p>На основе объемов производства рассчитываются затраты:</p>
+<div class="arithmatex">\[
+costs = \sum_p \sum_t  prod_{pt} \cdot unit\_cost_p
+\]</div>
+<h3 id="12">1.2 Отгрузка</h3>
+<p><span class="arithmatex">\(ship_{pt}\)</span> - отгрузка продукта <em>p</em> в день <em>t</em>, тонн</p>
+<p>Рассчитывается исходя из выбранных заказов (см. ниже).</p>
+<!-- ### 1.3 Промежуточное потребление
+
+$use_{pt}$ - потребность в продукте _p_ в день _t_, тонн, для нужд производства других продуктов
+
+-->
+
+<h3 id="13">1.3 Совокупный объем использования</h3>
+<p><span class="arithmatex">\(req_{pt}\)</span> - требуемый объем использованием продукта <em>p</em> в день <em>t</em>, тонн</p>
+<p>Он рассчитывается исходя из матрицы полных затрат. Расчет описан <a href="https://github.com/epogrebnyak/aloh3/issues/2">здесь</a>, можем представить в виде матриц:</p>
+<p><span class="arithmatex">\(B_{ij}\)</span> - количество единиц товара <span class="arithmatex">\(j\)</span>, напрямую необходимых для выпуска единицы товара <span class="arithmatex">\(i\)</span> (матрица прямых затрат).</p>
+<p><span class="arithmatex">\(R_{ij}\)</span> - количество единиц товара <span class="arithmatex">\(j\)</span>, непосредстванно или косвенно необходимых для выпуска единицы товара <span class="arithmatex">\(i\)</span> (матрица полных затрат).</p>
+<p><span class="arithmatex">\(R = (I-B)^{-1}\)</span></p>
+<p>Если <span class="arithmatex">\(y = [y_A, y_B, y_C, y_D]\)</span> - вектор-строка с количеством каждого продукта для продажи,
+то <span class="arithmatex">\(x = yR\)</span> - полный выпуск каждого продукта с учетом внутреннего потребления.</p>
+<div class="arithmatex">\[
+\forall t: req_{t} = ship_{t}^T \cdot R
+\]</div>
+<p>Пример:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">matmul</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">inv</span>
+
+<span class="n">B</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.</span> <span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.</span> <span class="p">],</span>
+           <span class="p">[</span><span class="mf">0.</span> <span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">]])</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">B</span><span class="p">)</span>
+<span class="c1"># array([[ 1.  ,  0.  ,  0.  ],</span>
+<span class="c1">#        [ 0.1 ,  1.  , -0.  ],</span>
+<span class="c1">#        [ 0.12,  1.2 ,  1.  ]])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">array</span> <span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">matmul</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+<span class="c1"># array([1.22, 2.2 , 1.  ])</span>
+</code></pre></div>
+<h3 id="15">1.5 Запасы</h3>
+<p><span class="arithmatex">\(inventory_{pt}\)</span> - запасы продукта <em>p</em> в конец дня <em>t</em>, тонн</p>
+<p>Запасы определяются как разница между накопленной суммой производства и накопленным использованием:</p>
+<div class="arithmatex">\[inventory_{pt} = cumsum(prod, t) - cumsum(ship, t)\]</div>
+<div class="arithmatex">\[cumsum(x_t, t^*) = \sum_{t=1}^{t^*}x_{t}\]</div>
+<h2 id="2">2. Заказы</h2>
+<h3 id="21">2.1 Структура данных заказа</h3>
+<p>Завод на весь период планирования получает <span class="arithmatex">\(n_{orders}\)</span> заказов на различные продукты:</p>
+<div class="arithmatex">\[order_k = [product_k, day_k, volume_k, price_k]\]</div>
+<div class="arithmatex">\[k = 1, ... n_{orders}\]</div>
+<p>В каждом заказе указаны (<em>k</em> - порядковый номер заказа):  </p>
+<ul>
+<li>продукт <span class="arithmatex">\(product_k\)</span>, который заказан</li>
+<li>объем поставки <span class="arithmatex">\(volume_k\)</span> (тонн)</li>
+<li>день поставки <span class="arithmatex">\(day_k\)</span></li>
+<li>цена поставки <span class="arithmatex">\(price_k\)</span> (долл. США за тонну)</li>
+</ul>
+<h3 id="22">2.2 Переменные выбора заказа</h3>
+<p>Для каждого заказа создается бинарная переменная <em>accept</em>, которая показывает 
+решение принимать заказ или нет:</p>
+<div class="arithmatex">\[
+accept_k \in (0, 1)
+\]</div>
+<h3 id="23">2.3 Расчеты на основе заказов</h3>
+<p>Объем поставок:</p>
+<div class="arithmatex">\[
+ship_{pt} = \sum_{k\vert_{day_k=t}^{product_k = p}}accept_k \cdot volume_k
+\]</div>
+<p>Объем продаж:</p>
+<div class="arithmatex">\[
+sales = \sum_k accept_k \cdot volume_k  \cdot  price_k
+\]</div>
+<h2 id="3">3. Ограничения</h2>
+<h3 id="31">3.1 Мощность</h3>
+<p>Ежедневный объем производства неотрицательный и ограничен сверху мощностью</p>
+<div class="arithmatex">\[0 \leq prod_{pt} \leq capacity_p\]</div>
+<h3 id="32">3.2 Запасы неотрицательные</h3>
+<div class="arithmatex">\[inventory_{pt} \geq 0\]</div>
+<h3 id="33">3.3 Закрытая сумма за период</h3>
+<p>Сумма производства равна сумме отгрузки для каждого продукта:</p>
+<div class="arithmatex">\[\forall p: \sum_t prod_{pt} = \sum_t ship_{pt} \]</div>
+<p>Комментарий: возможно, это ограничение становится незначимо после введения ограничений на минимизацию запасов.</p>
+<h3 id="34">3.4 Ограничение срока хранения</h3>
+<p>Запасы на день <em>d</em> не должны превышать использования продукта за следующие <span class="arithmatex">\(s_p\)</span> дней, где <span class="arithmatex">\(s_p\)</span> - это максимальный срок хранения p продукта на складе.</p>
+<div class="arithmatex">\[inventory_{pd} \le \sum_{t = d+1}^{d+s_p} req_{pt}, s_p \ge 1 \]</div>
+<div class="arithmatex">\[inventory_{pd} = 0, если s_p = 0 \]</div>
+<p>Комментарий:  в первое неравенство можно подставить срок хранения s=1, тогда остаток на складе должен быть не больше объема следующего дня использования (<span class="arithmatex">\(req_{p,d+1}\)</span>)</p>
+<p>Ключевые слова: shelf life, product life, "условие непротухания".</p>
+<h2 id="4">4. Целевая функция</h2>
+<div class="arithmatex">\[(sales - costs - \lambda \cdot inventory)\to max\]</div>
+<p><span class="arithmatex">\(\lambda \cdot inventory\)</span> - штраф, позволяющий минимзировать запасы. <span class="arithmatex">\(\lambda\)</span> берется меньше цены продукта.</p>
+<h2 id="5">5. Результат расчетов</h2>
+<ul>
+<li><span class="arithmatex">\(prod_{pt}\)</span> - объем производства по дням</li>
+<li><span class="arithmatex">\(accept_{k}\)</span> - бинерные переменные выбора заказов</li>
+</ul>
+<h2 id="_2">Возможные изменения</h2>
+<ul>
+<li>разные варианты целевых функций</li>
+<li>матричная форма записи </li>
+<li>сроки производства продукта более 1 дня</li>
+</ul>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../linprog/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Задача ЛП
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../assumptions/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Допущения
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2020 Евгений Погребняк
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.08c56446.min.js"></script>
+      <script src="../assets/javascripts/bundle.6ced434e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: ['navigation.tabs'],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
