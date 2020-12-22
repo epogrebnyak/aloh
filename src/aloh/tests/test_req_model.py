@@ -1,5 +1,3 @@
-# TODO: add requirements
-
 import pytest
 
 from aloh.interface import Product, get_materials
@@ -33,7 +31,6 @@ print("Production:", m.estimated_production())
 
 ms = get_materials([pa, pb, pc])
 
-
 def test_R_matrix():
     assert ms.R.to_dict() == {
         "A": {"A": 1.0, "B": 0.0, "C": 0.0},
@@ -41,8 +38,11 @@ def test_R_matrix():
         "C": {"A": 1.4, "B": 0.5, "C": 1.0},
     }
 
-
+# TODO: add requirements
 @pytest.mark.skip(reason="not implemented yet")
-def test_all():
+def test_products_with_dependencies():
     assert ac == {"A": [1], "B": [0], "C": [0]}
     assert xs == {"A": [1], "B": [0.8], "C": [1.5]}
+    
+import numpy as np    
+req_a = np.matmul(np.array([2, 0, 0]), ms.R.to_numpy())

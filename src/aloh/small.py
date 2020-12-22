@@ -9,6 +9,7 @@ import pulp
 
 import aloh.interface
 from aloh.interface import Product
+from aloh.requirements import Materials
 
 # This is a dict of dicts that mimics a matrix.
 # We need this data structure to work with pulp.
@@ -95,10 +96,11 @@ class Dim:
         return prod
 
     def make_shipment_sales(self, order_dict, accept_dict):
-        """Create expressions for shipment (volume of daily off-take)
-        and sales (same in dollars).
+        """Create expressions for:
+          - shipment (volume of daily off-take)
+          - sales (same in dollars).
         """
-        ship = self.empty_matrix()
+        ship = self.empty_matrix()        
         sales = self.empty_matrix()
         for p in self.products:
             for i, order in enumerate(order_dict[p]):
@@ -108,7 +110,14 @@ class Dim:
                         ship[p][d] += a * order.volume
                         sales[p][d] += a * order.volume * order.price
         return ship, sales
-
+    
+    def make_requirements(self, ship, ms: Materials):
+        req = self.empty_matrix()
+        # We are given a matrix *ship*, sized (product * day)
+        # For this matrix we need to calculate total volume
+        # of production 
+        pass
+        
     def calculate_inventory(self, prod, use):
         """Create expressions for inventory.
         Inventory is end of day stock of produced, but not shipped goods.
@@ -250,6 +259,7 @@ def accepted_orders_full(m: OptModel):
 def orders_dataframe(p: str, m: OptModel):
     df = pd.DataFrame(m.order_dict[p])
     df["accept"] = m.accepted_orders()[p]
+    df.index.name = 'n'
     return df
 
 
@@ -264,6 +274,7 @@ def product_dataframe(p: str, m: OptModel):
     df["inv"] = series(m.inv, p)
     df["sales"] = series(m.sales, p)
     df["costs"] = series(m.costs, p)
+    df.index.name = 'day'
     return df
 
 
