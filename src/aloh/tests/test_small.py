@@ -39,6 +39,8 @@ ds = dv.summary_dataframe()
 print("Summary dataframe:")
 print(ds)
 
+df = dv.summary_dataframe()
+
 
 def test_variables():
     vs = dv.inspect_variables()

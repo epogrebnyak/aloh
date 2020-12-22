@@ -1,4 +1,6 @@
-"""Linear programming model for orders and production."""
+"""Linear programming model for orders and production.
+   This is the main module in 'aloh' package.
+"""
 
 from dataclasses import dataclass
 from time import perf_counter
@@ -119,20 +121,18 @@ class Dim:
         # Assumption: all needed products will be produced on the same day.
         #
         req = self.empty_matrix()
-        # create requrements function
-        f = ms.make_req_func()
+        f = ms.requirements_factory()
         # iterate over all products
         for p in self.products:
             # get full requirements for particular product
             req_dict = f(p)
-            print(req_dict)
             # iterate over days
             for d in self.days:
-                # transmit requirements by product
-                for p2, v in req_dict.items():
-                    # if requirement is zero do nothing
-                    if v:
-                        req[p2][d] += v * ship[p][d]
+                # transmit requirements for each product
+                for p2, r in req_dict.items():
+                    # if requirement is zero - do nothing
+                    if r:
+                        req[p2][d] += r * ship[p][d]
         return req
 
     def calculate_inventory(self, prod, use):
@@ -323,7 +323,23 @@ class DataframeViewer:
         return variable_dataframes(self.om)
 
     def summary_dataframe(self):
-        pass
+        prod_df, ship_df, req_df, inv_df, sales_df, cost_df = self.inspect_variables()
+        df = pd.DataFrame(
+            {
+                # "capacity"
+                # "orders": df(v["demand"]).sum(),
+                "x": prod_df.sum(),
+                "ship": ship_df.sum(),
+                "internal_use": (req_df - ship_df).sum(),
+                "requirement": req_df.sum(),
+                "avg_inventory": inv_df.mean().round(1),
+                "sales": sales_df.sum(),
+                "costs": cost_df.sum(),
+                "profit": (sales_df - cost_df).sum(),
+            }
+        )
+        return df.T
+        # TODO: add capacoty and orders
         """Объемы мощностей, заказов, производства, покупок (тонн)
                     A       B
 capacity       2800.0  1400.0
@@ -333,18 +349,3 @@ internal_use    500.0     0.0
 requirement    2780.0   400.0
 production     2780.0   400.0
 avg_inventory   174.5     4.6"""
-        prod_df, ship_df, req_df, inv_df, sales_df, cost_df = self.inspect_variables()
-        return pd.DataFrame(
-            {
-                # "capacity"
-                # "orders": df(v["demand"]).sum(),
-                "ship": ship_df.sum(),
-                "internal_use": req_df.sum() - ship_df.sum(),
-                "requirement": req_df.sum(),
-                "prod": prod_df.sum(),
-                "avg_inventory": inv_df.mean().round(1),
-                "sales": sales_df.sum(),
-                "costs": cost_df.sum(),
-                "profit": sales_df.sum() - cost_df.sum(),
-            }
-        ).T

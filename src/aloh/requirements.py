@@ -7,52 +7,60 @@ import numpy as np  # type: ignore
 import pandas as pd
 
 
+def as_dataframe(x, names):
+    return pd.DataFrame(x, columns=names, index=names)
+
+
+def rounds(arr, eps=0.001):
+    ix = np.abs(arr) < eps
+    arr[ix] = 0
+    return arr
+
+
+def calculate_full_requirement(B):
+    n = B.shape[0]
+    I = np.identity(n)
+    R = np.linalg.inv(I - B)
+    return rounds(R)
+
+
 @dataclass
 class Materials:
-    products: List[str]
+    product_names: List[str]
 
     def __post_init__(self):
         """
         B - матрица прямых затрат.
         На производство единицы товара i необходимо B(i,j) единиц товара j.
         """
-        self.B = self._dataframe(0)
+        self.B = as_dataframe(0, self.product_names)
 
     def require(self, p_i: str, x: float, p_j: str):
         self.B.loc[p_i, p_j] = x
 
-    def _dataframe(self, x):
-        return pd.DataFrame(x, columns=self.products, index=self.products)
-
-    @staticmethod
-    def _round(df, eps=0.001):
-        ix = df.abs() < eps
-        df[ix] = 0
-        return df
-
-    @property
-    def R(self):
+    def calculate_R(self):
         """
         R - матрица полных затрат.
         """
-        I = np.identity(len(self.products))
-        R = np.linalg.inv(I - self.B)
-        return self._round(self._dataframe(R))
+        return calculate_full_requirement(self.B)
 
-    def make_req_func(self):
+    @property
+    def R(self):
+        return as_dataframe(self.calculate_R(), self.product_names)
+
+    def requirements_factory(self):
         """Предоставить функцию, которая будет рассчитывать
         полные потребности в продуктах для продукта *p*.
         """
 
         def req(p: str):
-            return g(p, self.products, self.R)
+            return g(p, self.product_names, self.calculate_R())
 
         return req
 
 
-def g(product: str, products: List[str], R: pd.DataFrame):
-    R = R.to_numpy()
+def g(product: str, products: List[str], R: np.ndarray):
     xs = [(1 if (p == product) else 0) for p in products]
     xs = np.array(xs)
     res = np.matmul(xs, R)
-    return {p: r for r, p in zip(res, products)}
+    return {p: r for p, r in zip(products, res)}
