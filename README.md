@@ -53,22 +53,35 @@ ac, xs = m.evaluate()
     
 #### 1.2. Выбор заказов
 
-В кратком представлении мы получаем значения бинарных переменных, соответствующих заказу.  
+В кратком представлении мы получаем значения бинарных переменных, 
+соответствующих рекомендации по заказу (принят/не принят).  
    
 ```python
 >>> ac
 {'A': [0, 1, 0, 1, 1]}
 ```
 
-*accept=1* показывает принятый заказ.
+В расширенном представлении мы видим исходные данные заказов.
+*accept=1* показывает принятый заказ, 0 - отклоненный.
 
 ```python
-v = DataframeViewer(m)
-v.orders_dataframe("A")
+>>> m.accepted_orders_full()
+
+{'A': [{'order': {'day': 0, 'volume': 7, 'price': 0.3}, 'accepted': 0},
+  {'order': {'day': 0, 'volume': 7, 'price': 0.5}, 'accepted': 1},
+  {'order': {'day': 1, 'volume': 9, 'price': 0.1}, 'accepted': 0},
+  {'order': {'day': 2, 'volume': 6, 'price': 0.3}, 'accepted': 1},
+  {'order': {'day': 2, 'volume': 6, 'price': 0.3}, 'accepted': 1}]}
 ```
 
-```
+Та же информация в виде датафрейма:
+
+
+```python
+>>> v = DataframeViewer(m)
+>>> v.orders_dataframe("A")
    day  volume  price  accept
+n                            
 0    0       7    0.3       0
 1    0       7    0.5       1
 2    1       9    0.1       0
@@ -83,11 +96,12 @@ v.orders_dataframe("A")
 
 
 ```python
-v.product_dataframe("A")
-      x  ship  inv  sales  costs
-0   7.0   7.0  0.0    3.5    1.4
-1   2.0   0.0  2.0    0.0    0.4
-2  10.0  12.0  0.0    3.6    2.0
+>>> v.product_dataframe("A")
+        x  ship  inv  sales  costs
+day                               
+0     7.0   7.0  0.0    3.5    1.4
+1     2.0   0.0  2.0    0.0    0.4
+2    10.0  12.0  0.0    3.6    2.0
 ```
 
 ## Документация

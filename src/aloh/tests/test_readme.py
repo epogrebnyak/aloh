@@ -44,15 +44,17 @@ m.estimated_production()
 v = DataframeViewer(m)
 v.product_dataframe("A")
 """
-      x  ship  inv  sales  costs
-0   7.0   7.0  0.0    3.5    1.4
-1   2.0   0.0  2.0    0.0    0.4
-2  10.0  12.0  0.0    3.6    2.0
+        x  ship  inv  sales  costs
+day                               
+0     7.0   7.0  0.0    3.5    1.4
+1     2.0   0.0  2.0    0.0    0.4
+2    10.0  12.0  0.0    3.6    2.0
 """
 
 v.orders_dataframe("A")
 """
    day  volume  price  accept
+n                            
 0    0       7    0.3       0
 1    0       7    0.5       1
 2    1       9    0.1       0
