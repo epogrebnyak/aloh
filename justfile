@@ -7,13 +7,16 @@ env := "env1"
 pip-install:
   pip install -r {{deps}}
 
+install-git:
+  pip install git+https://github.com/epogrebnyak/aloh.git  
+
+# install package locally
+install-dev:
+  pip install -e .
 # start environment
 env-start:
   @echo call {{env}}\Scripts\activate.bat
 
-# install package locally
-setup-dev:
-  pip install -e .
 
 # black and isort
 lint:
