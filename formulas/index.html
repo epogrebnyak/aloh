@@ -588,6 +588,19 @@
 
 
   <li class="md-nav__item">
+    <a href="../formulas.en/" class="md-nav__link">
+      Formulas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+
+  <li class="md-nav__item">
     <a href="../assumptions/" class="md-nav__link">
       Допущения
     </a>
@@ -934,7 +947,7 @@
                 
                 
                 <h1 id="_1">Математическая формулировка задачи</h1>
-<p>v2020.11.25</p>
+<p>v2020.12.23</p>
 <p>Базовая модель:</p>
 <ul>
 <li>бинарные (0 или 1) переменные для каждого заказа (приняли/отклонили)</li>
@@ -942,15 +955,13 @@
 <li>объем производства ограничен сверху мощностью</li>
 <li>запасы для каждого дня - это накопленное производство минус накопленная отгрузка</li>
 <li>запасы неотрицательные </li>
-<li>срок хранения и объем склада не ограничены</li>
+<li>объем склада не ограничен</li>
+<li>срок хранения каждого продукта ограничен</li>
 <li>максимизиурем выручку минус затраты в деньгах</li>
-</ul>
-<p>Расширения:</p>
-<ul>
-<li>ограничен срок хранения (3.3)</li>
-<li>связанные продукты - для производства одного продукта нужен другой продукт  (1.4)</li>
+<li>связанные продукты - для производства одного продукта нужны другие продукты</li>
 <li>в ц.ф. добавляем штраф на величину запасов</li>
 </ul>
+<p>(May change order in list above)</p>
 <h2 id="0">0. Размерность (время и продукты)</h2>
 <p><strong>0.1</strong> Мы решаем задачу отбора заказов и планирования выпуска на горизонте <span class="arithmatex">\(n_{days}\)</span> дней</p>
 <div class="arithmatex">\[
@@ -1043,7 +1054,7 @@ sales = \sum_k accept_k \cdot volume_k  \cdot  price_k
 <div class="arithmatex">\[inventory_{pt} \geq 0\]</div>
 <h3 id="33">3.3 Закрытая сумма за период</h3>
 <p>Сумма производства равна сумме отгрузки для каждого продукта:</p>
-<div class="arithmatex">\[\forall p: \sum_t prod_{pt} = \sum_t ship_{pt} \]</div>
+<div class="arithmatex">\[\forall p: \sum_t prod_{pt} = \sum_t req_{pt} \]</div>
 <p>Комментарий: возможно, это ограничение становится незначимо после введения ограничений на минимизацию запасов.</p>
 <h3 id="34">3.4 Ограничение срока хранения</h3>
 <p>Запасы на день <em>d</em> не должны превышать использования продукта за следующие <span class="arithmatex">\(s_p\)</span> дней, где <span class="arithmatex">\(s_p\)</span> - это максимальный срок хранения p продукта на складе.</p>
@@ -1064,6 +1075,7 @@ sales = \sum_k accept_k \cdot volume_k  \cdot  price_k
 <li>разные варианты целевых функций</li>
 <li>матричная форма записи </li>
 <li>сроки производства продукта более 1 дня</li>
+<li>веса для штрафа по запасам пропорциональны цене</li>
 </ul>
                 
               
@@ -1098,13 +1110,13 @@ sales = \sum_k accept_k \cdot volume_k  \cdot  price_k
           </a>
         
         
-          <a href="../assumptions/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../formulas.en/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Допущения
+                Formulas
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
