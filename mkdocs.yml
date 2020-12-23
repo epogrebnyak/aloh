@@ -20,6 +20,7 @@ nav:
        - 'Заказы': orders.md
        - 'Задача ЛП': linprog.md
        - 'Формулы': formulas.md
+       - 'Formulas': formulas.en.md
        - 'Допущения': assumptions.md
        
     - 'Примеры':
