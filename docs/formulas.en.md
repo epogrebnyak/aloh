@@ -109,7 +109,6 @@ $$
 $$
 
 
-
 ### 1.5 Inventory (stocks)
 
 $inventory_{pt}$ - stocks of product _p_ at the end of the day, tons
@@ -189,7 +188,7 @@ First case:
 
 $$ inventory_{pd} \le \sum_{t = d+1}^{d+s_p} req_{pt}, s_p \ge 1 $$
 
-The storage period s = 1 can be substituted into the this inequality, then the stock balance should not exceed the volume of the next day of use ($ req_ {p, d + 1} $).
+The storage period s = 1 can be substituted into the this inequality, then the stock balance should not exceed the volume of the next day of use ($req_ {p, d + 1}$).
 
 Second case:
 
