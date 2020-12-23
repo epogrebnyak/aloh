@@ -1051,10 +1051,10 @@ $use_{pt}$ - потребность в продукте _p_ в день _t_, т�
 <p><span class="arithmatex">\(req_{pt}\)</span> - required volume using product p per day, tons</p>
 <p>It is calculated based on the total requirement  matrix. The calculation is described <a href="https://github.com/epogrebnyak/aloh3/issues/2">here</a>. </p>
 <p><span class="arithmatex">\(B_{ij}\)</span> - the number of units of product <span class="arithmatex">\(j\)</span>, required for the production of product i (direct cost matrix)</p>
-<p>$ R_ {ij} $ - the number of units of product <span class="arithmatex">\(j\)</span>, directly or indirectly required for the release of a unit of <span class="arithmatex">\(i\)</span> (total costs matrix).</p>
+<p><span class="arithmatex">\(R_{ij}\)</span> - the number of units of product <span class="arithmatex">\(j\)</span>, directly or indirectly required for the release of a unit of <span class="arithmatex">\(i\)</span> (total costs matrix).</p>
 <p><span class="arithmatex">\(R = (I-B)^{-1}\)</span></p>
-<p>If $ y = [y_A, y_B, y_C, y_D] $ is a row vector with the quantity of each product to sell,
-then $ x = yR $ is the total output of each product, taking into account internal consumption.</p>
+<p>If <span class="arithmatex">\(y = [y_A, y_B, y_C, y_D]\)</span> is a row vector with the quantity of each product to sell,
+then <span class="arithmatex">\(x = yR\)</span> is the total output of each product, taking into account internal consumption.</p>
 <div class="arithmatex">\[
 \forall t: req_{t} = ship_{t}^T \cdot R
 \]</div>
@@ -1067,7 +1067,7 @@ then $ x = yR $ is the total output of each product, taking into account interna
 <p>Stocks are registered end of day.</p>
 <h2 id="2-orders">2. Orders</h2>
 <h3 id="21-order-data-structure">2.1 Order data structure</h3>
-<p>The plant receives $ n_ {orders} $ orders for various products for the entire planning period:</p>
+<p>The plant receives <span class="arithmatex">\(n_{orders}\)</span> orders for various products for the entire planning period:</p>
 <div class="arithmatex">\[order_k = [product_k, day_k, volume_k, price_k]\]</div>
 <div class="arithmatex">\[k = 1, ... n_{orders}\]</div>
 <p>Each order contains (<em>k</em> - order number):</p>
@@ -1103,7 +1103,7 @@ sales = \sum_k accept_k \cdot volume_k  \cdot  price_k
 <div class="arithmatex">\[\forall p: \sum_t prod_{pt} = \sum_t req_{pt} \]</div>
 <p>Commentary: perhaps this limitation becomes insignificant after the introduction of restrictions on minimizing stocks.</p>
 <h3 id="34-limited-storage-time">3.4 Limited storage time</h3>
-<p>Inventory per day <em>d</em> must not exceed product usage for the next $ s_p $ days, where $ s_p $ is the maximum shelf life p of the product in stock.</p>
+<p>Inventory per day <em>d</em> must not exceed product usage for the next <span class="arithmatex">\(s_p\)</span> days, where <span class="arithmatex">\(s_p\)</span> is the maximum shelf life p of the product in stock.</p>
 <p>First case:</p>
 <div class="arithmatex">\[ inventory_{pd} \le \sum_{t = d+1}^{d+s_p} req_{pt}, s_p \ge 1 \]</div>
 <p>The storage period s = 1 can be substituted into the this inequality, then the stock balance should not exceed the volume of the next day of use ($ req_ {p, d + 1} $).</p>
@@ -1112,7 +1112,7 @@ sales = \sum_k accept_k \cdot volume_k  \cdot  price_k
 <p>Key words: shelf life, product life.</p>
 <h2 id="4-objective-function">4. Objective function</h2>
 <div class="arithmatex">\[(sales - costs - \lambda \cdot inventory)\to max\]</div>
-<p><span class="arithmatex">\(\lambda \cdot inventory\)</span> - penalty to minimize inventory. $ \lambda $ is less than the price of the product.</p>
+<p><span class="arithmatex">\(\lambda \cdot inventory\)</span> - penalty to minimize inventory. <span class="arithmatex">\(\lambda\)</span> is less than the price of the product.</p>
 <h2 id="5-calculation-result">5. Calculation result</h2>
 <ul>
 <li><span class="arithmatex">\(prod_{pt}\)</span> - production volume by day</li>
