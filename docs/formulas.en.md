@@ -50,6 +50,8 @@ $$
 t = 1, ... n_{days}
 $$
 
+Note: in Python implementation we the first index is zero.
+
 **0.2** Let `p` denote index of product. For 4 products we shall have:
 
 $$
@@ -112,16 +114,11 @@ $$
 
 $inventory_{pt}$ - stocks of product _p_ at the end of the day, tons
 
-Stocks are defined as the difference between the accumulated amount of production and the accumulated use.
-
-Amount of use is requirment from above:
+Stocks are defined as the difference between the accumulated amount of production and the accumulated use. Amount of use is requirment from above. Stocks are registered end of day.
 
 $$inventory_{pt} = cumsum(prod, t) - cumsum(req, t)$$
 
 $$cumsum(x_t, t^*) = \sum_{t=1}^{t^*}x_{t}$$
-
-Stocks are registered end of day.
-
 
 ## 2. Orders
 
