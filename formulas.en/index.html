@@ -1025,6 +1025,7 @@
 <div class="arithmatex">\[
 t = 1, ... n_{days}
 \]</div>
+<p>Note: in Python implementation we the first index is zero.</p>
 <p><strong>0.2</strong> Let <code>p</code> denote index of product. For 4 products we shall have:</p>
 <div class="arithmatex">\[
 p \in [A, B, C, D]
@@ -1060,11 +1061,9 @@ then <span class="arithmatex">\(x = yR\)</span> is the total output of each prod
 \]</div>
 <h3 id="15-inventory-stocks">1.5 Inventory (stocks)</h3>
 <p><span class="arithmatex">\(inventory_{pt}\)</span> - stocks of product <em>p</em> at the end of the day, tons</p>
-<p>Stocks are defined as the difference between the accumulated amount of production and the accumulated use.</p>
-<p>Amount of use is requirment from above:</p>
+<p>Stocks are defined as the difference between the accumulated amount of production and the accumulated use. Amount of use is requirment from above. Stocks are registered end of day.</p>
 <div class="arithmatex">\[inventory_{pt} = cumsum(prod, t) - cumsum(req, t)\]</div>
 <div class="arithmatex">\[cumsum(x_t, t^*) = \sum_{t=1}^{t^*}x_{t}\]</div>
-<p>Stocks are registered end of day.</p>
 <h2 id="2-orders">2. Orders</h2>
 <h3 id="21-order-data-structure">2.1 Order data structure</h3>
 <p>The plant receives <span class="arithmatex">\(n_{orders}\)</span> orders for various products for the entire planning period:</p>
