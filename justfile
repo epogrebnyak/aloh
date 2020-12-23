@@ -34,9 +34,8 @@ lab:
   jupyter notebook --notebook-dir="examples"
 
 # publish documentation to GitHub Pages
-publish:
-  mkdocs build
-  ghp-import -p site
+docs-publish:  
+  mkdocs gh-deploy
 
 # start docs server
 docs-build:
