@@ -11,9 +11,8 @@ end
 
 # *** Inputs ***
 
-# Orders can be placed on different days. Tuple is (day, valume, price).
+# Orders can be placed on different days. Tuple is (day, volume, price).
 # There can be different amount of orders per product.
-# For first product there are 4 orders, second product - 2 orders.
 order_list = [
     [(1,  4, 0.5), 
      (1,  1, 0.5), 
