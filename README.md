@@ -27,6 +27,7 @@
 - [Google OR Tools](https://developers.google.com/optimization) 
 - [mip-python](https://www.python-mip.com)
 - [pyomo](http://www.pyomo.org)
+- [JuMP]()
 
 #### Откуда название?
 
