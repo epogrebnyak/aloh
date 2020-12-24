@@ -26,10 +26,10 @@ capacity = [10, 10]
 unitcost = [0.2, 0.2]
 inventory_weight = 0.5
 
+# *** Model ***
+
 n_products = nrows(order_list)
 n_days = maxday(order_list)
-
-# *** Model ***
 
 model = Model(GLPK.Optimizer)
 
