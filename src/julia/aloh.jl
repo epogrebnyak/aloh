@@ -1,12 +1,19 @@
+# TODO:
+# - add max storage days
+# - add full requirement
+# - reTest.jl for tests?
+# - English description of math algorith
+# - docs?
+
 using JuMP
 using GLPK
 
 function maxday(orders)
-    maximum([item[1]  for row in orders for item in row])
+    maximum(item[1]  for row in orders for item in row)
 end  
 
 function nrows(orders)
-    size(orders)[1]
+    size(orders, 1)
 end
 
 # *** Inputs ***
@@ -75,10 +82,6 @@ profit = sales - costs
 
 # Constraint 2: inventory is positive
 @constraint(model, s .>= 0)
-
-# TODO:
-# - add max storage days
-# - add full requirement
 
 # Objective function
 obj= sum(profit) - sum((inventory_weight * unitcost) .* s)
