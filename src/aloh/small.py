@@ -340,18 +340,7 @@ class DataframeViewer:
         return variable_dataframes(self.om)
 
     def summary_dataframe(self):
-        """Объемы мощностей, заказов, производства, покупок (тонн)
-
-                Пример:
-                            A       B
-        capacity       2800.0  1400.0
-        orders         3780.0  1120.0
-        purchase       2280.0   400.0
-        internal_use    500.0     0.0
-        requirement    2780.0   400.0
-        production     2780.0   400.0
-        avg_inventory   174.5     4.6"""
-
+        """Объемы мощностей, заказов, производства, покупок (тонн)"""
         prod_df, ship_df, req_df, inv_df, sales_df, cost_df = self.inspect_variables()
         df = pd.DataFrame(
             {

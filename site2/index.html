@@ -1,0 +1,704 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to aloh’s documentation! &#8212; aloh 0.2 documentation</title>
+    
+  <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.3da636dd464baa7582d2.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main">
+<div class="container-xl">
+
+    <a class="navbar-brand" href="#">
+    
+      <p class="title">aloh</p>
+    
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar-menu" class="col-lg-9 collapse navbar-collapse">
+      <ul id="navbar-main-elements" class="navbar-nav mr-auto">
+        
+        
+        
+      </ul>
+
+
+      
+
+      <ul class="navbar-nav">
+        
+        
+      </ul>
+    </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+          <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+
+    <div class="bd-toc-item active">
+    
+  
+    <ul class="nav bd-sidenav">
+        
+      </ul>
+  
+  </nav>
+          </div>
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+              
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="nav section-nav flex-column">
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#" class="nav-link">Welcome to aloh’s documentation!</a><ul class="nav section-nav flex-column">
+                
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#module-aloh" class="nav-link">Module contents</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#this-is-toc" class="nav-link">This is TOC</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#submodules" class="nav-link">Submodules</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#module-aloh.generate" class="nav-link">aloh.generate module</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#module-aloh.helper" class="nav-link">aloh.helper module</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#module-aloh.interface" class="nav-link">aloh.interface module</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#module-aloh.requirements" class="nav-link">aloh.requirements module</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#module-aloh.small" class="nav-link">aloh.small module</a>
+        </li>
+    
+            </ul>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#indices-and-tables" class="nav-link">Indices and tables</a>
+        </li>
+    
+    </ul>
+</nav>
+
+
+              
+          </div>
+          
+
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="section" id="welcome-to-aloh-s-documentation">
+<h1>Welcome to aloh’s documentation!<a class="headerlink" href="#welcome-to-aloh-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-aloh">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aloh" title="Permalink to this headline">¶</a></h2>
+<p>Select orders and plan discrete daily production for several products.</p>
+<p>Use <em>Product</em> class to formulate input information and <em>OptModel</em> to solve 
+linear programming model.</p>
+<p><em>DataframeViewer</em> shows modelling results as pandas dataframes.</p>
+<p><em>generate_orders</em>, <em>Price</em>, <em>Volume</em> are used for order simulation.</p>
+</div>
+<div class="section" id="this-is-toc">
+<h2>This is TOC<a class="headerlink" href="#this-is-toc" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-aloh.generate">
+<span id="aloh-generate-module"></span><h2>aloh.generate module<a class="headerlink" href="#module-aloh.generate" title="Permalink to this headline">¶</a></h2>
+<p>Generate fake order volumes and prices.</p>
+<dl class="py class">
+<dt id="aloh.generate.Price">
+<em class="property">class </em><code class="sig-prename descclassname">aloh.generate.</code><code class="sig-name descname">Price</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">delta</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.generate.Price" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Параметры распределения цены.</p>
+<dl class="py attribute">
+<dt id="aloh.generate.Price.delta">
+<code class="sig-name descname">delta</code><em class="property">: float</em><a class="headerlink" href="#aloh.generate.Price.delta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.generate.Price.generate">
+<code class="sig-name descname">generate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.generate.Price.generate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.generate.Price.mean">
+<code class="sig-name descname">mean</code><em class="property">: float</em><a class="headerlink" href="#aloh.generate.Price.mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="aloh.generate.Volume">
+<em class="property">class </em><code class="sig-prename descclassname">aloh.generate.</code><code class="sig-name descname">Volume</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_order</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">max_order</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">round_to</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.generate.Volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Параметры распределения объема.</p>
+<dl class="py method">
+<dt id="aloh.generate.Volume.generate">
+<code class="sig-name descname">generate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#aloh.generate.Volume.generate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.generate.Volume.max_order">
+<code class="sig-name descname">max_order</code><em class="property">: float</em><a class="headerlink" href="#aloh.generate.Volume.max_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.generate.Volume.min_order">
+<code class="sig-name descname">min_order</code><em class="property">: float</em><a class="headerlink" href="#aloh.generate.Volume.min_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.generate.Volume.round_to">
+<code class="sig-name descname">round_to</code><em class="property">: float</em><em class="property"> = 1.0</em><a class="headerlink" href="#aloh.generate.Volume.round_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="aloh.generate.generate_orders">
+<code class="sig-prename descclassname">aloh.generate.</code><code class="sig-name descname">generate_orders</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_days</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">total_volume</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">pricer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#aloh.generate.Price" title="aloh.generate.Price">aloh.generate.Price</a></span></em>, <em class="sig-param"><span class="n">sizer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#aloh.generate.Volume" title="aloh.generate.Volume">aloh.generate.Volume</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.generate.generate_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Создать гипотетический список заказов.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-aloh.helper">
+<span id="aloh-helper-module"></span><h2>aloh.helper module<a class="headerlink" href="#module-aloh.helper" title="Permalink to this headline">¶</a></h2>
+<p>Auxillary information about solvers.</p>
+<dl class="py function">
+<dt id="aloh.helper.lst">
+<code class="sig-prename descclassname">aloh.helper.</code><code class="sig-name descname">lst</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.helper.lst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.helper.print_solvers">
+<code class="sig-prename descclassname">aloh.helper.</code><code class="sig-name descname">print_solvers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.helper.print_solvers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Информация по солверам.</p>
+<p>Дополнительные ссылки:
+- <a class="reference external" href="https://github.com/coin-or/Cbc">https://github.com/coin-or/Cbc</a>
+- <a class="reference external" href="https://en.wikipedia.org/wiki/Branch_and_cut">https://en.wikipedia.org/wiki/Branch_and_cut</a>
+- <a class="reference external" href="https://coin-or.github.io/pulp/guides/how_to_configure_solvers.html">https://coin-or.github.io/pulp/guides/how_to_configure_solvers.html</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-aloh.interface">
+<span id="aloh-interface-module"></span><h2>aloh.interface module<a class="headerlink" href="#module-aloh.interface" title="Permalink to this headline">¶</a></h2>
+<p>Interface to define inputs for the model. Use <em>Product</em> class.</p>
+<dl class="py class">
+<dt id="aloh.interface.Order">
+<em class="property">class </em><code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">Order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">day</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">volume</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">price</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.Order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Order parameters.</p>
+<dl class="py attribute">
+<dt id="aloh.interface.Order.day">
+<code class="sig-name descname">day</code><em class="property">: int</em><a class="headerlink" href="#aloh.interface.Order.day" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.interface.Order.price">
+<code class="sig-name descname">price</code><em class="property">: float</em><a class="headerlink" href="#aloh.interface.Order.price" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.interface.Order.volume">
+<code class="sig-name descname">volume</code><em class="property">: float</em><a class="headerlink" href="#aloh.interface.Order.volume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="aloh.interface.Product">
+<em class="property">class </em><code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">Product</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">capacity: float = 0</em>, <em class="sig-param">unit_cost: Union[float</em>, <em class="sig-param">NoneType] = None</em>, <em class="sig-param">storage_days: Union[int</em>, <em class="sig-param">NoneType] = None</em>, <em class="sig-param">orders: List = &lt;factory&gt;</em>, <em class="sig-param">requires: Dict = &lt;factory&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.Product" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="aloh.interface.Product.add_order">
+<code class="sig-name descname">add_order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">day</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">volume</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">price</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.Product.add_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.interface.Product.capacity">
+<code class="sig-name descname">capacity</code><em class="property">: float</em><em class="property"> = 0</em><a class="headerlink" href="#aloh.interface.Product.capacity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.interface.Product.name">
+<code class="sig-name descname">name</code><em class="property">: str</em><a class="headerlink" href="#aloh.interface.Product.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.interface.Product.orders">
+<code class="sig-name descname">orders</code><em class="property">: List</em><a class="headerlink" href="#aloh.interface.Product.orders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.interface.Product.require">
+<code class="sig-name descname">require</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">volume</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.Product.require" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.interface.Product.requires">
+<code class="sig-name descname">requires</code><em class="property">: Dict</em><a class="headerlink" href="#aloh.interface.Product.requires" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.interface.Product.storage_days">
+<code class="sig-name descname">storage_days</code><em class="property">: Optional<span class="p">[</span>int<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#aloh.interface.Product.storage_days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.interface.Product.unit_cost">
+<code class="sig-name descname">unit_cost</code><em class="property">: Optional<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#aloh.interface.Product.unit_cost" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="aloh.interface.capacities">
+<code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">capacities</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">products</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.capacities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.interface.days">
+<code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">days</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">order_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.interface.get_materials">
+<code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">get_materials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">products</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.get_materials" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.interface.names">
+<code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">products</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.interface.order_dict">
+<code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">order_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">products</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.order_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.interface.storage_days">
+<code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">storage_days</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">products</span></em>, <em class="sig-param"><span class="n">max_allowed_storage_days</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.storage_days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.interface.unit_costs">
+<code class="sig-prename descclassname">aloh.interface.</code><code class="sig-name descname">unit_costs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">products</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.interface.unit_costs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-aloh.requirements">
+<span id="aloh-requirements-module"></span><h2>aloh.requirements module<a class="headerlink" href="#module-aloh.requirements" title="Permalink to this headline">¶</a></h2>
+<p>Direct and full material requirements.</p>
+<dl class="py class">
+<dt id="aloh.requirements.Materials">
+<em class="property">class </em><code class="sig-prename descclassname">aloh.requirements.</code><code class="sig-name descname">Materials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product_names</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.requirements.Materials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="aloh.requirements.Materials.R">
+<em class="property">property </em><code class="sig-name descname">R</code><a class="headerlink" href="#aloh.requirements.Materials.R" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.requirements.Materials.calculate_R">
+<code class="sig-name descname">calculate_R</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.requirements.Materials.calculate_R" title="Permalink to this definition">¶</a></dt>
+<dd><p>R - матрица полных затрат.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.requirements.Materials.product_names">
+<code class="sig-name descname">product_names</code><em class="property">: List<span class="p">[</span>str<span class="p">]</span></em><a class="headerlink" href="#aloh.requirements.Materials.product_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.requirements.Materials.require">
+<code class="sig-name descname">require</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_i</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p_j</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.requirements.Materials.require" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.requirements.Materials.requirements_factory">
+<code class="sig-name descname">requirements_factory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.requirements.Materials.requirements_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Предоставить функцию, которая будет рассчитывать
+полные потребности в продуктах для продукта <em>p</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="aloh.requirements.as_dataframe">
+<code class="sig-prename descclassname">aloh.requirements.</code><code class="sig-name descname">as_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">names</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.requirements.as_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.requirements.calculate_full_requirement">
+<code class="sig-prename descclassname">aloh.requirements.</code><code class="sig-name descname">calculate_full_requirement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">B</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.requirements.calculate_full_requirement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.requirements.g">
+<code class="sig-prename descclassname">aloh.requirements.</code><code class="sig-name descname">g</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">products</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">R</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.requirements.g" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.requirements.rounds">
+<code class="sig-prename descclassname">aloh.requirements.</code><code class="sig-name descname">rounds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arr</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.001</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.requirements.rounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-aloh.small">
+<span id="aloh-small-module"></span><h2>aloh.small module<a class="headerlink" href="#module-aloh.small" title="Permalink to this headline">¶</a></h2>
+<p>Linear programming model for orders and production.
+This is the main module in ‘aloh’ package.</p>
+<dl class="py class">
+<dt id="aloh.small.DataframeViewer">
+<em class="property">class </em><code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">DataframeViewer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">om</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#aloh.small.OptModel" title="aloh.small.OptModel">aloh.small.OptModel</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.DataframeViewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="aloh.small.DataframeViewer.inspect_variables">
+<code class="sig-name descname">inspect_variables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.DataframeViewer.inspect_variables" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.small.DataframeViewer.om">
+<code class="sig-name descname">om</code><em class="property">: <a class="reference internal" href="#aloh.small.OptModel" title="aloh.small.OptModel">aloh.small.OptModel</a></em><a class="headerlink" href="#aloh.small.DataframeViewer.om" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.DataframeViewer.orders_dataframe">
+<code class="sig-name descname">orders_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.DataframeViewer.orders_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.DataframeViewer.orders_dataframes">
+<code class="sig-name descname">orders_dataframes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.DataframeViewer.orders_dataframes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.DataframeViewer.orders_summary">
+<code class="sig-name descname">orders_summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.DataframeViewer.orders_summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.DataframeViewer.product_dataframe">
+<code class="sig-name descname">product_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.DataframeViewer.product_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.DataframeViewer.product_dataframes">
+<code class="sig-name descname">product_dataframes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.DataframeViewer.product_dataframes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.DataframeViewer.summary_dataframe">
+<code class="sig-name descname">summary_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.DataframeViewer.summary_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Объемы мощностей, заказов, производства, покупок (тонн)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="aloh.small.Dim">
+<em class="property">class </em><code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">Dim</code><span class="sig-paren">(</span><em class="sig-param">products: [&lt;class 'str'&gt;], days: list</em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.Dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Keeps fucntions that work on matrices of dimensions
+(number of products *  number of days).</p>
+<dl class="py method">
+<dt id="aloh.small.Dim.calculate_inventory">
+<code class="sig-name descname">calculate_inventory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prod</span></em>, <em class="sig-param"><span class="n">use</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.Dim.calculate_inventory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create expressions for inventory.
+Inventory is end of day stock of produced, but not shipped goods.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.small.Dim.days">
+<code class="sig-name descname">days</code><em class="property">: list</em><a class="headerlink" href="#aloh.small.Dim.days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.Dim.empty_matrix">
+<code class="sig-name descname">empty_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.Dim.empty_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.Dim.make_production">
+<code class="sig-name descname">make_production</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">capacities</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.Dim.make_production" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a decision variable for production:
+0 &lt; prod[p][d] &lt;  capacity[p],
+where p is product and d is day.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.Dim.make_requirements">
+<code class="sig-name descname">make_requirements</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ship</span></em>, <em class="sig-param"><span class="n">ms</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#aloh.requirements.Materials" title="aloh.requirements.Materials">aloh.requirements.Materials</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.Dim.make_requirements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.Dim.make_shipment_sales">
+<code class="sig-name descname">make_shipment_sales</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">order_dict</span></em>, <em class="sig-param"><span class="n">accept_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.Dim.make_shipment_sales" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create expressions for:
+- shipment (volume of daily off-take)
+- sales (same in dollars).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="aloh.small.Dim.products">
+<code class="sig-name descname">products</code><em class="property">: [&lt;class ‘str’&gt;]</em><a class="headerlink" href="#aloh.small.Dim.products" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="aloh.small.OptModel">
+<em class="property">class </em><code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">OptModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">products</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#aloh.interface.Product" title="aloh.interface.Product">aloh.interface.Product</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">model_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">inventory_weight</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="aloh.small.OptModel.accepted_orders">
+<code class="sig-name descname">accepted_orders</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><a class="headerlink" href="#aloh.small.OptModel.accepted_orders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.accepted_orders_full">
+<code class="sig-name descname">accepted_orders_full</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.accepted_orders_full" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.estimated_production">
+<code class="sig-name descname">estimated_production</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.estimated_production" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.n_days">
+<em class="property">property </em><code class="sig-name descname">n_days</code><a class="headerlink" href="#aloh.small.OptModel.n_days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.set_closed_sum">
+<code class="sig-name descname">set_closed_sum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.set_closed_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ограничение: закрытая сумма, нулевые входящие и исходящие остатки.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.set_non_negative_inventory">
+<code class="sig-name descname">set_non_negative_inventory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.set_non_negative_inventory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ограничение: неотрицательные запасы.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.set_objective">
+<code class="sig-name descname">set_objective</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.set_objective" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.set_storage_limit">
+<code class="sig-name descname">set_storage_limit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.set_storage_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ввести ограничение на срок складирования продукта.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="aloh.small.OptModel.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.OptModel.solve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.accepted_orders_full">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">accepted_orders_full</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#aloh.small.OptModel" title="aloh.small.OptModel">aloh.small.OptModel</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.accepted_orders_full" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.accum">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">accum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.accum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.as_df">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">as_df</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mat</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Dict<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.as_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.as_int">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">as_int</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.as_int" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.clean">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">clean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.clean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.lp_sum">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">lp_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mat</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Dict<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.lp_sum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.make_accept_dict">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">make_accept_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">order_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.make_accept_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a binary decision variable for each order.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.multiply">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">multiply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vec</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">mat</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Dict<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.multiply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vector by matrix multiplication, results in a matrix.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.next_use">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">next_use</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.next_use" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slice <em>xs</em> list between <em>d</em> and <em>d+s</em> properly.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.orders_dataframe">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">orders_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#aloh.small.OptModel" title="aloh.small.OptModel">aloh.small.OptModel</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.orders_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.product_dataframe">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">product_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#aloh.small.OptModel" title="aloh.small.OptModel">aloh.small.OptModel</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.product_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.series">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.values">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mat</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Dict<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.values_to_list">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">values_to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mat</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Dict<span class="p">[</span>int<span class="p">, </span>float<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.values_to_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="aloh.small.variable_dataframes">
+<code class="sig-prename descclassname">aloh.small.</code><code class="sig-name descname">variable_dataframes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#aloh.small.OptModel" title="aloh.small.OptModel">aloh.small.OptModel</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aloh.small.variable_dataframes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+              </div>
+              
+              
+              <div class='prev-next-bottom'>
+                
+
+              </div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+
+    
+  <script src="_static/js/index.3da636dd464baa7582d2.js"></script>
+
+
+    <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    <p>
+          &copy; Copyright 2020, E Pogrebnyak.<br/>
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.4.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

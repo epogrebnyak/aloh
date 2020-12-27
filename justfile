@@ -56,3 +56,9 @@ examples-all:
   python examples/example0.py
   python examples/example1a.py
   python examples/example2.py
+
+apidoc:
+  sphinx-apidoc -f -o documentation src test_*.*  
+
+docs:
+  sphinx-build documentation site2 -c .  
