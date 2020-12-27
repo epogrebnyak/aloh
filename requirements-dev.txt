@@ -4,3 +4,4 @@ black
 isort
 mkdocs
 mkdocs-material
+pydata-sphinx-theme

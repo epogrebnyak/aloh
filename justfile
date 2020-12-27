@@ -38,11 +38,11 @@ docs-publish:
   mkdocs gh-deploy
 
 # start docs server
-docs-build:
+mkdocs-build:
   mkdocs build
 
 # start docs server
-docs-serve:
+mkdocs-serve:
   mkdocs serve
 
 # project-specific
@@ -52,13 +52,13 @@ win-codepage:
   chcp 1251
 
 # run all examples
-examples-all:
-  python examples/example0.py
-  python examples/example1a.py
-  python examples/example2.py
+#examples-all:
+#  python examples/example0.py
+#  python examples/example1a.py
+#  python examples/example2.py
 
-apidoc:
+sx-apidoc:
   sphinx-apidoc -f -o documentation src test_*.*  
 
-docs:
-  sphinx-build documentation site2 -c .  
+sx-build:
+  sphinx-build -a -c . documentation site2

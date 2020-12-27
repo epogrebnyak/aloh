@@ -1,11 +1,15 @@
-.. aloh documentation master file, created by
-   sphinx-quickstart on Mon Dec 28 00:56:31 2020.
-   You can adapt this file completely to your liking, 
-   but it should at least
-   contain the root `toctree` directive.
-
 Welcome to aloh's documentation!
 ================================
+
+TODO:
+
+- allow reading of markdown source files
+- show more chapters in left-handside bar
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
 
 Module contents
 ---------------
@@ -15,12 +19,6 @@ Module contents
    :undoc-members:
    :show-inheritance:
 
-This is TOC
------------
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
 
 Submodules
