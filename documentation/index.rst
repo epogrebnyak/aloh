@@ -6,6 +6,8 @@ aloh
 
    overview
    api
+   formulas
+   formulas.en
 
 Idea
 ----

@@ -5,3 +5,4 @@ isort
 mkdocs
 mkdocs-material
 pydata-sphinx-theme
+myst-parser
