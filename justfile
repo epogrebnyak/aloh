@@ -61,4 +61,4 @@ sx-apidoc:
   sphinx-apidoc -f -o documentation src test_*.*  
 
 sx-build:
-  sphinx-build -a -c . documentation site2
+  sphinx-build -a documentation documentation/site
