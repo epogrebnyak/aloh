@@ -80,4 +80,4 @@ Links
 - https://pydata-sphinx-theme.readthedocs.io/en/latest/
 - https://www.sphinx-doc.org/en/master/
 - https://raw.githubusercontent.com/Pylons/pyramid/1.10-branch/docs/index.rst
-
+- https://docs.pylonsproject.org/projects/pyramid/en/latest/index.html
