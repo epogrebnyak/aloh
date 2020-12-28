@@ -5,7 +5,7 @@
 env1
 .DS_Store
 site/
-site1/
+site2/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
