@@ -1,5 +1,14 @@
-aloh package
-============
+API documentation
+=================
+
+Module contents
+---------------
+
+.. automodule:: aloh
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Submodules
 ----------
@@ -44,10 +53,10 @@ aloh.small module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: aloh
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

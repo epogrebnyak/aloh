@@ -1,73 +1,83 @@
-Welcome to aloh's documentation!
-================================
-
-TODO:
-
-- allow reading of markdown source files
-- show more chapters in left-handside bar
+aloh
+====
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+
+   overview
+   api
+
+Idea
+----
+
+We have some documentation generated from markdown files by mkdocs already (in Russian),
+but not from docstrings (should be in English). We will end up with a documentation 
+site in English (build with Sphinx) and a promo site in Russian built in mkdocs based
+on independent markdown source files.
+
+Current directories and files:
+
+ - shpynx: conf.py, documentation / site2 
+ - mkdocs: mkdocs.yml, docs / site
+
+There are also some commands in "just" file associated with documentation 
+but they are work in progress. Just is a kind of make-like tool.
+<https://github.com/casey/just>
+
+We do not publish Sx docs anywhere yet, the mkdocs go to github pages.
+
+Todo
+----
+
+1. Markdown/sources:
+
+- 1.1 allow markdown source files (via [MyST](https://myst-parser.readthedocs.io/en/latest/) maybe?)
+- 1.2 show the rendering of formulas from markdown is possible: $\sum X_{ij}$
+
+2. Presentation/layout:
+
+- what controls chapter contents in left vertical side bar of pydata theme?  
+
+3. Docstring parsing:
+
+- how to exclude some public methods docstrings from generated API documentation?
 
 
-Module contents
----------------
+Not todo
+--------
 
-.. automodule:: aloh
-   :members:
-   :undoc-members:
-   :show-inheritance:
+- we shall need some transport to publish to Github Pages (ghp-import maybe)
+- maybe Russian mkdocs and English pydata/Sx docs can coexist in one site 
+- publish to separate S3 bucket 
 
-
-
-Submodules
+Excercises
 ----------
 
-aloh.generate module
---------------------
+1. build stand-alone .rst file with Sx
+2. build a collection of .rst files with Sx
+3. change theme of the documentation
+4. document your API - module example
+5. document your API - package example
+6. neat things rst provides you (eg glossary)
+7. publish you documentation 
+8. automate repeated tasks
+9. why Sx is hard to grasp and run and what to do about it
+10. Sx alternatives ()
 
-.. automodule:: aloh.generate
-   :members:
-   :undoc-members:
-   :show-inheritance:
+How to run 
+-----------
 
-aloh.helper module
-------------------
+Build this site from repo root folder:
 
-.. automodule:: aloh.helper
-   :members:
-   :undoc-members:
-   :show-inheritance:
+  sphinx-build -a -c . documentation site2
 
-aloh.interface module
----------------------
-
-.. automodule:: aloh.interface
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-aloh.requirements module
-------------------------
-
-.. automodule:: aloh.requirements
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-aloh.small module
------------------
-
-.. automodule:: aloh.small
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Point your browser to site2/index.html.
 
 
-Indices and tables
-==================
+Links
+-----
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+- https://pydata-sphinx-theme.readthedocs.io/en/latest/
+- https://www.sphinx-doc.org/en/master/
+- https://raw.githubusercontent.com/Pylons/pyramid/1.10-branch/docs/index.rst
+
