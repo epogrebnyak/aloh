@@ -4,6 +4,23 @@ deps := "requirements.txt"
 deps_dev := "requirements-dev.txt"
 env := "env1"
 
+
+# build sphinx documentation locally
+sx-build:
+  sphinx-build -a docs site
+
+# create rst source for API documentation
+sx-apidoc:
+  sphinx-apidoc -f -o docs src test_*.*  
+
+# build mkdocs documentation locally
+mkdocs-build:
+  mkdocs build
+
+# start documentation server (mkdocs)
+mkdocs-serve:
+  mkdocs serve
+
 # install dependencies
 pip-r:
   pip install -r {{deps}}
@@ -37,14 +54,6 @@ lab:
 docs-publish:  
   mkdocs gh-deploy
 
-# start docs server
-mkdocs-build:
-  mkdocs build
-
-# start docs server
-mkdocs-serve:
-  mkdocs serve
-
 # project-specific
 # ensure codepage
 win-codepage:
@@ -57,8 +66,3 @@ win-codepage:
 #  python examples/example1a.py
 #  python examples/example2.py
 
-sx-apidoc:
-  sphinx-apidoc -f -o documentation src test_*.*  
-
-sx-build:
-  sphinx-build -a documentation documentation/site

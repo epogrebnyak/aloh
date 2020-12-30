@@ -2,12 +2,12 @@ aloh
 ====
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
+   :hidden:
 
    overview
+   formulas/english
    api
-   formulas
-   formulas.en
 
 Idea
 ----
